@@ -1,19 +1,33 @@
 # ARC Demo Day
 
-The final review on 21 October: the simulated store and your nav stack, webcam perception on Manav's Pi, and the real motors in the loop, all at once. Start bring-up at least 30 minutes before you present. Tick steps as you go; ticks stay in this browser.
+The final review on 21 October: the simulated store and your nav stack, webcam perception on a second laptop, and the real motors in the loop, all at once. Start bring-up at least 30 minutes before you present. Tick steps as you go; ticks stay in this browser.
 
 laptop: Ubuntu 24.04 · Jazzy · Harmonic
-Pi: manav@172.20.10.2, no ROS
+perception laptop: no ROS, any OS
 ≈ 20 min to ready
 
-webcam→Pi: YOLOv8n + ByteTrack→ UDP →relay→BT→motion gate→ /cmd_vel →Gazebo cart+Uno → real wheels
+webcam→perception laptop: YOLOv8n + ByteTrack→ UDP →relay→BT→motion gate→ /cmd_vel →Gazebo cart+Uno → real wheels
 
-Purple is real hardware, green is the laptop. The store, lidar and robot body are simulated; the camera, Pi, Uno and motors are real, with the wheels off the ground.
+Purple is real hardware, green is the ARC laptop. The store, lidar and robot body are simulated; the webcam, Uno and motors are real, with the wheels off the ground.
 0 / 0
 
 ## Check the pieces tonight
 
 All read-only except the UI install. Do the full rehearsal on the next tab once tonight, so tomorrow is a repeat, not a first try.
+
+- [ ] **Set up the perception laptop (needs internet)**
+_(Perception laptop)_≈ 10 min
+
+Copy `arc_perception_laptop.zip` to it and unzip. Linux: run `./setup.sh`. Windows: install Python 3.12 from python.org (tick "Add to PATH"), then double-click `setup.bat`. It ends by listing cameras: note the index (built-in webcam is usually **0**, a USB one often **1**).
+
+- [ ] **Put the new demo launcher on the ARC laptop**
+_(Terminal K)_
+
+```bash
+cp ~/arc_pi_udp/laptop/arc_demo.sh ~/arc_pi_udp/laptop/arc_demo.sh.bak_pi && cp ~/Downloads/arc_demo.sh ~/arc_pi_udp/laptop/arc_demo.sh && chmod +x ~/arc_pi_udp/laptop/arc_demo.sh && grep -c PERC ~/arc_pi_udp/laptop/arc_demo.sh
+```
+
+Prints a number above 0. The old one is kept as `arc_demo.sh.bak_pi`. Without `PERC=` it behaves exactly as before.
 
 - [ ] **The kits are where the demo expects them**
 _(Terminal K)_
@@ -31,7 +45,7 @@ _(Terminal K)_
 cat ~/.arc_net 2>/dev/null || echo local
 ```
 
-Must print **local**. The Pi talks plain UDP, so ROS stays on the laptop. If it prints **hil**, run `~/arc_pi/laptop/hil_mode.sh off`.
+Must print **local**. The perception laptop talks plain UDP, so ROS stays on the ARC laptop. If it prints **hil**, run `~/arc_pi/laptop/hil_mode.sh off`.
 
 - [ ] **Make the progress-check controller file**
 _(Terminal K)_
@@ -68,29 +82,29 @@ Put `final_1_1.webm` (full shopping run) and `arch_w_perception_1.webm` (percept
 - [ ] **Charge and pack**
 _(Bag)_
 
-- Laptop charger, Manav's iPhone and its cable (the hotspot must stay on), the Pi's own power supply.
+- Both laptop chargers, and a phone for the hotspot with its cable (the hotspot must stay on).
 
 - Uno USB cable, motor battery (charged), the stand that keeps the wheels off the ground, the E-stop.
 
-- The webcam, plugged into the Pi.
+- The webcam, if you use a USB one on the perception laptop.
 
 ## Network first
 
-Today Wi-Fi stays **on**, on Manav's hotspot, because the Pi sends the webcam data over it. Join before starting anything and don't touch Wi-Fi until you shut down. ROS itself stays on the laptop, so this is safe.
+Today Wi-Fi stays **on**, because the perception laptop sends the webcam data over it. Use a phone hotspot: college Wi-Fi often blocks laptops from reaching each other. Join before starting anything and don't touch Wi-Fi until you shut down. ROS itself stays on the ARC laptop, so this is safe.
 
-- [ ] **Hotspot on, both machines on it**
-_(iPhone + laptop)_
+- [ ] **Hotspot on, both laptops on it**
+_(Phone + both laptops)_
 
-On the iPhone: Personal Hotspot on, **Maximise Compatibility** on, phone plugged in and close to the Pi. Join **Manav's iPhone** on the laptop. Power the Pi; it joins by itself.
+Phone hotspot on (iPhone: turn on **Maximise Compatibility**), phone plugged in. Join it on both laptops. On the perception laptop, read its IP: `hostname -I` (Linux) or `ipconfig` → Wi-Fi IPv4 address (Windows). That is **PERC** below.
 
-- [ ] **Loopback multicast on, daemon reset, Pi answers**
+- [ ] **Loopback multicast on, daemon reset, firewall open for the webcam data**
 _(Terminal K)_
 
 ```bash
-sudo ip link set lo multicast on && ros2 daemon stop && hostname -I && ping -c 3 172.20.10.2
+sudo ip link set lo multicast on && ros2 daemon stop && (sudo ufw status | grep -q "Status: active" && sudo ufw allow 5600/udp || true) && hostname -I
 ```
 
-One address should be **172.20.10.x** (the laptop on the hotspot) and the ping gets replies. Don't run the usual `nmcli radio wifi off` today.
+One address is on the same network as the perception laptop (same first three numbers). Don't run the usual `nmcli radio wifi off` today.
 
 ## Everything with one command
 
@@ -100,15 +114,20 @@ This runs your normal bring-up (Gazebo, ICP odometry, RTAB-Map, auto_map, Dijkst
 _(Terminal K)_≈ 15 min · don't touch the robot while auto_map drives
 
 ```bash
-cd ~/arc_test_kit && source env.sh && TEB_YAML=$HOME/arc_test_kit/configs/teb_progress.yaml ~/arc_pi_udp/laptop/arc_demo.sh up
+cd ~/arc_test_kit && source env.sh && PERC=
+TEB_YAML=$HOME/arc_test_kit/configs/teb_progress.yaml ~/arc_pi_udp/laptop/arc_demo.sh up
 ```
 
-It checks the hotspot, Pi, Uno port and `arc_hw_bridge` first. Look for **progress_checker.required_movement_radius = 0.25** in the printed limits, then **all windows started**. B6 is not used: the webcam drives the BT.
+Replace `<perception laptop IP>` first, for example `PERC=172.20.10.4`. It checks the network, the Uno port and `arc_hw_bridge` first, and prints this laptop's IP at the end. Look for **progress_checker.required_movement_radius = 0.25** in the printed limits, then **all windows started**. B6 is not used: the webcam drives the BT.
 
-- [ ] **Start perception on the Pi**
-_(ARC_pi window)_
+- [ ] **Start perception on the second laptop**
+_(Perception laptop)_
 
-Type the Pi's password. Then **ARC_relay** prints **receiving from the Pi at 172.20.10.2** and **ARC_view** shows the camera.
+```bash
+./run_perception.sh  
+```
+
+Windows: `run_perception.bat <ARC laptop IP> <camera>` in the kit folder; allow python.exe through the firewall on Private **and** Public networks when asked. Then **ARC_relay** prints **receiving from the Pi at <perception laptop>** (it calls any sender "the Pi") and **ARC_view** shows the camera.
 
 - [ ] **RViz with the store labels**
 _(Terminal R)_
@@ -146,7 +165,7 @@ Left half: RViz (Gazebo minimised to save CPU, bring it up when you show the sto
 
 ## The run, about 10 minutes
 
-One sentence to open: the store, lidar and robot body are simulated; the webcam, Pi, Uno and motors are real and in the loop.
+One sentence to open: the store, lidar and robot body are simulated; the webcam, Uno and motors are real and in the loop.
 
 - [ ] **1. The store and the map**
 _(Gazebo, RViz)_1 min
@@ -160,7 +179,7 @@ _(ARC_view, ARC_buttons)_2 min
 
 Stand alone in front of the webcam. Click into **ARC_buttons** and press **e**: ARC_view shows **LOCKED**. Press **l** (lead me): the B5 window shows **-> LEAD**.
 
-YOLOv8n and ByteTrack run on the Pi; only two flags and a small preview come to the laptop.
+YOLOv8n and ByteTrack run on a separate computer, standing in for the cart's onboard computer; only two flags and a small preview reach the ARC laptop.
 
 - [ ] **3. The shopping list and the route**
 _(ARC_shopping (or the web UI))_2 min
@@ -180,18 +199,18 @@ Point at the real wheels turning with the Gazebo cart. **ARC_chain** shows one l
 
 The same /cmd_vel drives both. The sketch caps PWM at 60, so the real wheels turn slower than the simulated cart.
 
-- [ ] **5. Safety: walk away, then pull the Pi**
+- [ ] **5. Safety: walk away, then stop the perception laptop**
 _(Webcam, ARC_relay)_2 min
 
 - Step out of view. Within a few seconds: lock lost, BT **WAIT**, `cmd_vel` 0, wheels stop, cart stops in Gazebo.
 
 - Come back, press **e** then **l**: it carries on.
 
-- Press Ctrl+C in **ARC_pi** (or pull the Pi's power). After 1.5 s **ARC_relay** prints **holding the BT in WAIT**.
+- Press Ctrl+C on the perception laptop (or turn its Wi-Fi off). After 1.5 s **ARC_relay** prints **holding the BT in WAIT**.
 
 - Physical E-stop cuts motor power directly.
 
-Every layer fails safe: lost person, silent Pi, lost /cmd_vel at the Uno (watchdog), and the hardware E-stop.
+Every layer fails safe: lost person, silent perception computer, lost /cmd_vel at the Uno (watchdog), and the hardware E-stop.
 
 - [ ] **6. The numbers from this run**
 _(Terminal K)_1 min, after Shut down
@@ -234,7 +253,7 @@ The first two groups open by themselves. You open K, R and (optionally) W.
 
 | Opened by arc_demo.sh (HIL + perception) | 
 
-| ARC_relay | Pi UDP → `/person_moving`, `/person_confused`; holds WAIT if the Pi goes quiet | Show "holding the BT in WAIT" | 
+| ARC_relay | Webcam UDP → `/person_moving`, `/person_confused`; holds WAIT if the perception laptop goes quiet | Show "holding the BT in WAIT" | 
 
 | ARC_motors | `arc_hw_bridge`: `/cmd_vel` → Uno → wheels | Leave | 
 
@@ -242,11 +261,9 @@ The first two groups open by themselves. You open K, R and (optionally) W.
 
 | ARC_recorder | Chain log to `~/arc_hil_logs/` | Leave | 
 
-| ARC_view | The Pi's annotated camera view | Keep visible | 
+| ARC_view | The perception laptop's annotated camera view | Keep visible | 
 
 | ARC_buttons | Shopper keys: **e** enrol, **l** lead me, **r** reset | Click into it before pressing keys | 
-
-| ARC_pi | ssh to the Pi, running `run_on_pi.sh` | Password; Ctrl+C for the safety demo | 
 
 | ARC_shopping | Shopping Manager | Type the list here | 
 
@@ -258,6 +275,10 @@ The first two groups open by themselves. You open K, R and (optionally) W.
 
 | Terminal W | Web UI bridge (optional, instead of ARC_shopping) | Browser at localhost:8080 | 
 
+| On the perception laptop | 
+
+| run_perception | Webcam, YOLOv8n, ByteTrack, target lock → UDP to ARC_relay | Ctrl+C for the safety demo | 
+
 Every terminal you open yourself starts with `source ~/arc_test_kit/env.sh`, or it won't see the nodes. Logs for the HIL windows are in `~/arc_logs/demo_<time>/`.
 
 ## If something breaks on stage
@@ -266,7 +287,9 @@ Rule of thumb: if a fix takes more than a minute, play the backup video and keep
 
 | What you see | Do this | 
 
-| ARC_relay: waiting for the Pi | Pi password not typed yet, the Pi isn't on the hotspot, or the firewall: `sudo ufw allow 5600/udp` | 
+| ARC_relay: waiting for the Pi | `run_perception` not started, wrong ARC laptop IP given to it, laptops on different networks, wrong `PERC=`, or the firewall: `sudo ufw allow 5600/udp` | 
+
+| e / l do nothing | Commands back to the perception laptop are blocked. Windows: allow python.exe on Public networks too (Windows Security → Firewall → Allow an app). Linux: `sudo ufw allow 5601/udp` | 
 
 | e doesn't lock | Be the only person in view at that moment, then press **e** again in ARC_buttons | 
 
@@ -278,9 +301,11 @@ Rule of thumb: if a fix takes more than a minute, play the backup video and keep
 
 | ARC_motors: Uno NOT connected | Replug the Uno; check `ls /dev/ttyACM*` matches `port:` in `arc_hw.yaml` | 
 
-| Pi very slow | In ARC_pi: Ctrl+C, then `IMGSZ=256 ~/arc_pi_udp/pi/run_on_pi.sh <laptop 172.20.10.x> 0` | 
+| Perception slow | Ctrl+C, then start it with `IMGSZ=320` (Linux: `IMGSZ=320 ./run_perception.sh …`; Windows: `set IMGSZ=320` first) | 
 
-| Pi or hotspot dead | Keyboard instead of webcam: Ctrl+C in ARC_relay, then in a new terminal `source ~/arc_test_kit/env.sh && ros2 run arc_behavior_tree person_state_input` and type **3** (LEAD). Motors still follow `/cmd_vel`. Then play `arch_w_perception_1.webm` for the perception part | 
+| cannot read camera | Wrong index or another app (Zoom, Teams, browser) holds the webcam. Close it; run `find_camera.py` with the kit's venv | 
+
+| Perception laptop or hotspot dead | Keyboard instead of webcam: Ctrl+C in ARC_relay, then in a new terminal `source ~/arc_test_kit/env.sh && ros2 run arc_behavior_tree person_state_input` and type **3** (LEAD). Motors still follow `/cmd_vel`. Then play `arch_w_perception_1.webm` for the perception part | 
 
 | Gazebo, ICP or RTAB-Map died | The map is gone and a restart is 15 min: play `final_1_1.webm` | 
 
@@ -292,8 +317,8 @@ Rule of thumb: if a fix takes more than a minute, play the backup video and keep
 
 ## Shut down, motors first
 
-- [ ] **Stop the Pi**
-_(ARC_pi window)_
+- [ ] **Stop perception**
+_(Perception laptop)_
 
 Ctrl+C. It sends "wait" to the laptop before exiting.
 

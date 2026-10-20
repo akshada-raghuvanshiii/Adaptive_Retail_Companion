@@ -15,6 +15,9 @@
 #   ARC_pi        ssh to the Pi running run_on_pi.sh (type the Pi's password there)
 #   ARC_shopping  Shopping Manager (enter the list here)
 # Settings (environment): PI=manav@172.20.10.2  CAM=0  IMGSZ=320
+#   PERC=<IP>  perception runs on ANOTHER COMPUTER at that address (not the Pi): no ARC_pi window,
+#              the relay accepts data only from PERC, and any shared network works (not only the
+#              iPhone hotspot). Start the bridge on that computer with run_perception.sh / .bat.
 # Nothing in ~/slam_ws is changed. B6 (person_state_input) is not used: the webcam replaces it.
 HERE=$(cd "$(dirname "$0")" && pwd)
 PI=${PI:-manav@172.20.10.2}
@@ -57,13 +60,20 @@ esac
 # ---------- checks (nothing is changed)
 command -v gnome-terminal >/dev/null || { bad "gnome-terminal not found"; exit 1; }
 ip link show lo | grep -q MULTICAST || { bad "loopback multicast off: sudo ip link set lo multicast on && ros2 daemon stop"; exit 1; }
+if [ -n "${PERC:-}" ]; then
+  PI_HOST=$PERC
+  LAPTOP_IP=$(hostname -I | tr ' ' '\n' | grep -m1 "^${PERC%.*}\.")
+  if [ -n "$LAPTOP_IP" ]; then ok "same network as the perception laptop: this laptop is $LAPTOP_IP"
+  else bad "no address on ${PERC%.*}.x here: join the same Wi-Fi/hotspot as the perception laptop (addresses now: $(hostname -I))"; exit 1; fi
+else
 LAPTOP_IP=$(hostname -I | tr ' ' '\n' | grep -m1 '^172\.20\.10\.')
 if [ -n "$LAPTOP_IP" ]; then ok "on the iPhone hotspot as $LAPTOP_IP"
 else
   bad "this laptop has no 172.20.10.x address: join Manav's iPhone hotspot first (addresses now: $(hostname -I))"; exit 1
 fi
 PI_HOST=${PI#*@}
-ping -c 1 -W 2 "$PI_HOST" >/dev/null 2>&1 && ok "Pi answers at $PI_HOST" || warn "no ping reply from $PI_HOST (Pi on? same hotspot?)"
+fi
+ping -c 1 -W 2 "$PI_HOST" >/dev/null 2>&1 && ok "perception computer answers at $PI_HOST" || warn "no ping reply from $PI_HOST (on? same network? Windows blocks ping by default, which is harmless)"
 PORT=$(awk '/port:/{print $2; exit}' "$YAML" 2>/dev/null)
 [ -n "$PORT" ] && [ -e "$PORT" ] && ok "Uno at $PORT" || { bad "Uno port '${PORT:-?}' from $YAML not found (ls /dev/ttyACM*; fix 'port:' in the YAML)"; exit 1; }
 source ~/arc_test_kit/env.sh 2>/dev/null
@@ -87,11 +97,18 @@ win ARC_chain    "python3 $HERE/chain_monitor.py"
 win ARC_recorder "python3 $HERE/hil_logger.py"
 win ARC_view     "$VENV_PY $HERE/view_debug.py"
 win ARC_buttons  "python3 $HERE/arc_ui.py" 2 tty
+if [ -z "${PERC:-}" ]; then
 win ARC_pi       "ssh -t $PI 'export LC_ALL=C.UTF-8; IMGSZ=$IMGSZ ~/arc_pi_udp/pi/run_on_pi.sh $LAPTOP_IP $CAM'" 3 tty
+fi
 win ARC_shopping "ros2 run arc_planner shopping_manager" 1 tty
 echo
 ok "all windows started (logs: $LOGDIR)"
+if [ -n "${PERC:-}" ]; then
+echo "  1. On the perception laptop run:  run_perception.sh $LAPTOP_IP   (Windows: run_perception.bat $LAPTOP_IP)"
+echo "     ARC_relay should then say 'receiving from the Pi at $PI_HOST' (the relay calls any sender 'the Pi')."
+else
 echo "  1. ARC_pi: type the Pi's password. ARC_relay should then say 'receiving from the Pi at $PI_HOST'."
+fi
 echo "  2. Stand alone in front of the webcam. Click ARC_buttons, press e (enrol), then l (lead me)."
 echo "  3. ARC_shopping: enter an item. Gazebo cart and real wheels drive; ARC_chain shows every stage."
 echo "  4. Step out of view: within a few seconds BT -> WAIT, cmd_vel 0, PWM 0, wheels stop."
