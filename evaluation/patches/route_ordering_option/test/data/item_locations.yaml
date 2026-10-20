@@ -1,0 +1,178 @@
+# Remapped to the ARC compact store by remap_item_locations.py. Frame: map.
+# Source: /home/akshada-raghuvanshi/slam_ws/src/arc_store_sim/config/item_locations.yaml (comments in the source are not carried over)
+frame_id: map
+items:
+  atta_flour:
+    x: 0.15
+    y: -0.4
+    yaw: 0.0
+    shelf: gondola_2
+    face: east
+  baby_care:
+    x: 1.8
+    y: -0.4
+    yaw: 3.1416
+    shelf: gondola_5
+    face: east
+  bakery:
+    x: 0.15
+    y: 1.4
+    yaw: 0.0
+    shelf: shelf_west
+    face: east
+  biscuits:
+    x: 1.8
+    y: 1.4
+    yaw: 3.1416
+    shelf: gondola_1
+    face: east
+  bread:
+    x: 0.15
+    y: -0.4
+    yaw: 0.0
+    shelf: gondola_2
+    face: west
+  breakfast_cereal:
+    x: 1.8
+    y: 1.4
+    yaw: 3.1416
+    shelf: gondola_1
+    face: west
+  cleaning:
+    x: 1.8
+    y: -0.4
+    yaw: 0.0
+    shelf: gondola_4
+    face: east
+  cooking_oil:
+    x: 1.8
+    y: -0.4
+    yaw: 0.0
+    shelf: gondola_4
+    face: west
+  curd_paneer:
+    x: -2.2
+    y: 2.75
+    yaw: 1.5708
+    shelf: shelf_north
+    face: south
+  dal_pulses:
+    x: 3.475
+    y: -0.4
+    yaw: 3.1416
+    shelf: gondola_3
+    face: west
+  detergent:
+    x: 1.8
+    y: -0.4
+    yaw: 0.0
+    shelf: gondola_4
+    face: east
+  eggs:
+    x: -2.2
+    y: 2.75
+    yaw: 1.5708
+    shelf: shelf_north
+    face: south
+  frozen:
+    x: 1.8
+    y: 1.4
+    yaw: 0.0
+    shelf: shelf_north
+    face: south
+  fruits:
+    x: -1.4
+    y: 0.05
+    yaw: 1.5708
+    shelf: table_fruits
+    face: west
+  jam_spreads:
+    x: 0.15
+    y: -0.4
+    yaw: 0.0
+    shelf: gondola_2
+    face: west
+  juice:
+    x: 3.475
+    y: 1.4
+    yaw: 3.1416
+    shelf: shelf_east
+    face: west
+  milk:
+    x: -2.2
+    y: 2.75
+    yaw: 1.5708
+    shelf: shelf_north
+    face: south
+  pasta:
+    x: 3.475
+    y: -0.4
+    yaw: 3.1416
+    shelf: gondola_3
+    face: east
+  pet_food:
+    x: 1.8
+    y: -0.4
+    yaw: 3.1416
+    shelf: gondola_5
+    face: east
+  rice:
+    x: 0.15
+    y: -0.4
+    yaw: 0.0
+    shelf: gondola_2
+    face: east
+  sauces:
+    x: 3.475
+    y: -0.4
+    yaw: 3.1416
+    shelf: gondola_3
+    face: east
+  snacks:
+    x: 1.8
+    y: 1.4
+    yaw: 3.1416
+    shelf: gondola_1
+    face: east
+  soap_shampoo:
+    x: 1.8
+    y: -0.4
+    yaw: 3.1416
+    shelf: gondola_5
+    face: west
+  spices:
+    x: 3.475
+    y: -0.4
+    yaw: 3.1416
+    shelf: gondola_3
+    face: west
+  sugar_salt:
+    x: 1.8
+    y: -0.4
+    yaw: 0.0
+    shelf: gondola_4
+    face: west
+  tea_coffee:
+    x: -2.45
+    y: 0.4
+    yaw: 3.1416
+    shelf: gondola_1
+    face: west
+  toiletries:
+    x: 1.8
+    y: -0.4
+    yaw: 3.1416
+    shelf: gondola_5
+    face: west
+  vegetables:
+    x: -1.4
+    y: 0.05
+    yaw: 1.5708
+    shelf: table_vegetables
+    face: west
+  water_beverages:
+    x: -2.45
+    y: 0.4
+    yaw: 3.1416
+    shelf: shelf_east
+    face: west

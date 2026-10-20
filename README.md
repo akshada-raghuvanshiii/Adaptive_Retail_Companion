@@ -56,6 +56,7 @@ evaluation/
   arc_test_kit/              Test kit that ran tests A1–A4, B1, C1, C2 and phase 2
   arc_compact_store_kit/     Compact-store build, mapping drive and run scripts
   patches/phase2_fixes/      The progress-check and exact-ordering changes tested in phase 2
+  patches/route_ordering_option/  Shopping-manager option: Dijkstra-optimised route or typed order (asks the shopper)
   results/                   Raw results: missions, legs, events, samples (gzip), run logs, HIL log
 mechanical/
   cad/                       STEP files: cart, drive modules, sleeve, springs, motor, wheels
