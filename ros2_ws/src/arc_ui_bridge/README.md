@@ -37,7 +37,7 @@ It installs no apt or pip packages. It prints any that are missing.
 3. Open **http://localhost:8080**. The toast "Connected to ARC (ROS 2)" means the link is live.
    - To use a phone or tablet on the same hotspot, launch with `host:=0.0.0.0`, then open
      `http://<laptop IP>:8080`.
-4. Build the shopping list, then press **START SHOPPING · CHOOSE ROUTE**.
+4. Build the shopping list, then press **Start shopping**.
    - **Store items:** the page lists the **items of the Gazebo store**, the same 29 names the
      shopping manager accepts (`pasta`, `tea_coffee`, `milk`, …). They are grouped like the RViz
      labels: Aisle 1–3, Fresh produce, Dairy fridge, Tea & beverages shelf.
