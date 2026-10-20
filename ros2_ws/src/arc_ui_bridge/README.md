@@ -37,9 +37,21 @@ It installs no apt or pip packages. It prints any that are missing.
 3. Open **http://localhost:8080**. The toast "Connected to ARC (ROS 2)" means the link is live.
    - To use a phone or tablet on the same hotspot, launch with `host:=0.0.0.0`, then open
      `http://<laptop IP>:8080`.
-4. Add products and press **START SHOPPING**. Then:
-   - **Mapping:** the bridge maps each UI product to its store spot (`config/product_map.yaml`).
-     Products in the same spot are merged into one stop.
+4. Build the shopping list, then press **START SHOPPING · CHOOSE ROUTE**.
+   - **Store items:** the page lists the **items of the Gazebo store**, the same 29 names the
+     shopping manager accepts (`pasta`, `tea_coffee`, `milk`, …). They are grouped like the RViz
+     labels: Aisle 1–3, Fresh produce, Dairy fridge, Tea & beverages shelf.
+   - **The page works as a second "terminal" for the shopping manager:**
+     - Type into **Add items (comma separated)**, for example `pasta, tea_coffee, milk`, and press
+       Enter or ADD.
+     - Item names or their display names both work.
+     - Unknown items get the shopping manager's message: *"x" is not in the store database and
+       will not be added*.
+     - You can also click ADD on the cards.
+   - **List order:** the list keeps the order in which items were added. That order is "My order".
+   - **Same spot:** items at the same spot (for example `milk` and `eggs`) are merged into one stop.
+   - **Old catalogue:** `catalog:=products` brings back the 60-product grocery catalogue, mapped
+     through `config/product_map.yaml`.
    - **Choose the route:** a dialog shows two routes, each with its Dijkstra path length through the
      aisles from where the robot is now, and how much shorter the optimised one is:
      - **Optimised route:** the shortest order, exact (Held–Karp) up to 12 stops. It uses the same
@@ -86,6 +98,7 @@ Ignored arrivals are counted and appear in the UI event log.
 | name | default | meaning |
 |---|---|---|
 | host / port | 127.0.0.1 / 8080 | web server address |
+| catalog | store | `store`: the Gazebo store's items (the shopping manager's list). `products`: the 60-product grocery catalogue |
 | route_choice | ask | `ask`: the UI shows both routes and the shopper picks. `fixed`: no dialog, use `strategy` |
 | strategy | exact | `exact` or `nearest` for the optimised route, or `as_entered`. Used when no choice is sent |
 | end_at_checkout | true | end every trip at the checkout counter |
@@ -100,15 +113,18 @@ Ignored arrivals are counted and appear in the UI event log.
 ## What has and has not been tested
 
 - **Run here, without ROS:**
-  - `python3 test/run_tests.py` (14/14). It covers:
+  - `python3 test/run_tests.py` (16/16). It covers:
     - product mapping, merging and ordering;
     - the arrival guard;
     - a full trip, and pause, stop, resume, home and skip;
     - the checkout: last stop, finishes the trip, skipping it, home still works, refused anywhere
       but last;
+    - the store catalogue: every store item once, grouped by aisle or area, resolved like the
+      shopping manager;
     - the server API against stand-in ROS objects: plan, both route choices, no map, checkout
-      off, overrides, missing file.
-  - A browser end-to-end test of the UI against `test/mock_bridge.py`:
+      off, overrides, missing file, store mode.
+  - A browser end-to-end test of the UI against `test/mock_bridge.py`, in both catalogue modes:
+    - typing a store list, including an unknown item;
     - the route dialog;
     - an optimised trip run to "AT CHECKOUT · DONE";
     - a typed-order trip in the order the products were added;

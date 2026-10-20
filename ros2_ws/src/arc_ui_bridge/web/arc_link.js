@@ -265,6 +265,82 @@
     }
   };
 
+  /* Store catalogue (catalog:=store): the page lists the Gazebo store's own items, and a type-in box
+     works like the shopping manager's "Add items (comma separated)" prompt. */
+  function storeLabels() {
+    const n = products.length;
+    dom.productCount.textContent = `${n} store item${n === 1 ? "" : "s"}`;
+    const shown = getFilteredProducts().length;
+    dom.catalogSubtext.textContent = shown === n ? "All store items" : `Showing ${shown} of ${n} store items`;
+    const sel = getSelectedProducts().length;
+    dom.selectedMini.textContent = `${sel} selected`;
+    // the category is the aisle here, so show it once: "Aisle: Aisle 1" -> "Aisle 1", fixtures as "Area"
+    const byId = new Map(products.map((p) => [p.id, p]));
+    dom.productGrid.querySelectorAll(".product-card").forEach((card) => {
+      const p = byId.get(card.dataset.id), spans = card.querySelectorAll(".product-meta span");
+      if (!p || spans.length < 2) return;
+      spans[0].remove();
+      const isAisle = /^Aisle \d/.test(p.aisle);
+      spans[1].innerHTML = `<strong>${isAisle ? "Aisle" : "Area"}:</strong> ${escapeHTML(isAisle ? p.aisle.slice(6) : p.aisle)}`;
+    });
+  }
+
+  function addTyped(text) {
+    const byKey = new Map();
+    products.forEach((p) => { byKey.set(p.id.toLowerCase(), p); byKey.set(p.name.toLowerCase(), p); });
+    const added = [], unknown = [];
+    text.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean).forEach((tok) => {
+      const p = byKey.get(tok) || byKey.get(tok.replace(/\s+/g, "_")) || byKey.get(tok.replace(/_/g, " "));
+      if (!p) { unknown.push(tok); return; }
+      selectedQuantities[p.id] = Number(selectedQuantities[p.id] || 0) + 1;
+      added.push(p.id);
+    });
+    renderProducts();
+    renderShoppingList();
+    updateSummary();
+    clearRouteBecauseListChanged();
+    if (added.length) showToast(`Added: ${added.join(", ")}`);
+    unknown.forEach((u) => showToast(`"${u}" is not in the store database and will not be added.`));
+    return { added, unknown };
+  }
+  link.addTyped = addTyped;
+
+  function setupStoreMode() {
+    const title = document.querySelector("#shopScreen .page-title-row h1");
+    const sub = document.querySelector("#shopScreen .page-title-row p");
+    if (title) title.textContent = "Shopping List";
+    if (sub) sub.textContent = "Items in the ARC store: the same list the shopping manager uses";
+    const cat = document.querySelector(".catalog-panel .panel-heading h2");
+    if (cat) cat.textContent = "Store items";
+    dom.searchInput.placeholder = "Search store items...";
+    const up = dom.uniqueProducts && dom.uniqueProducts.previousElementSibling;
+    if (up) up.textContent = "Different items";
+    dom.generateRouteBtn.style.display = "none";          // START SHOPPING shows both routes instead
+    dom.startShoppingBtn.textContent = "START SHOPPING · CHOOSE ROUTE";
+    dom.startShoppingBtn.classList.replace("secondary-button", "primary-button");
+
+    const bar = el("form", { id: "arcAddForm", class: "search-wrap", autocomplete: "off",
+      style: "display:flex;gap:8px;align-items:stretch" });
+    bar.innerHTML = `
+      <input id="arcAddInput" type="text" list="arcItemNames" aria-label="Add items, comma separated"
+        placeholder="Add items (comma separated), e.g. pasta, tea_coffee, milk" style="flex:1" />
+      <button class="primary-button" type="submit" style="width:auto;padding:0 22px">ADD</button>
+      <datalist id="arcItemNames">${products.map((p) => `<option value="${escapeHTML(p.id)}">${escapeHTML(p.name)}</option>`).join("")}</datalist>`;
+    const row = document.querySelector("#shopScreen .page-title-row");
+    row.parentNode.insertBefore(bar, row.nextSibling);
+    bar.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const inp = document.getElementById("arcAddInput");
+      if (!inp.value.trim()) { showToast("No items entered. Please try again."); return; }
+      const r = addTyped(inp.value);
+      inp.value = r.unknown.join(", ");
+    });
+
+    const orig = window.renderProducts;
+    window.renderProducts = function () { orig.apply(this, arguments); storeLabels(); };
+    renderProducts();
+  }
+
   async function poll() {
     try {
       render(await api("/api/status"));
@@ -279,6 +355,10 @@
       const s = await api("/api/status");
       if (!s.ros) return;
       link.live = true;
+      if (s.catalog === "store") {
+        for (let i = 0; i < 50 && !products.length; i++) await new Promise((r) => setTimeout(r, 100));
+        setupStoreMode();
+      }
       buildPanel();
       render(s);
       setInterval(poll, 1000);

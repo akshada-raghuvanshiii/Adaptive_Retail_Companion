@@ -42,6 +42,7 @@ from std_msgs.msg import Bool, String
 from tf2_ros import Buffer, TransformListener
 
 from . import route_order as ro
+from .catalog import identity_map, store_catalog
 from .trip import Trip, resolve
 
 LATCHED = QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE, durability=DurabilityPolicy.TRANSIENT_LOCAL)
@@ -67,6 +68,7 @@ class UiBridge(Node):
         self.declare_parameter("map_topic", "/rtabmap/map")
         self.declare_parameter("map_frame", "map")
         self.declare_parameter("base_frame", "base_footprint")
+        self.declare_parameter("catalog", "store")           # store: the Gazebo store's items | products: grocery demo list
         self.declare_parameter("strategy", "exact")          # exact | nearest | as_entered (when no choice is sent)
         self.declare_parameter("route_choice", "ask")         # ask: the UI shows both routes | fixed: use strategy
         self.declare_parameter("end_at_checkout", True)
@@ -83,6 +85,11 @@ class UiBridge(Node):
         il = yaml.safe_load(open(os.path.expanduser(g("item_locations")))) or {}
         self.items = il.get("items", {})
         self.item_frame = il.get("frame_id", "map")
+        self.catalog = str(g("catalog"))
+        if self.catalog == "store":
+            # the UI lists the store's own items, under the names the shopping manager accepts
+            self.product_map = identity_map(self.items)
+            self.store_products = store_catalog(self.items)
         self.map_frame, self.base_frame = g("map_frame"), g("base_frame")
         self.strategy = g("strategy")
         self.route_choice = str(g("route_choice"))
@@ -217,7 +224,7 @@ class UiBridge(Node):
         with self.lock:
             snap = self.trip.snapshot()
         others = max(0, self.count_publishers("/shopping_goal") - 1)
-        return {"ros": True, "bt_mode": self.bt_mode, "route_choice": self.route_choice,
+        return {"ros": True, "bt_mode": self.bt_mode, "route_choice": self.route_choice, "catalog": self.catalog,
                 "checkout": None if not self.checkout else [self.checkout["x"], self.checkout["y"]],
                 "bt_age_s": None if self.bt_t is None else round(self.now() - self.bt_t, 1),
                 "pose": None if p is None else [round(p[0], 3), round(p[1], 3), round(p[2], 3)],
@@ -226,6 +233,8 @@ class UiBridge(Node):
                 "store_items": {k: [v["x"], v["y"]] for k, v in self.items.items()}}
 
     def api_products(self):
+        if self.catalog == "store":
+            return self.store_products
         with open(os.path.join(self.web_dir, "products.json")) as f:
             prods = json.load(f)
         for p in prods:
@@ -337,7 +346,8 @@ def make_handler(node):
         def do_GET(self):
             if self.path.startswith("/api/status"):
                 return self.reply(200, node.api_status())
-            if self.path.startswith("/api/products"):
+            if self.path.startswith("/api/products") or (
+                    node.catalog == "store" and self.path.split("?")[0] == "/products.json"):
                 return self.reply(200, node.api_products())
             return super().do_GET()
 

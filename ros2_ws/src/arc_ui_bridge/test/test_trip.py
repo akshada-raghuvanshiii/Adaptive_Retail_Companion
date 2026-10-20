@@ -168,3 +168,30 @@ def test_checkout_only_is_refused():
     except ValueError:
         return
     raise AssertionError("a trip with no items should be refused")
+
+
+# ---------------------------------------------------------------- store catalogue (catalog:=store)
+from arc_ui_bridge.catalog import identity_map, pretty, store_catalog  # noqa: E402
+
+
+def test_store_catalog_lists_every_store_item_once():
+    cat = store_catalog(ITEMS)
+    ids = [p["id"] for p in cat]
+    assert sorted(ids) == sorted(k for k in ITEMS if k != "checkout") and len(ids) == len(set(ids))
+    assert {p["category"] for p in cat} <= {"Aisle 1", "Aisle 2", "Aisle 3", "Fresh produce", "Dairy fridge",
+                                           "Tea & beverages shelf", "Other"}
+    assert all(p["category"] != "Other" for p in cat), [p["id"] for p in cat if p["category"] == "Other"]
+    by = {p["id"]: p for p in cat}
+    assert by["fruits"]["category"] == "Fresh produce" and by["milk"]["category"] == "Dairy fridge"
+    assert by["pasta"]["category"] == "Aisle 3"
+    assert by["tea_coffee"]["name"] == "Tea & coffee" and pretty("atta_flour") == "Atta flour"
+
+
+def test_store_ids_resolve_like_the_shopping_manager():
+    pmap = identity_map(ITEMS)
+    req = [{"item_id": "pasta"}, {"item_id": "tea_coffee"}, {"item_id": "caviar"}]
+    goals, problems = resolve(req, pmap, ITEMS)
+    assert [g["item"] for g in goals] == ["pasta", "tea_coffee"]
+    assert problems and "caviar" in problems[0]
+    g = goals[0]
+    assert (g["x"], g["y"]) == (float(ITEMS["pasta"]["x"]), float(ITEMS["pasta"]["y"]))

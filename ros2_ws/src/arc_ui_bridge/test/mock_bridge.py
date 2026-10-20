@@ -19,10 +19,13 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from arc_ui_bridge import route_order as ro  # noqa: E402
 from arc_ui_bridge.trip import Trip, resolve  # noqa: E402
+from arc_ui_bridge.catalog import identity_map, store_catalog  # noqa: E402
 
 ITEMS = yaml.safe_load(open(os.environ.get(
     "ARC_ITEM_LOCATIONS", os.path.expanduser("~/slam_ws/src/arc_store_sim/config/item_locations.yaml"))))["items"]
-PMAP = yaml.safe_load(open(os.path.join(ROOT, "config", "product_map.yaml")))
+CATALOG = os.environ.get("ARC_CATALOG", "store")      # store (default) | products
+PMAP = identity_map(ITEMS) if CATALOG == "store" else yaml.safe_load(open(os.path.join(ROOT, "config", "product_map.yaml")))
+STORE_PRODUCTS = store_catalog(ITEMS)
 GRID = ro.CostGrid([0] * (160 * 140), 160, 140, 0.05, -4.0, -3.0)
 _DEST = yaml.safe_load(open(os.environ.get(
     "ARC_DESTINATIONS", os.path.expanduser("~/slam_ws/src/arc_store_sim/config/destinations_map.yaml"))))
@@ -71,7 +74,7 @@ class Mock:
     def status(self):
         with self.lock:
             snap = self.trip.snapshot()
-        return {"ros": True, "bt_mode": "LEAD", "route_choice": "ask", "checkout": [CHECKOUT["x"], CHECKOUT["y"]], "bt_age_s": 0.2, "pose": [round(v, 3) for v in self.pose],
+        return {"ros": True, "bt_mode": "LEAD", "route_choice": "ask", "catalog": CATALOG, "checkout": [CHECKOUT["x"], CHECKOUT["y"]], "bt_age_s": 0.2, "pose": [round(v, 3) for v in self.pose],
                 "localised": True, "map": True, "other_goal_publishers": 0, "trip": snap,
                 "store_items": {k: [v["x"], v["y"]] for k, v in ITEMS.items()}}
 
@@ -139,6 +142,8 @@ class H(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path.startswith("/api/status"):
             return self.reply(200, M.status())
+        if CATALOG == "store" and (self.path.startswith("/api/products") or self.path.split("?")[0] == "/products.json"):
+            return self.reply(200, STORE_PRODUCTS)
         return super().do_GET()
 
     def do_POST(self):

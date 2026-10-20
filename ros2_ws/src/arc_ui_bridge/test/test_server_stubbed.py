@@ -117,6 +117,8 @@ def install_stubs():
 
 def test_api_flow():
     Buffer, Bool = install_stubs()
+    OVERRIDES.clear()
+    OVERRIDES["catalog"] = "products"          # the grocery demo list; store mode is tested below
     from arc_ui_bridge import route_order as ro
     from arc_ui_bridge import server
     node = server.UiBridge()
@@ -172,6 +174,8 @@ def test_api_flow():
 
 
 def test_plan_and_route_choice():
+    OVERRIDES.clear()
+    OVERRIDES["catalog"] = "products"
     from arc_ui_bridge import route_order as ro
     from arc_ui_bridge import server
     Buffer = sys.modules["tf2_ros"].Buffer
@@ -220,24 +224,52 @@ def test_plan_and_route_choice():
 def test_checkout_off_and_overrides():
     from arc_ui_bridge import server
     OVERRIDES.clear()
-    OVERRIDES["end_at_checkout"] = False
+    OVERRIDES.update(catalog="products", end_at_checkout=False)
     node = server.UiBridge()
     assert node.checkout is None
     s = node.api_trip({"items": [{"item_id": "FP001"}]})
     assert not any(x["is_checkout"] for x in s["trip"]["stops"])
     OVERRIDES.clear()
-    OVERRIDES.update(checkout_x=0.5, checkout_y=-2.4)
+    OVERRIDES.update(catalog="products", checkout_x=0.5, checkout_y=-2.4)
     node = server.UiBridge()
     assert (node.checkout["x"], node.checkout["y"]) == (0.5, -2.4)
     OVERRIDES.clear()
-    OVERRIDES["destinations_file"] = "/nonexistent.yaml"
+    OVERRIDES.update(catalog="products", destinations_file="/nonexistent.yaml")
     node = server.UiBridge()
     assert node.checkout is None                                   # warns and falls back to returning home
     OVERRIDES.clear()
+
+
+def test_store_catalog_mode():
+    """Default catalog: the UI lists the Gazebo store's items; a list of store item names behaves like
+    a list typed into the shopping manager (typed order kept, checkout last)."""
+    from arc_ui_bridge import route_order as ro
+    from arc_ui_bridge import server
+    OVERRIDES.clear()
+    node = server.UiBridge()
+    assert node.catalog == "store"
+    prods = node.api_products()
+    names = {p["id"] for p in prods}
+    assert names == set(node.items) - {"checkout"} and len(prods) == len(names)
+    assert all(p["sim_item"] == p["id"] for p in prods)
+    node.grid = ro.CostGrid([0] * (160 * 140), 160, 140, 0.05, -4.0, -3.0)
+    node.now = lambda: 500.0
+    typed = ["pasta", "tea_coffee", "milk", "fruits"]
+    items = [{"item_id": i, "quantity": 1} for i in typed]
+    plan = node.api_plan({"items": items})
+    assert plan["options"]["typed"]["stops"] == typed + ["CHECKOUT"]
+    s = node.api_trip({"items": items, "route": "typed"})
+    assert [x["label"] for x in s["trip"]["stops"]] == typed + ["CHECKOUT"]
+    assert s["catalog"] == "store"
+    node.api_control({"action": "stop"})
+    node.trip.state = "IDLE"
+    bad = node.api_plan({"items": items + [{"item_id": "caviar"}]})
+    assert any("caviar" in p for p in bad["problems"])
 
 
 if __name__ == "__main__":
     test_api_flow()
     test_plan_and_route_choice()
     test_checkout_off_and_overrides()
+    test_store_catalog_mode()
     print("server API flow OK")
