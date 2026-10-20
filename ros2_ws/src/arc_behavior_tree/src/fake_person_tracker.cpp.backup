@@ -1,0 +1,593 @@
+/*
+ * fake_person_tracker
+ *
+ * Simulates the human only. It never publishes a navigation goal.
+ * Its motion reflects the Behaviour Tree mode:
+ *
+ *   FOLLOW    : the person walks the current Dijkstra route to the
+ *               shelf, AHEAD of the cart (the cart follows them).
+ *               If they are not ahead yet, they walk past the cart to
+ *               a point follow_lead_distance ahead on the route.
+ *               At the end of the route they step aside so the cart
+ *               can reach the shelf.
+ *   LEAD      : the person walks the cart's actual driven track
+ *               (breadcrumbs), lead_trail_gap BEHIND the cart. If they
+ *               are in front of the cart they stand still and let it
+ *               pass.
+ *   WAIT      : stands still.
+ *   EMERGENCY : stands still.
+ *
+ * Output: /person_pose in the "map" frame. gazebo_person_pose converts
+ * it to the Gazebo world frame.
+ */
+
+#include <rclcpp/rclcpp.hpp>
+
+#include <geometry_msgs/msg/pose_stamped.hpp>
+#include <nav_msgs/msg/path.hpp>
+#include <std_msgs/msg/bool.hpp>
+#include <std_msgs/msg/string.hpp>
+
+#include <tf2/exceptions.h>
+#include <tf2_ros/buffer.h>
+#include <tf2_ros/transform_listener.h>
+
+#include "arc_behavior_tree/path_geometry.hpp"
+
+#include <algorithm>
+#include <chrono>
+#include <cmath>
+#include <deque>
+#include <memory>
+#include <optional>
+#include <string>
+#include <vector>
+
+using namespace std::chrono_literals;
+using arc_bt::Point2;
+
+
+struct RobotPose
+{
+    Point2 p;
+    double yaw = 0.0;
+};
+
+
+class FakePersonTracker : public rclcpp::Node
+{
+public:
+
+    FakePersonTracker()
+    : Node("fake_person_tracker"),
+      steady_(RCL_STEADY_TIME)
+    {
+        // Fallback start pose (map frame) if no robot TF arrives.
+        fallback_x_ = declare_parameter<double>("person_x", 0.30);
+        fallback_y_ = declare_parameter<double>("person_y", 0.00);
+        person_yaw_ = declare_parameter<double>("person_yaw", 0.0);
+
+        // FOLLOW
+        follow_speed_ =
+            declare_parameter<double>("follow_person_speed", 0.12);
+        catch_up_speed_ =
+            declare_parameter<double>("catch_up_speed", 0.20);
+        follow_lead_distance_ =
+            declare_parameter<double>("follow_lead_distance", 1.0);
+        route_corridor_ =
+            declare_parameter<double>("route_corridor", 0.30);
+        step_aside_distance_ =
+            declare_parameter<double>("step_aside_distance", 0.6);
+
+        // LEAD
+        lead_speed_ =
+            declare_parameter<double>("lead_person_speed", 0.12);
+        lead_trail_gap_ =
+            declare_parameter<double>("lead_trail_gap", 0.8);
+
+        // Start
+        spawn_side_offset_ =
+            declare_parameter<double>("spawn_side_offset", 0.7);
+
+        global_frame_ =
+            declare_parameter<std::string>("global_frame", "map");
+        robot_frame_ =
+            declare_parameter<std::string>("robot_frame", "base_footprint");
+
+
+        tf_buffer_ =
+            std::make_unique<tf2_ros::Buffer>(this->get_clock());
+        tf_listener_ =
+            std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
+
+
+        person_pose_pub_ =
+            create_publisher<geometry_msgs::msg::PoseStamped>(
+                "/person_pose", 10);
+
+
+        planned_path_sub_ =
+            create_subscription<nav_msgs::msg::Path>(
+                "/planned_path", 10,
+                [this](nav_msgs::msg::Path::SharedPtr msg)
+                {
+                    if (msg->poses.empty())
+                    {
+                        return;
+                    }
+
+                    route_.set(msg->poses);
+
+                    // New shelf -> the person has not arrived there yet.
+                    if (arrived_ &&
+                        arc_bt::dist(route_.end(), arrived_end_) > 0.3)
+                    {
+                        arrived_ = false;
+                        stepping_aside_ = false;
+                    }
+                });
+
+
+        mode_sub_ =
+            create_subscription<std_msgs::msg::String>(
+                "/arc/behavior_mode", 10,
+                [this](std_msgs::msg::String::SharedPtr msg)
+                {
+                    mode_ = msg->data;
+                    mode_time_ = steady_.now();
+                    have_mode_ = true;
+                });
+
+
+        // Existing Bool topics are still honoured as a fallback.
+        follow_sub_ = makeBoolSub("/follow_person", follow_person_);
+        lead_sub_ = makeBoolSub("/lead_person", lead_person_);
+        wait_sub_ = makeBoolSub("/wait_for_person", wait_for_person_);
+        emergency_sub_ =
+            makeBoolSub("/emergency_stop_active", emergency_stop_);
+
+
+        timer_ = create_wall_timer(100ms, [this]() { update(); });
+
+
+        RCLCPP_INFO(get_logger(),
+            "Fake person started. FOLLOW: walks route ahead "
+            "(%.2f m/s). LEAD: trails cart track %.2f m behind.",
+            follow_speed_, lead_trail_gap_);
+    }
+
+
+private:
+
+    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr
+    makeBoolSub(const std::string& topic, bool& target)
+    {
+        return create_subscription<std_msgs::msg::Bool>(
+            topic, 10,
+            [&target](std_msgs::msg::Bool::SharedPtr msg)
+            {
+                target = msg->data;
+            });
+    }
+
+
+    // ---------------------------------------------------------------
+    // INPUTS
+    // ---------------------------------------------------------------
+
+    std::string currentMode()
+    {
+        if (have_mode_ && (steady_.now() - mode_time_).seconds() < 1.0)
+        {
+            return mode_;
+        }
+
+        if (emergency_stop_) { return "EMERGENCY"; }
+        if (wait_for_person_) { return "WAIT"; }
+        if (lead_person_) { return "LEAD"; }
+        if (follow_person_) { return "FOLLOW"; }
+
+        return "WAIT";
+    }
+
+
+    std::optional<RobotPose> robotPose()
+    {
+        try
+        {
+            const auto t =
+                tf_buffer_->lookupTransform(
+                    global_frame_, robot_frame_, tf2::TimePointZero);
+
+            const auto& q = t.transform.rotation;
+
+            RobotPose r;
+            r.p = Point2{t.transform.translation.x,
+                         t.transform.translation.y};
+            r.yaw = std::atan2(
+                2.0 * (q.w * q.z + q.x * q.y),
+                1.0 - 2.0 * (q.y * q.y + q.z * q.z));
+
+            return r;
+        }
+        catch (const tf2::TransformException&)
+        {
+            return std::nullopt;
+        }
+    }
+
+
+    // ---------------------------------------------------------------
+    // MOTION PRIMITIVES
+    // ---------------------------------------------------------------
+
+    /*
+     * Move straight toward target at speed. Returns true when reached.
+     */
+    bool moveToward(const Point2& target, double speed)
+    {
+        const double dx = target.x - person_.x;
+        const double dy = target.y - person_.y;
+        const double d = std::hypot(dx, dy);
+
+        if (d < 0.03)
+        {
+            return true;
+        }
+
+        const double step = std::min(d, speed * dt_);
+
+        person_.x += dx / d * step;
+        person_.y += dy / d * step;
+        person_yaw_ = std::atan2(dy, dx);
+
+        return step >= d - 1e-6;
+    }
+
+
+    /*
+     * If walking straight to target would pass through the cart,
+     * return a waypoint beside the cart instead.
+     */
+    Point2 avoidRobot(const Point2& target, const RobotPose& robot)
+    {
+        const double vx = target.x - person_.x;
+        const double vy = target.y - person_.y;
+        const double len2 = vx * vx + vy * vy;
+
+        if (len2 < 1e-9)
+        {
+            return target;
+        }
+
+        double t =
+            ((robot.p.x - person_.x) * vx + (robot.p.y - person_.y) * vy)
+            / len2;
+        t = std::clamp(t, 0.0, 1.0);
+
+        const Point2 closest{person_.x + t * vx, person_.y + t * vy};
+
+        if (arc_bt::dist(closest, robot.p) > 0.45 || t <= 0.0 || t >= 1.0)
+        {
+            return target;
+        }
+
+        // Pass on the side of the cart the person is already on.
+        const double nx = -std::sin(robot.yaw);
+        const double ny = std::cos(robot.yaw);
+        const double side =
+            ((person_.x - robot.p.x) * nx +
+             (person_.y - robot.p.y) * ny) >= 0.0 ? 1.0 : -1.0;
+
+        return Point2{robot.p.x + side * 0.6 * nx,
+                      robot.p.y + side * 0.6 * ny};
+    }
+
+
+    // ---------------------------------------------------------------
+    // FOLLOW: person walks the route ahead of the cart
+    // ---------------------------------------------------------------
+
+    void stepFollow(const RobotPose& robot)
+    {
+        if (route_.empty() || arrived_)
+        {
+            return;   // no route, or standing beside the shelf
+        }
+
+        if (stepping_aside_)
+        {
+            if (moveToward(aside_target_, follow_speed_))
+            {
+                stepping_aside_ = false;
+                arrived_ = true;
+                arrived_end_ = route_.end();
+
+                RCLCPP_INFO(get_logger(),
+                    "Person reached the shelf and stepped aside.");
+            }
+
+            return;
+        }
+
+        const double L = route_.length();
+        const auto pr = route_.project(robot.p);
+        const auto pp = route_.project(person_);
+
+        const bool ahead =
+            pp.lateral <= route_corridor_ && pp.s > pr.s + 0.3;
+
+        if (ahead)
+        {
+            // Walk along the route at walking speed.
+            const double s_new = pp.s + follow_speed_ * dt_;
+
+            if (s_new >= L - 0.02)
+            {
+                beginStepAside();
+                return;
+            }
+
+            double heading = 0.0;
+            const Point2 next = route_.pointAt(s_new, &heading);
+
+            person_ = next;
+            person_yaw_ = heading;
+            return;
+        }
+
+        // Not ahead yet: go to a point ahead of the cart on the route.
+        const double s_target = std::min(pr.s + follow_lead_distance_, L);
+        const Point2 target = route_.pointAt(s_target);
+
+        if (moveToward(avoidRobot(target, robot), catch_up_speed_) &&
+            s_target >= L - 0.02)
+        {
+            beginStepAside();
+        }
+    }
+
+
+    void beginStepAside()
+    {
+        double heading = 0.0;
+        const Point2 end = route_.pointAt(route_.length(), &heading);
+
+        // Step to the left of the direction of travel.
+        aside_target_ =
+            Point2{end.x - step_aside_distance_ * std::sin(heading),
+                   end.y + step_aside_distance_ * std::cos(heading)};
+
+        stepping_aside_ = true;
+    }
+
+
+    // ---------------------------------------------------------------
+    // LEAD: person trails the cart's driven track
+    // ---------------------------------------------------------------
+
+    void stepLead(const RobotPose& robot)
+    {
+        // In front of the cart (e.g. just switched from FOLLOW): step
+        // off the cart's line and let it pass, then fall in behind.
+        const double hx = std::cos(robot.yaw);
+        const double hy = std::sin(robot.yaw);
+        const double rx = person_.x - robot.p.x;
+        const double ry = person_.y - robot.p.y;
+        const double along = rx * hx + ry * hy;
+        const double signed_lat = -rx * hy + ry * hx;   // + = left
+
+        if (along > 0.15 && std::fabs(signed_lat) < 0.6)
+        {
+            const double side = signed_lat >= 0.0 ? 1.0 : -1.0;
+            const double shift = side * 0.6 - signed_lat;
+
+            const Point2 aside{person_.x - shift * hy,
+                               person_.y + shift * hx};
+
+            moveToward(aside, lead_speed_);
+            return;
+        }
+
+        if (along > 0.15)
+        {
+            return;   // beside/ahead and clear of the cart: wait
+        }
+
+        if (crumbs_.size() < 2)
+        {
+            return;   // cart has not moved yet
+        }
+
+        arc_bt::Polyline track;
+        track.setPoints(std::vector<Point2>(crumbs_.begin(), crumbs_.end()));
+
+        const double s_target =
+            std::max(0.0, track.length() - lead_trail_gap_);
+
+        const Point2 target = track.pointAt(s_target);
+
+        // Close the gap only while farther than the trail gap.
+        if (arc_bt::dist(person_, robot.p) <= lead_trail_gap_ + 0.05)
+        {
+            return;
+        }
+
+        moveToward(target, lead_speed_);
+    }
+
+
+    void recordCrumb(const RobotPose& robot)
+    {
+        if (crumbs_.empty() ||
+            arc_bt::dist(crumbs_.back(), robot.p) > 0.05)
+        {
+            crumbs_.push_back(robot.p);
+
+            while (crumbs_.size() > 400)   // ~20 m of track
+            {
+                crumbs_.pop_front();
+            }
+        }
+    }
+
+
+    // ---------------------------------------------------------------
+    // UPDATE
+    // ---------------------------------------------------------------
+
+    void update()
+    {
+        const auto robot = robotPose();
+
+        if (!initialized_)
+        {
+            if (robot)
+            {
+                // Start beside the robot (left side), facing the same way.
+                person_ =
+                    Point2{robot->p.x - spawn_side_offset_ * std::sin(robot->yaw),
+                           robot->p.y + spawn_side_offset_ * std::cos(robot->yaw)};
+                person_yaw_ = robot->yaw;
+                initialized_ = true;
+
+                RCLCPP_INFO(get_logger(),
+                    "Person placed %.2f m beside the robot at "
+                    "(%.2f, %.2f) [map].",
+                    spawn_side_offset_, person_.x, person_.y);
+            }
+            else if ((steady_.now() - start_time_).seconds() > 5.0)
+            {
+                person_ = Point2{fallback_x_, fallback_y_};
+                initialized_ = true;
+
+                RCLCPP_WARN(get_logger(),
+                    "No map->%s TF after 5 s. Using person_x/person_y "
+                    "(%.2f, %.2f).",
+                    robot_frame_.c_str(), person_.x, person_.y);
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        if (robot)
+        {
+            recordCrumb(*robot);
+        }
+
+        const std::string mode = currentMode();
+
+        if (mode != last_mode_)
+        {
+            RCLCPP_INFO(get_logger(),
+                "Person behaviour: %s", mode.c_str());
+            last_mode_ = mode;
+        }
+
+        if (robot)
+        {
+            if (mode == "FOLLOW")
+            {
+                stepFollow(*robot);
+            }
+            else if (mode == "LEAD")
+            {
+                stepLead(*robot);
+            }
+            // WAIT / EMERGENCY: stand still.
+        }
+
+        publishPose();
+    }
+
+
+    void publishPose()
+    {
+        geometry_msgs::msg::PoseStamped pose;
+
+        pose.header.stamp = get_clock()->now();
+        pose.header.frame_id = global_frame_;
+
+        pose.pose.position.x = person_.x;
+        pose.pose.position.y = person_.y;
+        pose.pose.position.z = 0.0;
+
+        pose.pose.orientation.z = std::sin(person_yaw_ / 2.0);
+        pose.pose.orientation.w = std::cos(person_yaw_ / 2.0);
+
+        person_pose_pub_->publish(pose);
+    }
+
+
+    // ---------------------------------------------------------------
+    // MEMBERS
+    // ---------------------------------------------------------------
+
+    rclcpp::Clock steady_;
+    rclcpp::Time start_time_{steady_.now()};
+
+    const double dt_ = 0.1;
+
+    double fallback_x_;
+    double fallback_y_;
+    double person_yaw_;
+
+    double follow_speed_;
+    double catch_up_speed_;
+    double follow_lead_distance_;
+    double route_corridor_;
+    double step_aside_distance_;
+    double lead_speed_;
+    double lead_trail_gap_;
+    double spawn_side_offset_;
+
+    std::string global_frame_;
+    std::string robot_frame_;
+
+    std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
+    std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
+
+    bool initialized_ = false;
+    Point2 person_;
+
+    arc_bt::Polyline route_;
+    std::deque<Point2> crumbs_;
+
+    bool stepping_aside_ = false;
+    bool arrived_ = false;
+    Point2 aside_target_;
+    Point2 arrived_end_;
+
+    std::string mode_ = "NONE";
+    rclcpp::Time mode_time_{0, 0, RCL_STEADY_TIME};
+    bool have_mode_ = false;
+    std::string last_mode_;
+
+    bool follow_person_ = false;
+    bool lead_person_ = false;
+    bool wait_for_person_ = true;
+    bool emergency_stop_ = false;
+
+    rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr
+        person_pose_pub_;
+
+    rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr planned_path_sub_;
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr mode_sub_;
+    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr follow_sub_;
+    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr lead_sub_;
+    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr wait_sub_;
+    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr emergency_sub_;
+
+    rclcpp::TimerBase::SharedPtr timer_;
+};
+
+
+int main(int argc, char** argv)
+{
+    rclcpp::init(argc, argv);
+    rclcpp::spin(std::make_shared<FakePersonTracker>());
+    rclcpp::shutdown();
+    return 0;
+}

@@ -1,0 +1,30 @@
+# ARC motor bridge settings (team sketch: firmware/arc_cart_motor, SmartElex 15S drivers).
+# motor_bench reads this file too. After editing, rebuild for the bridge:
+#   cd ~/slam_ws && colcon build --packages-select arc_hw_bridge
+arc_hw_bridge:
+  ros__parameters:
+    port: /dev/ttyACM1          # ls /dev/ttyACM* ; the number can change when the Uno is replugged
+    baud: 115200
+    wheel_diameter: 0.10        # m        <- measure
+    track_width: 0.40           # m        <- measure (centre of left tyre to centre of right tyre)
+    pulses_per_rev: 210         # pulses per WHEEL turn = encoder PPR (7) x gear ratio  <- set (count one turn with monitor)
+    # per-wheel feed-forward, printed by: ros2 run arc_hw_bridge motor_bench calibrate
+    #   |PWM| = max(pwm_start, pwm_min + ff * |mm/s|)
+    pwm_start_left: 25.0
+    pwm_min_left: 20.0
+    ff_left: 0.2
+    pwm_start_right: 25.0
+    pwm_min_right: 20.0
+    ff_right: 0.2
+    max_pwm: 60                 # the sketch's MAX_PWM; it clamps there anyway
+    deadband: 5.0               # mm/s
+    invert_left: false          # set true if that wheel turns backwards
+    invert_right: false
+    max_wheel_speed: 300.0      # mm/s
+    cmd_topic: /cmd_vel
+    twist: false                # ARC's motion gate publishes TwistStamped
+    cmd_timeout: 0.5            # s
+    rate: 20.0                  # Hz; the sketch stops after 300 ms without a command, so keep >= 5
+    telemetry_period: 1.0       # s, the sketch's TELEMETRY_MS
+    noise_pulses: 5
+    log_dir: ~/arc_hw_logs

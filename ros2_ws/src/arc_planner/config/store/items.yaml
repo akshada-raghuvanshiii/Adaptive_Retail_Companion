@@ -1,0 +1,59 @@
+items:
+  atta_flour:
+    shelf: gondola_2
+  baby_care:
+    shelf: gondola_5
+  bakery:
+    shelf: shelf_west
+  biscuits:
+    shelf: gondola_1
+  bread:
+    shelf: gondola_2
+  breakfast_cereal:
+    shelf: gondola_1
+  cleaning:
+    shelf: gondola_4
+  cooking_oil:
+    shelf: gondola_4
+  curd_paneer:
+    shelf: shelf_north
+  dal_pulses:
+    shelf: gondola_3
+  detergent:
+    shelf: gondola_4
+  eggs:
+    shelf: shelf_north
+  frozen:
+    shelf: shelf_north
+  fruits:
+    shelf: table_fruits
+  jam_spreads:
+    shelf: gondola_2
+  juice:
+    shelf: shelf_east
+  milk:
+    shelf: shelf_north
+  pasta:
+    shelf: gondola_3
+  pet_food:
+    shelf: gondola_5
+  rice:
+    shelf: gondola_2
+  sauces:
+    shelf: gondola_3
+  snacks:
+    shelf: gondola_1
+  soap_shampoo:
+    shelf: gondola_5
+  spices:
+    shelf: gondola_3
+  sugar_salt:
+    shelf: gondola_4
+  tea_coffee:
+    shelf: gondola_1
+  toiletries:
+    shelf: gondola_5
+  vegetables:
+    shelf: table_vegetables
+  water_beverages:
+    shelf: shelf_east

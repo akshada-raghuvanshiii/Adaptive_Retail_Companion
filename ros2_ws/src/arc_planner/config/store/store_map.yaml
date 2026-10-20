@@ -1,0 +1,25 @@
+shelves:
+  D01:
+    name: "Dairy"
+    x: 1.45
+    y: 1.05
+
+  B01:
+    name: "Bakery"
+    x: 3.90
+    y: 0.50
+
+  F01:
+    name: "Fruits"
+    x: 1.45
+    y: -1.90
+
+  G01:
+    name: "Grocery"
+    x: 3.90
+    y: 1.80
+
+  C01:
+    name: "Canned Goods"
+    x: 3.90
+    y: -1.50

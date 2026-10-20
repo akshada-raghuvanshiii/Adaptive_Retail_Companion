@@ -1,0 +1,64 @@
+controller_server:
+  ros__parameters:
+    use_sim_time: true
+    enable_stamped_cmd_vel: true
+    controller_frequency: 10.0
+    controller_plugins:
+    - TEB
+    TEB:
+      plugin: teb_local_planner/TebController
+      max_vel_x: 0.15
+      max_vel_theta: 0.5
+      acc_lim_x: 0.5
+      acc_lim_theta: 1.0
+      teb_dt_ref: 0.3
+      obstacle_min_dist: 0.2
+      robot_radius: 0.105
+      weight_obstacle: 50.0
+      weight_viapoint: 10.0
+      weight_goal: 20.0
+      weight_smoothness: 5.0
+    progress_checker_plugins:
+    - progress_checker
+    progress_checker:
+      plugin: nav2_controller::SimpleProgressChecker
+      required_movement_radius: 0.25
+      movement_time_allowance: 20.0
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      use_sim_time: true
+      global_frame: map
+      robot_base_frame: base_footprint
+      update_frequency: 10.0
+      publish_frequency: 5.0
+      rolling_window: true
+      width: 4
+      height: 4
+      resolution: 0.05
+      footprint: '[[0.105, 0.0], [0.074, 0.074], [0.0, 0.105], [-0.074, 0.074], [-0.105,
+        0.0], [-0.074, -0.074], [0.0, -0.105], [0.074, -0.074]]'
+      plugins:
+      - static_layer
+      - obstacle_layer
+      - inflation_layer
+      static_layer:
+        plugin: nav2_costmap_2d::StaticLayer
+        map_topic: /rtabmap/map
+        map_subscribe_transient_local: true
+      obstacle_layer:
+        plugin: nav2_costmap_2d::ObstacleLayer
+        observation_sources: scan
+        scan:
+          topic: /scan
+          data_type: LaserScan
+          marking: true
+          clearing: true
+          obstacle_max_range: 3.0
+          raytrace_max_range: 3.5
+          max_obstacle_height: 1.0
+          min_obstacle_height: 0.0
+      inflation_layer:
+        plugin: nav2_costmap_2d::InflationLayer
+        cost_scaling_factor: 3.0
+        inflation_radius: 0.25

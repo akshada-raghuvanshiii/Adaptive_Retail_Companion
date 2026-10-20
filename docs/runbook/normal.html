@@ -1,0 +1,157 @@
+<!-- ============ NORMAL ============ -->
+<div id="p-normal" class="panel" style="display:flex;flex-direction:column;gap:28px">
+<section>
+  <div class="sec-head"><h2>Before you start</h2><p>Once per boot.</p></div>
+  <div class="step" data-id="n1"><input type="checkbox" id="c-n1" aria-label="done"><div class="body">
+    <span class="st">Wi-Fi off, loopback multicast on</span>
+    <div class="row"><span class="where">Terminal K</span></div>
+    <div class="cmd"><code>nmcli radio wifi off &amp;&amp; sudo ip link set lo multicast on &amp;&amp; ros2 daemon stop</code><button>Copy</button></div>
+    <p class="see">Nothing in the run needs internet. Wi-Fi changes have cut Gazebo off from ROS mid-run before; multicast on <code>lo</code> lets the nodes find each other.</p>
+  </div></div>
+</section>
+<section>
+  <div class="sec-head"><h2>Quick way: one command, then three terminals</h2><p>Bring-up opens and checks the simulation, SLAM, mapping and navigation windows for you (the same T1–B6 as the manual way). It loads your own <code>teb_controller.yaml</code>.</p></div>
+  <div class="step" data-id="n2"><input type="checkbox" id="c-n2" aria-label="done"><div class="body">
+    <span class="st">Bring up the stack</span>
+    <div class="row"><span class="where">Terminal K</span><span class="time">≈ 15 min</span></div>
+    <div class="cmd"><code>cd ~/arc_test_kit &amp;&amp; source env.sh &amp;&amp; ./bringup.sh all</code><button>Copy</button></div>
+    <p class="see">Ends with <b>navigation stack is up</b>. auto_map drives the store for about 8 min first: don't touch the robot. B6 is set to <b>LEAD</b> for you.</p>
+  </div></div>
+  <div class="step" data-id="n3"><input type="checkbox" id="c-n3" aria-label="done"><div class="body">
+    <span class="st">RViz</span>
+    <div class="row"><span class="where">Terminal R</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; rviz2 -d ~/arc_compact_store_kit/run/arc_nav.rviz --ros-args -p use_sim_time:=true</code><button>Copy</button></div>
+    <p class="see">Map, scan, robot and the yellow <code>/planned_path</code>.</p>
+  </div></div>
+  <div class="step" data-id="n4"><input type="checkbox" id="c-n4" aria-label="done"><div class="body">
+    <span class="st">Store labels (B8)</span>
+    <div class="row"><span class="where">Terminal L</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; python3 ~/arc_compact_store_kit/ros_tools/item_markers.py</code><button>Copy</button></div>
+    <p class="see">Aisle and item labels appear in RViz on <code>/arc/store_markers</code>.</p>
+  </div></div>
+  <div class="step" data-id="n5"><input type="checkbox" id="c-n5" aria-label="done"><div class="body">
+    <span class="st">Shopping Manager (B7), always last</span>
+    <div class="row"><span class="where">Terminal S</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run arc_planner shopping_manager</code><button>Copy</button></div>
+    <p class="see">Enter the shopping list in this window when it asks. The cart drives to each item in nearest-next order.</p>
+  </div></div>
+  <div class="step" data-id="n6"><input type="checkbox" id="c-n6" aria-label="done"><div class="body">
+    <span class="st">Change the BT mode while it runs</span>
+    <div class="row"><span class="where">B6_person_state window</span></div>
+    
+    <p class="see">Click into the <b>B6_person_state</b> window and type <b>3</b> (LEAD) or <b>1</b> (FOLLOW). With 2 or 4 the cart does not move.</p>
+  </div></div>
+  <div class="step" data-id="n7"><input type="checkbox" id="c-n7" aria-label="done"><div class="body">
+    <span class="st">Check the pose against Gazebo (any time)</span>
+    <div class="row"><span class="where">Terminal K</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; python3 ~/arc_compact_store_kit/ros_tools/check_frames.py --model arc --samples 1</code><button>Copy</button></div>
+    <p class="see"><b>PASS</b> means the map pose is within 0.15 m and 5° of the truth.</p>
+  </div></div>
+  <div class="step" data-id="n8"><input type="checkbox" id="c-n8" aria-label="done"><div class="body">
+    <span class="st">Shut everything down</span>
+    <div class="row"><span class="where">Terminal K</span></div>
+    <div class="cmd"><code>~/arc_test_kit/bringup.sh stop &amp;&amp; nmcli radio wifi on</code><button>Copy</button></div>
+    <p class="see">Closes all nodes, including RViz, labels and the Shopping Manager, then turns Wi-Fi back on.</p>
+  </div></div>
+</section>
+<section>
+  <div class="sec-head"><h2>Manual way: every terminal yourself</h2><p>Use this if <code>gnome-terminal</code> windows don't open, or to show each node during a demo. Each command already starts with <code>source ~/arc_test_kit/env.sh</code>. Wait for each check before the next row.</p></div>
+  <div class="step" data-id="m0"><input type="checkbox" id="c-m0" aria-label="done"><div class="body">
+    <span class="st">Clean start</span>
+    <div class="row"><span class="where">Terminal K</span></div>
+    <div class="cmd"><code>~/arc_test_kit/bringup.sh stop</code><button>Copy</button></div>
+    <p class="see">Kills anything left from earlier runs.</p>
+  </div></div>
+  <div class="step" data-id="m1"><input type="checkbox" id="c-m1" aria-label="done"><div class="body">
+    <span class="st">T1 Gazebo, compact store</span>
+    <div class="row"><span class="where">T1</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 launch arc_store_sim store.launch.py world:=arc_store.sdf</code><button>Copy</button></div>
+    <p class="see">The compact store opens. <code>world:=</code> is required: the launch default is the old store.</p>
+  </div></div>
+  <div class="step" data-id="m2"><input type="checkbox" id="c-m2" aria-label="done"><div class="body">
+    <span class="st">T2 Robot description</span>
+    <div class="row"><span class="where">T2</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; export TURTLEBOT3_MODEL=burger &amp;&amp; ros2 launch turtlebot3_gazebo robot_state_publisher.launch.py use_sim_time:=true</code><button>Copy</button></div>
+    <p class="see"><b>Robot initialized</b>.</p>
+  </div></div>
+  <div class="step" data-id="m3"><input type="checkbox" id="c-m3" aria-label="done"><div class="body">
+    <span class="st">T3 Spawn the robot, then the bridge</span>
+    <div class="row"><span class="where">T3</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run ros_gz_sim create -name arc -file $(ros2 pkg prefix turtlebot3_gazebo)/share/turtlebot3_gazebo/models/turtlebot3_burger/model.sdf -x 0.0 -y 0.0 -z 0.01 -Y 0.0 &amp;&amp; ros2 run ros_gz_bridge parameter_bridge --ros-args -p config_file:=$HOME/slam_ws/src/arc_store_sim/config/arc_store_burger_bridge.yaml -p use_sim_time:=true</code><button>Copy</button></div>
+    <p class="see">Robot at x 0, y 0, yaw 0 (required, so map = world). Check in Terminal K: <code>timeout 4 ros2 topic hz /scan</code> ≈ 5 Hz.</p>
+  </div></div>
+  <div class="step" data-id="m4"><input type="checkbox" id="c-m4" aria-label="done"><div class="body">
+    <span class="st">T5a ICP lidar odometry</span>
+    <div class="row"><span class="where">T5a</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run rtabmap_odom icp_odometry --Icp/PointToPlane true --Icp/VoxelSize 0.05 --Icp/MaxCorrespondenceDistance 0.5 --Icp/Iterations 10 --Icp/Epsilon 0.001 --Icp/OutlierRatio 0.7 --Icp/CorrespondenceRatio 0.2 --Odom/ScanKeyFrameThr 0.4 --OdomF2M/ScanSubtractRadius 0.05 --OdomF2M/ScanMaxSize 15000 --Reg/Force3DoF true --ros-args -p use_sim_time:=true -p frame_id:=base_footprint -p odom_frame_id:=icp_odom -p guess_frame_id:=odom -p publish_tf:=true -r scan:=/scan -r odom:=/odom_icp</code><button>Copy</button></div>
+    <p class="see">Check: <code>timeout 4 ros2 topic hz /odom_icp</code> ≈ 5 Hz.</p>
+  </div></div>
+  <div class="step" data-id="m5"><input type="checkbox" id="c-m5" aria-label="done"><div class="body">
+    <span class="st">T5b RTAB-Map, new map</span>
+    <div class="row"><span class="where">T5b</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run rtabmap_slam rtabmap -d --Reg/Strategy 1 --Reg/Force3DoF true --Grid/Sensor 0 --Grid/RangeMin 0.2 --RGBD/NeighborLinkRefining true --Optimizer/GravitySigma 0 --Icp/PointToPlane true --Icp/VoxelSize 0.05 --Icp/MaxCorrespondenceDistance 0.5 --ros-args -r __ns:=/rtabmap -p use_sim_time:=true -p frame_id:=base_footprint -p subscribe_depth:=false -p subscribe_rgb:=false -p subscribe_scan:=true -p approx_sync:=true -r scan:=/scan -r odom:=/odom_icp</code><button>Copy</button></div>
+    <p class="see">Check: <code>timeout 5 ros2 run tf2_ros tf2_echo map base_footprint</code> near 0, 0.</p>
+  </div></div>
+  <div class="step" data-id="m6"><input type="checkbox" id="c-m6" aria-label="done"><div class="body">
+    <span class="st">Map the store</span>
+    <div class="row"><span class="where">Terminal K</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; python3 ~/arc_compact_store_kit/ros_tools/auto_map.py</code><button>Copy</button></div>
+    <p class="see">Expect <b>11 reached, 0 skipped</b> and a small map error. No BT, teleop or Shopping Manager while it drives.</p>
+  </div></div>
+  <div class="step" data-id="m7"><input type="checkbox" id="c-m7" aria-label="done"><div class="body">
+    <span class="st">Lock the map</span>
+    <div class="row"><span class="where">Terminal K</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 service call /rtabmap/set_mode_localization std_srvs/srv/Empty</code><button>Copy</button></div>
+    <p class="see">Then <code>check_frames.py</code> (step n7) should PASS.</p>
+  </div></div>
+  <div class="step" data-id="m8"><input type="checkbox" id="c-m8" aria-label="done"><div class="body">
+    <span class="st">B1 Controller (your TEB-like)</span>
+    <div class="row"><span class="where">B1</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run nav2_controller controller_server --ros-args --params-file $HOME/slam_ws/src/arc_planner/config/teb_controller.yaml -r cmd_vel:=/cmd_vel_nav</code><button>Copy</button></div>
+    <p class="see">Waits for B2 to activate it.</p>
+  </div></div>
+  <div class="step" data-id="m9"><input type="checkbox" id="c-m9" aria-label="done"><div class="body">
+    <span class="st">B2 Lifecycle manager</span>
+    <div class="row"><span class="where">B2</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run nav2_lifecycle_manager lifecycle_manager --ros-args -r __node:=lifecycle_manager_controller -p use_sim_time:=true -p autostart:=true -p node_names:=&quot;[&#x27;controller_server&#x27;]&quot;</code><button>Copy</button></div>
+    <p class="see"><b>Managed nodes are active</b>.</p>
+  </div></div>
+  <div class="step" data-id="m10"><input type="checkbox" id="c-m10" aria-label="done"><div class="body">
+    <span class="st">B3 Dijkstra planner</span>
+    <div class="row"><span class="where">B3</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run arc_planner dijkstra_planner --ros-args -p use_sim_time:=true</code><button>Copy</button></div>
+    <p class="see">Gets the map from RTAB-Map.</p>
+  </div></div>
+  <div class="step" data-id="m11"><input type="checkbox" id="c-m11" aria-label="done"><div class="body">
+    <span class="st">B4 Path to TEB</span>
+    <div class="row"><span class="where">B4</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run arc_planner planned_path_to_teb --ros-args -p use_sim_time:=true</code><button>Copy</button></div>
+    <p class="see"></p>
+  </div></div>
+  <div class="step" data-id="m12"><input type="checkbox" id="c-m12" aria-label="done"><div class="body">
+    <span class="st">B5 BT stack + motion gate</span>
+    <div class="row"><span class="where">B5</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 launch arc_behavior_tree arc_bt_stack.launch.py</code><button>Copy</button></div>
+    <p class="see"></p>
+  </div></div>
+  <div class="step" data-id="m13"><input type="checkbox" id="c-m13" aria-label="done"><div class="body">
+    <span class="st">B6 Person state</span>
+    <div class="row"><span class="where">B6</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run arc_behavior_tree person_state_input</code><button>Copy</button></div>
+    <p class="see">Type <b>3</b> (LEAD) or <b>1</b> (FOLLOW). With 2 or 4 nothing moves. Keep this window to change modes.</p>
+  </div></div>
+  <div class="step" data-id="m14"><input type="checkbox" id="c-m14" aria-label="done"><div class="body">
+    <span class="st">RViz and labels (B8)</span>
+    <div class="row"><span class="where">Terminal R</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; (python3 ~/arc_compact_store_kit/ros_tools/item_markers.py &amp;) &amp;&amp; rviz2 -d ~/arc_compact_store_kit/run/arc_nav.rviz --ros-args -p use_sim_time:=true</code><button>Copy</button></div>
+    <p class="see">Optional, but this is what you show.</p>
+  </div></div>
+  <div class="step" data-id="m15"><input type="checkbox" id="c-m15" aria-label="done"><div class="body">
+    <span class="st">B7 Shopping Manager, last</span>
+    <div class="row"><span class="where">B7</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run arc_planner shopping_manager</code><button>Copy</button></div>
+    <p class="see">Enter the list when it asks.</p>
+  </div></div>
+</section>
+<p class="note"><strong>Don't mix runs.</strong> Never run the Shopping Manager together with the test runner (<code>./run.sh a2</code> etc.), and never teleop while the BT stack is up: the motion gate owns <code>/cmd_vel</code>.</p>
+</div>

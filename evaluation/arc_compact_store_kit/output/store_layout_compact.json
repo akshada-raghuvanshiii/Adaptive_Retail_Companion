@@ -1,0 +1,254 @@
+{
+  "generated_utc": "2026-10-12T07:39:54+00:00",
+  "generator": "arc_compact_store_kit/generate_compact_store.py",
+  "world_file": "arc_store_compact.sdf",
+  "frame_convention": {
+    "frame_id": "map",
+    "statement": "Gazebo world origin = robot spawn (0,0,yaw 0) = odom origin = RTAB-Map map origin at start of mapping. Must be verified (RUNBOOK step 5).",
+    "spawn": {
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0
+    }
+  },
+  "store_bounds": {
+    "x": [
+      -3.5,
+      4.5
+    ],
+    "y": [
+      -3.0,
+      4.0
+    ],
+    "wall_thickness": 0.1
+  },
+  "fixtures": [
+    {
+      "name": "wall_south",
+      "kind": "wall",
+      "x_min": -3.5,
+      "y_min": -3.0,
+      "x_max": 4.5,
+      "y_max": -2.9,
+      "height": 1.0
+    },
+    {
+      "name": "wall_north",
+      "kind": "wall",
+      "x_min": -3.5,
+      "y_min": 3.9,
+      "x_max": 4.5,
+      "y_max": 4.0,
+      "height": 1.0
+    },
+    {
+      "name": "wall_west",
+      "kind": "wall",
+      "x_min": -3.5,
+      "y_min": -2.9,
+      "x_max": -3.4,
+      "y_max": 3.9,
+      "height": 1.0
+    },
+    {
+      "name": "wall_east",
+      "kind": "wall",
+      "x_min": 4.4,
+      "y_min": -2.9,
+      "x_max": 4.5,
+      "y_max": 3.9,
+      "height": 1.0
+    },
+    {
+      "name": "gondola_1",
+      "kind": "gondola",
+      "x_min": 0.7,
+      "y_min": -1.0,
+      "x_max": 1.2,
+      "y_max": 2.0,
+      "height": 1.4
+    },
+    {
+      "name": "gondola_2",
+      "kind": "gondola",
+      "x_min": 2.4,
+      "y_min": -1.0,
+      "x_max": 2.9,
+      "y_max": 2.0,
+      "height": 1.4
+    },
+    {
+      "name": "gondola_3",
+      "kind": "wall_shelf",
+      "x_min": 4.05,
+      "y_min": -1.0,
+      "x_max": 4.4,
+      "y_max": 2.0,
+      "height": 1.4
+    },
+    {
+      "name": "produce_display",
+      "kind": "produce",
+      "x_min": -1.9,
+      "y_min": 0.6,
+      "x_max": -0.9,
+      "y_max": 1.6,
+      "height": 0.8
+    },
+    {
+      "name": "dairy_fridge",
+      "kind": "fridge",
+      "x_min": -3.0,
+      "y_min": 3.3,
+      "x_max": -1.4,
+      "y_max": 3.9,
+      "height": 1.8
+    },
+    {
+      "name": "tea_coffee_shelf",
+      "kind": "wall_shelf",
+      "x_min": -3.4,
+      "y_min": -0.6,
+      "x_max": -3.0,
+      "y_max": 1.4,
+      "height": 1.6
+    },
+    {
+      "name": "checkout_counter",
+      "kind": "checkout",
+      "x_min": -2.4,
+      "y_min": -2.3,
+      "x_max": -1.2,
+      "y_max": -1.8,
+      "height": 0.9
+    }
+  ],
+  "destinations": [
+    {
+      "id": "produce",
+      "category": "produce",
+      "fixture": "produce_display",
+      "label": "Fruit and vegetables",
+      "x": -1.4,
+      "y": 0.05,
+      "yaw": 1.5708
+    },
+    {
+      "id": "dairy",
+      "category": "dairy",
+      "fixture": "dairy_fridge",
+      "label": "Milk and refrigerated products",
+      "x": -2.2,
+      "y": 2.75,
+      "yaw": 1.5708
+    },
+    {
+      "id": "tea_coffee",
+      "category": "tea_coffee",
+      "fixture": "tea_coffee_shelf",
+      "label": "Tea and coffee",
+      "x": -2.45,
+      "y": 0.4,
+      "yaw": 3.1416
+    },
+    {
+      "id": "checkout",
+      "category": "checkout",
+      "fixture": "checkout_counter",
+      "label": "Checkout / waiting point",
+      "x": -1.8,
+      "y": -1.25,
+      "yaw": -1.5708
+    },
+    {
+      "id": "gondola_1_west_a",
+      "category": "gondola",
+      "fixture": "gondola_1",
+      "label": "Gondola 1 west face, section A",
+      "x": 0.15,
+      "y": -0.4,
+      "yaw": 0.0
+    },
+    {
+      "id": "gondola_1_east_a",
+      "category": "gondola",
+      "fixture": "gondola_1",
+      "label": "Gondola 1 east face, section A",
+      "x": 1.8,
+      "y": -0.4,
+      "yaw": 3.1416
+    },
+    {
+      "id": "gondola_1_west_b",
+      "category": "gondola",
+      "fixture": "gondola_1",
+      "label": "Gondola 1 west face, section B",
+      "x": 0.15,
+      "y": 1.4,
+      "yaw": 0.0
+    },
+    {
+      "id": "gondola_1_east_b",
+      "category": "gondola",
+      "fixture": "gondola_1",
+      "label": "Gondola 1 east face, section B",
+      "x": 1.8,
+      "y": 1.4,
+      "yaw": 3.1416
+    },
+    {
+      "id": "gondola_2_west_a",
+      "category": "gondola",
+      "fixture": "gondola_2",
+      "label": "Gondola 2 west face, section A",
+      "x": 1.8,
+      "y": -0.4,
+      "yaw": 0.0
+    },
+    {
+      "id": "gondola_2_east_a",
+      "category": "gondola",
+      "fixture": "gondola_2",
+      "label": "Gondola 2 east face, section A",
+      "x": 3.475,
+      "y": -0.4,
+      "yaw": 3.1416
+    },
+    {
+      "id": "gondola_2_west_b",
+      "category": "gondola",
+      "fixture": "gondola_2",
+      "label": "Gondola 2 west face, section B",
+      "x": 1.8,
+      "y": 1.4,
+      "yaw": 0.0
+    },
+    {
+      "id": "gondola_2_east_b",
+      "category": "gondola",
+      "fixture": "gondola_2",
+      "label": "Gondola 2 east face, section B",
+      "x": 3.475,
+      "y": 1.4,
+      "yaw": 3.1416
+    },
+    {
+      "id": "gondola_3_a",
+      "category": "gondola",
+      "fixture": "gondola_3",
+      "label": "Gondola 3 (wall), section A",
+      "x": 3.475,
+      "y": -0.4,
+      "yaw": 0.0
+    },
+    {
+      "id": "gondola_3_b",
+      "category": "gondola",
+      "fixture": "gondola_3",
+      "label": "Gondola 3 (wall), section B",
+      "x": 3.475,
+      "y": 1.4,
+      "yaw": 0.0
+    }
+  ]
+}

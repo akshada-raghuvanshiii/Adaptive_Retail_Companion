@@ -1,0 +1,32 @@
+{
+  "_comment": "ARC supermarket layout. Units: metres, radians. World frame: x east, y north, origin at the store's south-west inner corner. Edit, then run scripts/generate_store.py.",
+  "store": {"length_x": 24.0, "width_y": 16.0, "wall_height": 3.5, "wall_thickness": 0.2,
+            "entrance_x": [1.0, 4.0]},
+  "gondola": {"depth": 1.2, "height": 1.8, "y_start": 5.0, "y_end": 13.0,
+              "centers_x": [6.0, 9.6, 13.2, 16.8, 20.4], "shelf_levels": [0.15, 0.6, 1.05, 1.5]},
+  "wall_shelf": {"depth": 0.6, "height": 2.0},
+  "checkout": {"centers_x": [10.0, 13.5, 17.0], "width_x": 0.6, "y_range": [1.3, 2.9], "height": 0.9},
+  "produce_tables": [{"name": "fruits",     "center": [3.3, 7.2],  "size": [1.0, 2.4], "height": 0.85},
+                     {"name": "vegetables", "center": [3.3, 10.8], "size": [1.0, 2.4], "height": 0.85}],
+  "pick_standoff": 0.9,
+  "categories": {
+    "gondola_faces": [
+      {"gondola": 1, "face": "west", "items": ["tea_coffee", "breakfast_cereal"]},
+      {"gondola": 1, "face": "east", "items": ["biscuits", "snacks"]},
+      {"gondola": 2, "face": "west", "items": ["bread", "jam_spreads"]},
+      {"gondola": 2, "face": "east", "items": ["rice", "atta_flour"]},
+      {"gondola": 3, "face": "west", "items": ["dal_pulses", "spices"]},
+      {"gondola": 3, "face": "east", "items": ["pasta", "sauces"]},
+      {"gondola": 4, "face": "west", "items": ["cooking_oil", "sugar_salt"]},
+      {"gondola": 4, "face": "east", "items": ["detergent", "cleaning"]},
+      {"gondola": 5, "face": "west", "items": ["toiletries", "soap_shampoo"]},
+      {"gondola": 5, "face": "east", "items": ["baby_care", "pet_food"]}
+    ],
+    "east_wall": {"y_range": [5.0, 13.0], "items": ["water_beverages", "juice"]},
+    "north_wall": {"x_range": [5.0, 23.4], "items": ["milk", "curd_paneer", "eggs", "frozen"]},
+    "west_wall": {"y_range": [6.0, 14.0], "items": ["bakery"]}
+  },
+  "overhead_camera": {"position": [15.0, 9.0, 4.0], "hfov": 1.6, "width": 1280, "height": 720,
+                      "rate_hz": 15, "topic": "/store/overhead_cam/image"},
+  "shopper_spawn": [1.0, 2.5, 1.5708]
+}

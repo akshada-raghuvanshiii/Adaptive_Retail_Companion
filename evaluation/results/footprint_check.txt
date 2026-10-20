@@ -1,0 +1,7 @@
+Cart: standard 180 L trolley 1000 x 610 mm. Map: /home/akshada-raghuvanshi/arc_test_kit/results/map.npz
+footprint                       radius  start  stops   snap  longer  unreachable
+kit grid (C1/C2)                  0.15     ok    9/9    0.0    0.0%  -
+ARC planner, TurtleBot tests      0.20     ok    9/9    0.0    1.6%  -
+cart, straight (lenient)          0.35     ok    9/9    0.0    9.7%  -
+cart, turning (strict)            0.59     ok    9/9   0.85    5.1%  -
+wrote /home/akshada-raghuvanshi/arc_test_kit/results/footprint_check.csv

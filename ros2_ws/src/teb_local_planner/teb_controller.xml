@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<library path="teb_controller">
+  <class
+    name="teb_local_planner/TebController"
+    type="teb_local_planner::TebController"
+    base_class_type="nav2_core::Controller">
+    <description>
+      Timed Elastic Band local trajectory controller for ROS 2 Nav2.
+    </description>
+  </class>
+</library>

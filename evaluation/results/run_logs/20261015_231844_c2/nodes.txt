@@ -1,0 +1,17 @@
+/arc_motion_gate
+/arc_store_bridge
+/controller_server
+/dijkstra_planner
+/icp_odometry
+/lifecycle_manager_controller
+/local_costmap/local_costmap
+/person_assistant_bt
+/person_state_input
+/planned_path_to_teb
+/robot_state_publisher
+/ros_gz_bridge
+/ros_gz_bridge
+/rtabmap/rtabmap
+/rtabmap/transform_listener_impl_646e350f20c0
+/transform_listener_impl_5676b5e73da0
+/transform_listener_impl_598239000c30

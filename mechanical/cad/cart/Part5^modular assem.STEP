@@ -1,0 +1,32 @@
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION (( 'STEP AP214' ),
+    '1' );
+FILE_NAME ('Part5^modular assem.STEP',
+    '2026-10-19T12:45:32',
+    ( '' ),
+    ( '' ),
+    'SwSTEP 2.0',
+    'SolidWorks 2026',
+    '' );
+FILE_SCHEMA (( 'AUTOMOTIVE_DESIGN' ));
+ENDSEC;
+
+DATA;
+#1 = APPLICATION_PROTOCOL_DEFINITION ( 'draft international standard', 'automotive_design', 1998, #11 ) ;
+#2 = PRODUCT_DEFINITION_CONTEXT ( 'detailed design', #7, 'design' ) ;
+#3 = PRODUCT_DEFINITION_FORMATION_WITH_SPECIFIED_SOURCE ( 'Symmetric', '', #14, .NOT_KNOWN. ) ;
+#4 = PRODUCT_CONTEXT ( 'NONE', #11, 'mechanical' ) ;
+#5 = AXIS2_PLACEMENT_3D ( 'NONE', #15, #8, #9 ) ;
+#6 = APPLICATION_PROTOCOL_DEFINITION ( 'draft international standard', 'automotive_design', 1998, #7 ) ;
+#7 = APPLICATION_CONTEXT ( 'automotive_design' ) ;
+#8 = DIRECTION ( 'NONE',  ( 0.000000000000000000, 0.000000000000000000, 1.000000000000000000 ) ) ;
+#9 = DIRECTION ( 'NONE',  ( 1.000000000000000000, 0.000000000000000000, 0.000000000000000000 ) ) ;
+#10 = PRODUCT_RELATED_PRODUCT_CATEGORY ( 'part', '', ( #14 ) ) ;
+#11 = APPLICATION_CONTEXT ( 'automotive_design' ) ;
+#12 = PRODUCT_DEFINITION_SHAPE ( 'NONE', 'NONE',  #13 ) ;
+#13 = PRODUCT_DEFINITION ( 'General', '', #3, #2 ) ;
+#14 = PRODUCT ( 'Part5^modular assem', 'Part5^modular assem', '', ( #4 ) ) ;
+#15 = CARTESIAN_POINT ( 'NONE',  ( 0.000000000000000000, 0.000000000000000000, 0.000000000000000000 ) ) ;
+ENDSEC;
+END-ISO-10303-21;

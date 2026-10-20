@@ -1,0 +1,10 @@
+label,mission,leg,wall_t,sim_t,event,detail
+teb_icp_pc_final,teb_icp_pc_final_s7_000,-1,1792169523.827,740.368,mission_start,s7_r00_n8
+teb_icp_pc_final,teb_icp_pc_final_s7_000,-1,1792169529.027,740.368,goal_sent,"home (0.00, 0.00)"
+teb_icp_pc_final,teb_icp_pc_final_s7_000,-1,1792169532.986,765.780,path_received,3.1971 m
+teb_icp_pc_final,teb_icp_pc_final_s7_000,-1,1792169574.479,804.040,goal_reached_msg,
+teb_icp_pc_final,teb_icp_pc_final_s7_000,0,1792169577.695,805.888,goal_sent,"gondola_1_west_a (0.15, -0.40)"
+teb_icp_pc_final,teb_icp_pc_final_s7_000,0,1792169578.922,808.076,path_received,0.4621 m
+teb_icp_pc_final,teb_icp_pc_final_s7_000,0,1792169595.219,823.128,goal_reached_msg,
+teb_icp_pc_final,teb_icp_pc_final_s7_000,1,1792169598.221,825.032,goal_sent,"gondola_2_west_a+gondola_1_east_a (1.80, -0.40)"
+teb_icp_pc_final,teb_icp_pc_final_s7_000,1,1792169600.473,827.908,path_received,2.7349 m

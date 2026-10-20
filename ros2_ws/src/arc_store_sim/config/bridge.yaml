@@ -1,0 +1,29 @@
+# ros_gz_bridge configuration for the ARC store sandbox (Gazebo Harmonic <-> ROS 2 Jazzy)
+- ros_topic_name: "/clock"
+  gz_topic_name: "/clock"
+  ros_type_name: "rosgraph_msgs/msg/Clock"
+  gz_type_name: "gz.msgs.Clock"
+  direction: GZ_TO_ROS
+# Drive the test shopper: ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r cmd_vel:=/shopper/cmd_vel
+- ros_topic_name: "/shopper/cmd_vel"
+  gz_topic_name: "/model/shopper/cmd_vel"
+  ros_type_name: "geometry_msgs/msg/Twist"
+  gz_type_name: "gz.msgs.Twist"
+  direction: ROS_TO_GZ
+# Ground-truth pose of the test shopper (for scoring following / leading)
+- ros_topic_name: "/shopper/odom"
+  gz_topic_name: "/model/shopper/odometry"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "gz.msgs.Odometry"
+  direction: GZ_TO_ROS
+# Fixed overhead camera (multiple_3-style view of aisle 3)
+- ros_topic_name: "/store/overhead_cam/image"
+  gz_topic_name: "/store/overhead_cam/image"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "gz.msgs.Image"
+  direction: GZ_TO_ROS
+- ros_topic_name: "/store/overhead_cam/camera_info"
+  gz_topic_name: "/store/overhead_cam/camera_info"
+  ros_type_name: "sensor_msgs/msg/CameraInfo"
+  gz_type_name: "gz.msgs.CameraInfo"
+  direction: GZ_TO_ROS

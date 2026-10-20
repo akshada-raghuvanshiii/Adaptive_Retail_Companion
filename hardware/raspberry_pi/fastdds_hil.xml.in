@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- ARC HIL profile (generated from arc_pi/fastdds_hil.xml.in - edit hil.conf, not this file).
+     Same idea as fastdds_localhost.xml, plus ONE extra interface: the link to the other machine
+     (phone-hotspot Wi-Fi or the Ethernet cable, whichever hil.conf says). Every other interface
+     stays excluded.
+     Discovery: multicast as usual, plus (when the other machine's address was known when this file
+     was made) unicast "initial peers", because some phone hotspots drop multicast between clients.
+     maxInitialPeersRange covers participant IDs 0..63 per peer, i.e. up to 64 ROS processes. -->
+<profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
+  <transport_descriptors>
+    <transport_descriptor>
+      <transport_id>arc_udp_hil</transport_id>
+      <type>UDPv4</type>
+      <maxInitialPeersRange>64</maxInitialPeersRange>
+      <interfaceWhiteList>
+        <address>127.0.0.1</address>
+        <address>@OWN_IP@</address>
+      </interfaceWhiteList>
+    </transport_descriptor>
+    <transport_descriptor>
+      <transport_id>arc_shm</transport_id>
+      <type>SHM</type>
+    </transport_descriptor>
+  </transport_descriptors>
+  <participant profile_name="arc_hil_participant" is_default_profile="true">
+    <rtps>
+@PEERS@
+      <userTransports>
+        <transport_id>arc_shm</transport_id>
+        <transport_id>arc_udp_hil</transport_id>
+      </userTransports>
+      <useBuiltinTransports>false</useBuiltinTransports>
+    </rtps>
+  </participant>
+</profiles>

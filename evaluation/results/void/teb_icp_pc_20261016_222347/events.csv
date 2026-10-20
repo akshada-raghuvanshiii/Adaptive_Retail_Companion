@@ -1,0 +1,16 @@
+label,mission,leg,wall_t,sim_t,event,detail
+teb_icp_pc,teb_icp_pc_s7_000,-1,1792169256.895,493.708,mission_start,s7_r00_n8
+teb_icp_pc,teb_icp_pc_s7_000,-1,1792169257.902,493.708,goal_sent,"home (0.00, 0.00)"
+teb_icp_pc,teb_icp_pc_s7_000,-1,1792169259.879,512.012,path_received,0.05 m
+teb_icp_pc,teb_icp_pc_s7_000,-1,1792169270.596,521.908,goal_reached_msg,
+teb_icp_pc,teb_icp_pc_s7_000,0,1792169273.819,523.740,goal_sent,"gondola_1_west_a (0.15, -0.40)"
+teb_icp_pc,teb_icp_pc_s7_000,0,1792169275.242,526.080,path_received,0.4621 m
+teb_icp_pc,teb_icp_pc_s7_000,0,1792169291.448,541.112,goal_reached_msg,
+teb_icp_pc,teb_icp_pc_s7_000,1,1792169294.539,542.960,goal_sent,"dairy (-2.20, 2.75)"
+teb_icp_pc,teb_icp_pc_s7_000,1,1792169298.716,547.708,path_received,4.3577 m
+teb_icp_pc,teb_icp_pc_s7_000,1,1792169353.130,597.904,goal_reached_msg,
+teb_icp_pc,teb_icp_pc_s7_000,2,1792169356.254,599.768,goal_sent,"gondola_3_b+gondola_2_east_b (3.48, 1.40)"
+teb_icp_pc,teb_icp_pc_s7_000,2,1792169361.691,605.664,path_received,6.4349 m
+teb_icp_pc,teb_icp_pc_s7_000,2,1792169432.609,672.076,goal_reached_msg,
+teb_icp_pc,teb_icp_pc_s7_000,3,1792169436.285,673.888,goal_sent,"gondola_2_west_a+gondola_1_east_a (1.80, -0.40)"
+teb_icp_pc,teb_icp_pc_s7_000,3,1792169441.064,679.584,path_received,4.5263 m

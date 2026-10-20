@@ -1,0 +1,260 @@
+label,mission,leg,wall_t,sim_t,event,detail
+teb_icp_boxes,teb_icp_boxes_s9_000,-1,1792071662.496,3920.180,mission_start,pair00
+teb_icp_boxes,teb_icp_boxes_s9_000,-1,1792071662.498,3920.180,goal_sent,"tea_coffee (-2.45, 0.40)"
+teb_icp_boxes,teb_icp_boxes_s9_000,-1,1792071668.265,3927.964,path_received,7.3198 m
+teb_icp_boxes,teb_icp_boxes_s9_000,-1,1792071751.872,4007.112,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_000,-1,1792071752.875,4008.016,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_000,0,1792071756.908,4011.848,goal_sent,"gondola_3_b+gondola_2_east_b (3.48, 1.40)"
+teb_icp_boxes,teb_icp_boxes_s9_000,0,1792071761.525,4016.176,path_received,7.4698 m
+teb_icp_boxes,teb_icp_boxes_s9_000,0,1792071762.565,4016.176,box_spawned,"arc_test_box_1 (0.01, 1.81)"
+teb_icp_boxes,teb_icp_boxes_s9_000,0,1792071762.565,4016.176,box_spawned,"arc_test_box_2 (1.76, 2.10)"
+teb_icp_boxes,teb_icp_boxes_s9_000,0,1792071762.565,4016.176,box_spawned,"arc_test_box_3 (-0.79, 0.90)"
+teb_icp_boxes,teb_icp_boxes_s9_000,0,1792071788.439,4041.804,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_000,0,1792071789.440,4042.804,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_000,0,1792071800.752,4053.596,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_000,0,1792071800.753,4053.596,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_000,0,1792071801.101,4053.596,box_removed,arc_test_box_1
+teb_icp_boxes,teb_icp_boxes_s9_000,0,1792071804.242,4053.596,box_removed,arc_test_box_2
+teb_icp_boxes,teb_icp_boxes_s9_000,0,1792071804.556,4053.596,box_removed,arc_test_box_3
+teb_icp_boxes,teb_icp_boxes_s9_000,-1,1792071806.557,4058.792,mission_end,0/1 legs
+teb_icp_boxes,teb_icp_boxes_s9_001,-1,1792071806.557,4058.792,mission_start,pair01
+teb_icp_boxes,teb_icp_boxes_s9_001,-1,1792071806.557,4058.792,goal_sent,"gondola_2_west_b+gondola_1_east_b (1.80, 1.40)"
+teb_icp_boxes,teb_icp_boxes_s9_001,-1,1792071811.043,4062.988,path_received,3.687 m
+teb_icp_boxes,teb_icp_boxes_s9_001,-1,1792071854.950,4104.784,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_001,-1,1792071855.952,4105.788,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_001,-1,1792071861.587,4111.288,goal_reached_msg,
+teb_icp_boxes,teb_icp_boxes_s9_001,0,1792071863.594,4113.180,goal_sent,"tea_coffee (-2.45, 0.40)"
+teb_icp_boxes,teb_icp_boxes_s9_001,0,1792071868.211,4117.752,path_received,5.7906 m
+teb_icp_boxes,teb_icp_boxes_s9_001,0,1792071874.852,4117.752,box_spawned,"arc_test_box_6 (0.67, 2.05)"
+teb_icp_boxes,teb_icp_boxes_s9_001,0,1792071893.016,4141.360,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_001,0,1792071894.024,4142.268,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_001,0,1792071902.805,4150.928,stall,no motion for 8 s
+teb_icp_boxes,teb_icp_boxes_s9_001,0,1792071904.616,4152.712,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_001,0,1792071904.616,4152.712,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_001,0,1792071904.971,4152.712,box_removed,arc_test_box_6
+teb_icp_boxes,teb_icp_boxes_s9_001,-1,1792071906.978,4154.964,mission_end,0/1 legs
+teb_icp_boxes,teb_icp_boxes_s9_002,-1,1792071906.978,4154.964,mission_start,pair02
+teb_icp_boxes,teb_icp_boxes_s9_002,-1,1792071906.979,4154.964,goal_sent,"dairy (-2.20, 2.75)"
+teb_icp_boxes,teb_icp_boxes_s9_002,-1,1792071910.048,4157.812,path_received,3.0778 m
+teb_icp_boxes,teb_icp_boxes_s9_002,-1,1792071950.144,4196.520,goal_reached_msg,
+teb_icp_boxes,teb_icp_boxes_s9_002,0,1792071952.150,4198.400,goal_sent,"home (0.00, 0.00)"
+teb_icp_boxes,teb_icp_boxes_s9_002,0,1792071955.676,4201.696,path_received,3.8956 m
+teb_icp_boxes,teb_icp_boxes_s9_002,0,1792071982.273,4227.332,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_002,0,1792071983.277,4228.336,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_002,0,1792071991.448,4236.272,stall,no motion for 8 s
+teb_icp_boxes,teb_icp_boxes_s9_002,0,1792071994.502,4239.068,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_002,0,1792071994.502,4239.068,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_002,-1,1792071996.504,4240.976,mission_end,0/1 legs
+teb_icp_boxes,teb_icp_boxes_s9_003,-1,1792071996.504,4240.976,mission_start,pair03
+teb_icp_boxes,teb_icp_boxes_s9_003,-1,1792071996.504,4240.976,goal_sent,"gondola_1_west_a (0.15, -0.40)"
+teb_icp_boxes,teb_icp_boxes_s9_003,-1,1792071999.389,4243.632,path_received,2.5435 m
+teb_icp_boxes,teb_icp_boxes_s9_003,-1,1792072007.540,4251.432,stall,no motion for 8 s
+teb_icp_boxes,teb_icp_boxes_s9_003,-1,1792072009.784,4253.672,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_003,-1,1792072010.787,4254.576,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_003,-1,1792072024.210,4267.692,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_003,-1,1792072024.210,4267.692,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_003,-1,1792072026.217,4269.700,start_not_reached,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_003,0,1792072026.218,4269.700,goal_sent,"dairy (-2.20, 2.75)"
+teb_icp_boxes,teb_icp_boxes_s9_003,0,1792072027.674,4271.020,path_received,1.8142 m
+teb_icp_boxes,teb_icp_boxes_s9_003,0,1792072038.181,4281.104,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_003,0,1792072039.185,4282.008,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_003,0,1792072047.321,4289.776,stall,no motion for 8 s
+teb_icp_boxes,teb_icp_boxes_s9_003,0,1792072052.631,4294.852,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_003,0,1792072052.631,4294.852,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_003,-1,1792072054.632,4296.756,mission_end,0/1 legs
+teb_icp_boxes,teb_icp_boxes_s9_004,-1,1792072054.634,4296.756,mission_start,pair04
+teb_icp_boxes,teb_icp_boxes_s9_004,-1,1792072054.634,4296.756,goal_sent,"produce (-1.40, 0.05)"
+teb_icp_boxes,teb_icp_boxes_s9_004,-1,1792072057.607,4299.576,path_received,2.3399 m
+teb_icp_boxes,teb_icp_boxes_s9_004,-1,1792072067.710,4309.640,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_004,-1,1792072068.716,4310.528,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_004,-1,1792072076.857,4318.508,stall,no motion for 8 s
+teb_icp_boxes,teb_icp_boxes_s9_004,-1,1792072081.670,4323.216,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_004,-1,1792072081.670,4323.216,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_004,-1,1792072083.676,4325.192,start_not_reached,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_004,0,1792072083.676,4325.192,goal_sent,"gondola_2_west_b+gondola_1_east_b (1.80, 1.40)"
+teb_icp_boxes,teb_icp_boxes_s9_004,0,1792072086.346,4327.860,path_received,3.3056 m
+teb_icp_boxes,teb_icp_boxes_s9_004,0,1792072093.028,4327.860,box_spawned,"arc_test_box_10 (1.21, 2.05)"
+teb_icp_boxes,teb_icp_boxes_s9_004,0,1792072097.155,4337.892,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_004,0,1792072098.163,4338.796,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_004,0,1792072106.319,4346.500,stall,no motion for 8 s
+teb_icp_boxes,teb_icp_boxes_s9_004,0,1792072111.880,4351.928,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_004,0,1792072111.880,4351.928,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_004,0,1792072112.237,4351.928,box_removed,arc_test_box_10
+teb_icp_boxes,teb_icp_boxes_s9_004,-1,1792072114.243,4354.088,mission_end,0/1 legs
+teb_icp_boxes,teb_icp_boxes_s9_005,-1,1792072114.244,4354.088,mission_start,pair05
+teb_icp_boxes,teb_icp_boxes_s9_005,-1,1792072114.244,4354.088,goal_sent,"gondola_3_a+gondola_2_east_a (3.48, -0.40)"
+teb_icp_boxes,teb_icp_boxes_s9_005,-1,1792072119.894,4359.688,path_received,6.8142 m
+teb_icp_boxes,teb_icp_boxes_s9_005,-1,1792072128.064,4367.616,stall,no motion for 8 s
+teb_icp_boxes,teb_icp_boxes_s9_005,-1,1792072130.191,4369.764,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_005,-1,1792072131.195,4370.736,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_005,-1,1792072146.995,4386.028,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_005,-1,1792072146.995,4386.028,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_005,-1,1792072149.001,4387.936,start_not_reached,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_005,0,1792072149.001,4387.936,goal_sent,"tea_coffee (-2.45, 0.40)"
+teb_icp_boxes,teb_icp_boxes_s9_005,0,1792072150.838,4389.588,path_received,2.7778 m
+teb_icp_boxes,teb_icp_boxes_s9_005,0,1792072151.206,4389.588,box_spawned,"arc_test_box_12 (-1.93, 1.65)"
+teb_icp_boxes,teb_icp_boxes_s9_005,0,1792072161.346,4399.652,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_005,0,1792072162.348,4400.564,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_005,0,1792072173.335,4411.060,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_005,0,1792072173.335,4411.060,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_005,0,1792072173.695,4411.060,box_removed,arc_test_box_12
+teb_icp_boxes,teb_icp_boxes_s9_005,-1,1792072175.702,4413.328,mission_end,0/1 legs
+teb_icp_boxes,teb_icp_boxes_s9_006,-1,1792072175.702,4413.328,mission_start,pair06
+teb_icp_boxes,teb_icp_boxes_s9_006,-1,1792072175.702,4413.328,wait_controller_idle,
+teb_icp_boxes,teb_icp_boxes_s9_006,-1,1792072185.933,4422.948,goal_sent,"gondola_1_west_b (0.15, 1.40)"
+teb_icp_boxes,teb_icp_boxes_s9_006,-1,1792072187.834,4424.728,path_received,1.8071 m
+teb_icp_boxes,teb_icp_boxes_s9_006,-1,1792072197.935,4434.792,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_006,-1,1792072198.944,4435.788,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_006,-1,1792072203.865,4440.592,truth_gap,no Gazebo pose for 15 s (gz service); A1 samples blank
+teb_icp_boxes,teb_icp_boxes_s9_006,-1,1792072209.830,4446.504,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_006,-1,1792072209.830,4446.504,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_006,-1,1792072211.839,4448.412,start_not_reached,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_006,0,1792072211.839,4448.412,goal_sent,"tea_coffee (-2.45, 0.40)"
+teb_icp_boxes,teb_icp_boxes_s9_006,0,1792072215.595,4451.896,path_received,2.7778 m
+teb_icp_boxes,teb_icp_boxes_s9_006,0,1792072215.990,4451.896,box_spawned,"arc_test_box_13 (-1.93, 1.65)"
+teb_icp_boxes,teb_icp_boxes_s9_006,0,1792072226.095,4461.912,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_006,0,1792072227.098,4462.872,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_006,0,1792072237.982,4473.084,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_006,0,1792072237.982,4473.084,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_006,0,1792072241.155,4473.084,box_removed,arc_test_box_13
+teb_icp_boxes,teb_icp_boxes_s9_006,-1,1792072243.158,4478.024,mission_end,0/1 legs
+teb_icp_boxes,teb_icp_boxes_s9_007,-1,1792072243.158,4478.024,mission_start,pair07
+teb_icp_boxes,teb_icp_boxes_s9_007,-1,1792072243.158,4478.024,wait_controller_idle,
+teb_icp_boxes,teb_icp_boxes_s9_007,-1,1792072250.315,4484.940,goal_sent,"gondola_3_a+gondola_2_east_a (3.48, -0.40)"
+teb_icp_boxes,teb_icp_boxes_s9_007,-1,1792072250.691,4485.212,path_received,2.1778 m
+teb_icp_boxes,teb_icp_boxes_s9_007,-1,1792072258.858,4493.232,stall,no motion for 8 s
+teb_icp_boxes,teb_icp_boxes_s9_007,-1,1792072261.090,4495.312,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_007,-1,1792072262.093,4496.180,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_007,-1,1792072275.147,4508.704,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_007,-1,1792072275.147,4508.704,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_007,-1,1792072277.148,4510.592,start_not_reached,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_007,0,1792072277.149,4510.592,goal_sent,"home (0.00, 0.00)"
+teb_icp_boxes,teb_icp_boxes_s9_007,0,1792072281.526,4514.712,path_received,6.9935 m
+teb_icp_boxes,teb_icp_boxes_s9_007,0,1792072285.413,4514.712,box_spawned,"arc_test_box_14 (1.96, 2.40)"
+teb_icp_boxes,teb_icp_boxes_s9_007,0,1792072285.413,4514.712,box_spawned,"arc_test_box_16 (0.91, 2.40)"
+teb_icp_boxes,teb_icp_boxes_s9_007,0,1792072292.427,4524.832,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_007,0,1792072293.429,4525.832,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_007,0,1792072303.857,4535.868,stall,no motion for 8 s
+teb_icp_boxes,teb_icp_boxes_s9_007,0,1792072305.081,4537.096,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_007,0,1792072305.081,4537.096,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_007,0,1792072305.454,4537.096,box_removed,arc_test_box_14
+teb_icp_boxes,teb_icp_boxes_s9_007,0,1792072305.849,4537.096,box_removed,arc_test_box_16
+teb_icp_boxes,teb_icp_boxes_s9_007,-1,1792072307.855,4539.564,mission_end,0/1 legs
+teb_icp_boxes,teb_icp_boxes_s9_008,-1,1792072307.855,4539.564,mission_start,pair08
+teb_icp_boxes,teb_icp_boxes_s9_008,-1,1792072307.855,4539.564,goal_sent,"dairy (-2.20, 2.75)"
+teb_icp_boxes,teb_icp_boxes_s9_008,-1,1792072308.948,4540.656,path_received,1.7228 m
+teb_icp_boxes,teb_icp_boxes_s9_008,-1,1792072319.562,4550.764,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_008,-1,1792072320.566,4551.680,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_008,-1,1792072331.724,4562.556,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_008,-1,1792072331.724,4562.556,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_008,-1,1792072333.724,4564.564,start_not_reached,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_008,0,1792072333.725,4564.564,goal_sent,"gondola_3_a+gondola_2_east_a (3.48, -0.40)"
+teb_icp_boxes,teb_icp_boxes_s9_008,0,1792072339.060,4569.840,path_received,7.3399 m
+teb_icp_boxes,teb_icp_boxes_s9_008,0,1792072364.871,4594.736,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_008,0,1792072365.880,4595.732,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_008,0,1792072374.070,4603.892,stall,no motion for 8 s
+teb_icp_boxes,teb_icp_boxes_s9_008,0,1792072375.964,4605.768,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_008,0,1792072375.965,4605.768,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_008,-1,1792072377.970,4607.664,mission_end,0/1 legs
+teb_icp_boxes,teb_icp_boxes_s9_009,-1,1792072377.970,4607.664,mission_start,pair09
+teb_icp_boxes,teb_icp_boxes_s9_009,-1,1792072377.970,4607.664,goal_sent,"gondola_3_a+gondola_2_east_a (3.48, -0.40)"
+teb_icp_boxes,teb_icp_boxes_s9_009,-1,1792072383.087,4612.372,path_received,5.8399 m
+teb_icp_boxes,teb_icp_boxes_s9_009,-1,1792072391.229,4620.260,stall,no motion for 8 s
+teb_icp_boxes,teb_icp_boxes_s9_009,-1,1792072393.393,4622.392,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_009,-1,1792072394.397,4623.400,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_009,-1,1792072409.189,4637.572,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_009,-1,1792072409.189,4637.572,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_009,-1,1792072411.194,4639.580,start_not_reached,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_009,0,1792072411.195,4639.580,goal_sent,"gondola_1_west_b (0.15, 1.40)"
+teb_icp_boxes,teb_icp_boxes_s9_009,0,1792072413.294,4641.644,path_received,5.7899 m
+teb_icp_boxes,teb_icp_boxes_s9_009,0,1792072417.138,4641.644,box_spawned,"arc_test_box_20 (3.01, 1.20)"
+teb_icp_boxes,teb_icp_boxes_s9_009,0,1792072417.138,4641.644,box_spawned,"arc_test_box_21 (1.76, 2.40)"
+teb_icp_boxes,teb_icp_boxes_s9_009,0,1792072423.894,4651.656,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_009,0,1792072424.898,4652.660,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_009,0,1792072436.910,4664.272,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_009,0,1792072436.910,4664.272,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_009,0,1792072440.084,4664.272,box_removed,arc_test_box_20
+teb_icp_boxes,teb_icp_boxes_s9_009,0,1792072443.208,4664.272,box_removed,arc_test_box_21
+teb_icp_boxes,teb_icp_boxes_s9_009,-1,1792072445.211,4672.500,mission_end,0/1 legs
+teb_icp_boxes,teb_icp_boxes_s9_010,-1,1792072445.211,4672.500,mission_start,pair10
+teb_icp_boxes,teb_icp_boxes_s9_010,-1,1792072445.211,4672.500,goal_sent,"dairy (-2.20, 2.75)"
+teb_icp_boxes,teb_icp_boxes_s9_010,-1,1792072447.577,4674.740,path_received,2.4692 m
+teb_icp_boxes,teb_icp_boxes_s9_010,-1,1792072457.889,4684.804,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_010,-1,1792072458.896,4685.812,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_010,-1,1792072485.110,4710.756,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_010,-1,1792072485.110,4710.756,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_010,-1,1792072487.116,4712.764,start_not_reached,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_010,0,1792072487.117,4712.764,goal_sent,"produce (-1.40, 0.05)"
+teb_icp_boxes,teb_icp_boxes_s9_010,0,1792072489.894,4715.364,path_received,3.1778 m
+teb_icp_boxes,teb_icp_boxes_s9_010,0,1792072491.083,4715.364,box_spawned,"arc_test_box_22 (-2.04, 1.30)"
+teb_icp_boxes,teb_icp_boxes_s9_010,0,1792072491.083,4715.364,box_spawned,"arc_test_box_23 (-2.19, 0.40)"
+teb_icp_boxes,teb_icp_boxes_s9_010,0,1792072491.083,4715.364,box_spawned,"arc_test_box_24 (-2.04, 1.75)"
+teb_icp_boxes,teb_icp_boxes_s9_010,0,1792072505.998,4730.480,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_010,0,1792072506.999,4731.384,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_010,0,1792072516.221,4740.264,stall,no motion for 8 s
+teb_icp_boxes,teb_icp_boxes_s9_010,0,1792072519.032,4742.972,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_010,0,1792072519.032,4742.972,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_010,0,1792072519.423,4742.972,box_removed,arc_test_box_22
+teb_icp_boxes,teb_icp_boxes_s9_010,0,1792072519.800,4742.972,box_removed,arc_test_box_23
+teb_icp_boxes,teb_icp_boxes_s9_010,0,1792072522.972,4742.972,box_removed,arc_test_box_24
+teb_icp_boxes,teb_icp_boxes_s9_010,-1,1792072524.973,4748.352,mission_end,0/1 legs
+teb_icp_boxes,teb_icp_boxes_s9_011,-1,1792072524.973,4748.352,mission_start,pair11
+teb_icp_boxes,teb_icp_boxes_s9_011,-1,1792072524.973,4748.352,wait_controller_idle,
+teb_icp_boxes,teb_icp_boxes_s9_011,-1,1792072544.974,4767.792,controller_still_busy,cancelling FollowPath
+teb_icp_boxes,teb_icp_boxes_s9_011,-1,1792072545.054,4767.864,goal_sent,"gondola_1_west_a (0.15, -0.40)"
+teb_icp_boxes,teb_icp_boxes_s9_011,-1,1792072545.917,4768.728,path_received,1.7364 m
+teb_icp_boxes,teb_icp_boxes_s9_011,-1,1792072574.414,4795.988,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_011,-1,1792072575.420,4796.892,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_011,-1,1792072578.548,4799.852,goal_reached_msg,
+teb_icp_boxes,teb_icp_boxes_s9_011,0,1792072580.550,4801.760,goal_sent,"tea_coffee (-2.45, 0.40)"
+teb_icp_boxes,teb_icp_boxes_s9_011,0,1792072582.764,4803.860,path_received,2.9314 m
+teb_icp_boxes,teb_icp_boxes_s9_011,0,1792072586.422,4803.860,box_spawned,"arc_test_box_25 (-1.19, -0.55)"
+teb_icp_boxes,teb_icp_boxes_s9_011,0,1792072593.371,4813.928,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_011,0,1792072594.382,4814.844,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_011,0,1792072616.078,4835.684,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_011,0,1792072616.078,4835.684,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_011,0,1792072619.229,4835.684,box_removed,arc_test_box_25
+teb_icp_boxes,teb_icp_boxes_s9_011,-1,1792072621.230,4840.620,mission_end,0/1 legs
+teb_icp_boxes,teb_icp_boxes_s9_012,-1,1792072621.230,4840.620,mission_start,pair12
+teb_icp_boxes,teb_icp_boxes_s9_012,-1,1792072621.230,4840.620,wait_controller_idle,
+teb_icp_boxes,teb_icp_boxes_s9_012,-1,1792072627.344,4846.336,goal_sent,"tea_coffee (-2.45, 0.40)"
+teb_icp_boxes,teb_icp_boxes_s9_012,-1,1792072629.426,4848.328,path_received,0.9192 m
+teb_icp_boxes,teb_icp_boxes_s9_012,-1,1792072637.583,4856.236,stall,no motion for 8 s
+teb_icp_boxes,teb_icp_boxes_s9_012,-1,1792072639.725,4858.376,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_012,-1,1792072640.731,4859.360,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_012,-1,1792072651.928,4870.328,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_012,-1,1792072651.928,4870.328,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_012,-1,1792072653.934,4872.184,start_not_reached,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_012,0,1792072653.936,4872.184,goal_sent,"gondola_2_west_a+gondola_1_east_a (1.80, -0.40)"
+teb_icp_boxes,teb_icp_boxes_s9_012,0,1792072659.207,4877.204,path_received,4.5127 m
+teb_icp_boxes,teb_icp_boxes_s9_012,0,1792072659.582,4877.204,box_spawned,"arc_test_box_27 (0.22, -0.59)"
+teb_icp_boxes,teb_icp_boxes_s9_012,0,1792072670.008,4887.312,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_012,0,1792072671.010,4888.316,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_012,0,1792072721.523,4937.500,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_012,0,1792072721.523,4937.500,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_012,0,1792072721.876,4937.500,box_removed,arc_test_box_27
+teb_icp_boxes,teb_icp_boxes_s9_012,-1,1792072723.878,4939.732,mission_end,0/1 legs
+teb_icp_boxes,teb_icp_boxes_s9_013,-1,1792072723.878,4939.732,mission_start,pair13
+teb_icp_boxes,teb_icp_boxes_s9_013,-1,1792072723.878,4939.732,goal_sent,"tea_coffee (-2.45, 0.40)"
+teb_icp_boxes,teb_icp_boxes_s9_013,-1,1792072728.649,4944.144,path_received,5.432 m
+teb_icp_boxes,teb_icp_boxes_s9_013,-1,1792072792.757,5006.120,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_013,-1,1792072793.757,5007.124,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_013,-1,1792072795.551,5008.916,goal_reached_msg,
+teb_icp_boxes,teb_icp_boxes_s9_013,0,1792072797.559,5010.792,goal_sent,"gondola_1_west_a (0.15, -0.40)"
+teb_icp_boxes,teb_icp_boxes_s9_013,0,1792072800.182,5013.404,path_received,2.9314 m
+teb_icp_boxes,teb_icp_boxes_s9_013,0,1792072803.691,5013.404,box_spawned,"arc_test_box_28 (-1.14, 0.50)"
+teb_icp_boxes,teb_icp_boxes_s9_013,0,1792072821.473,5033.840,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_013,0,1792072822.479,5034.852,goal_resent,after controller abort
+teb_icp_boxes,teb_icp_boxes_s9_013,0,1792072830.603,5042.828,stall,no motion for 8 s
+teb_icp_boxes,teb_icp_boxes_s9_013,0,1792072834.881,5046.964,controller_aborted,
+teb_icp_boxes,teb_icp_boxes_s9_013,0,1792072834.881,5046.964,leg_failed,controller_aborted
+teb_icp_boxes,teb_icp_boxes_s9_013,0,1792072838.039,5046.964,box_removed,arc_test_box_28
+teb_icp_boxes,teb_icp_boxes_s9_013,-1,1792072840.044,5052.096,mission_end,0/1 legs
+teb_icp_boxes,teb_icp_boxes_s9_014,-1,1792072840.044,5052.096,mission_start,pair14
+teb_icp_boxes,teb_icp_boxes_s9_014,-1,1792072840.044,5052.096,wait_controller_idle,
+teb_icp_boxes,teb_icp_boxes_s9_014,-1,1792072860.050,5071.436,controller_still_busy,cancelling FollowPath
+teb_icp_boxes,teb_icp_boxes_s9_014,-1,1792072860.098,5071.488,goal_sent,"tea_coffee (-2.45, 0.40)"
+teb_icp_boxes,teb_icp_boxes_s9_014,-1,1792072862.546,5073.832,path_received,2.9314 m
+teb_icp_boxes,teb_icp_boxes_s9_014,-1,1792072895.295,5105.544,localisation_lost,map pose 3.15 m from truth for 10 s
+teb_icp_boxes,teb_icp_boxes_s9_014,-1,1792072895.295,5105.544,leg_failed,localisation_lost
+teb_icp_boxes,teb_icp_boxes_s9_014,-1,1792072895.307,5105.544,runner_cancelled_follow_path,

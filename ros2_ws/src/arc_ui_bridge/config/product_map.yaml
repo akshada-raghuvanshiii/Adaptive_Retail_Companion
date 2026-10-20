@@ -1,0 +1,63 @@
+# ARC UI product id -> sim store item (keys of arc_store_sim/config/item_locations.yaml).
+# The UI's own x/y belong to its concept map; the robot drives to the item spot named here.
+# Several products share one spot (e.g. all milk on the dairy shelf): they become one stop.
+FP001: fruits        # Apple
+FP002: fruits        # Banana
+FP003: fruits        # Orange
+FP004: vegetables    # Tomato
+FP005: vegetables    # Potato
+FP006: vegetables    # Carrot
+DY001: milk
+DY002: milk
+DY003: milk
+DY004: milk
+DY005: curd_paneer   # Butter, dairy shelf
+DY006: curd_paneer   # Cheese
+BK001: bakery        # Rusk
+BK002: biscuits
+BK003: biscuits
+BK004: biscuits
+BK005: biscuits
+BK006: breakfast_cereal   # Rolled oats
+GR001: atta_flour
+GR002: atta_flour
+GR003: atta_flour
+GR004: atta_flour
+GR005: rice
+GR006: atta_flour    # Rava
+GS001: dal_pulses    # Besan
+GS002: dal_pulses
+GS003: dal_pulses    # Sabudana
+GS004: cooking_oil
+GS005: sauces        # Ketchup
+GS006: sauces
+PF001: pasta         # Noodles
+PF002: biscuits      # Cookies
+PF003: jam_spreads   # Honey
+PF004: jam_spreads
+PF005: bakery        # Cake
+PF006: jam_spreads   # Nutella
+SN001: snacks
+SN002: snacks
+SN003: snacks
+SN004: snacks
+SN005: snacks        # Chocolate
+SN006: snacks
+BV001: tea_coffee
+BV002: tea_coffee
+BV003: juice
+BV004: tea_coffee    # Green tea
+BV005: water_beverages
+BV006: water_beverages
+HC001: detergent
+HC002: detergent
+HC003: detergent
+HC004: cleaning      # Dishwash bar
+HC005: cleaning
+HC006: cleaning
+PC001: toiletries    # Toothpaste
+PC002: soap_shampoo
+PC003: toiletries    # Body lotion
+PC004: toiletries
+PC005: soap_shampoo
+PC006: toiletries

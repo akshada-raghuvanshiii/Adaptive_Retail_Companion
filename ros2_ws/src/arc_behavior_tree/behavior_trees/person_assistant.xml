@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root BTCPP_format="4">
+
+  <BehaviorTree ID="PersonAssistant">
+
+    <ReactiveFallback name="MainDecision">
+
+      <!-- Highest priority: emergency -->
+      <Sequence name="EmergencyRecovery">
+
+        <IsEmergency/>
+
+        <EmergencyStop/>
+
+      </Sequence>
+
+
+      <!-- Person is confused -->
+      <Sequence name="ConfusedBehaviour">
+
+        <IsConfused/>
+
+        <LeadPerson/>
+
+      </Sequence>
+
+
+      <!-- Person is moving -->
+      <Sequence name="FollowBehaviour">
+
+        <IsMoving/>
+
+        <FollowPerson/>
+
+      </Sequence>
+
+
+      <!-- Default state -->
+      <WaitForPerson/>
+
+    </ReactiveFallback>
+
+  </BehaviorTree>
+
+</root>

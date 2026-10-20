@@ -1,0 +1,649 @@
+{
+  "label": "teb_icp_pc",
+  "args": {
+    "label": "teb_icp_pc",
+    "out": "results",
+    "items": "/home/akshada-raghuvanshi/slam_ws/src/arc_store_sim/config/item_locations.yaml",
+    "world": "arc_store",
+    "model": "arc",
+    "strategies": "as_entered",
+    "sizes": "3,5,8",
+    "per_size": 3,
+    "lists": 30,
+    "size_range": "3-12",
+    "pairs": 0,
+    "pair_min_dist": 2.0,
+    "seed": 7,
+    "home": "0,0,0",
+    "obstacles": "0",
+    "goal_snap_m": 1.0,
+    "box_size": 0.2,
+    "box_offset": 0.15,
+    "robot_radius": 0.105,
+    "inflation": 0.15,
+    "tol": 0.35,
+    "speed": 0.1,
+    "retries": 1,
+    "idle_wait": 20.0,
+    "dwell": 2.0,
+    "leg_timeout": 0.0,
+    "stall_s": 8.0,
+    "stall_fail_s": 40.0,
+    "rate": 5.0,
+    "truth": "auto",
+    "goal_topic": "/goal_pose",
+    "path_topic": "/planned_path",
+    "cmd_topic": "/cmd_vel",
+    "map_topic": "/rtabmap/map",
+    "start_at": 0,
+    "no_label_check": false,
+    "dry_run": false,
+    "loss_abort_m": 1.0,
+    "loss_abort_s": 10.0,
+    "link_abort_s": 15.0
+  },
+  "stack": {
+    "icp_odometry_running": true,
+    "rtabmap_odom_topic": "/odom_icp",
+    "odometry": "icp",
+    "controller_plugin": "teb_local_planner/TebController",
+    "controller": "teb",
+    "progress_radius": 0.25,
+    "progress": "relaxed",
+    "shopping_manager_running": false
+  },
+  "cmd_type": "TwistStamped",
+  "truth_source": "gzcli",
+  "plan": [
+    {
+      "kind": "list",
+      "list_id": "s7_r00_n8",
+      "names": [
+        "bread",
+        "frozen",
+        "sauces",
+        "baby_care",
+        "bakery",
+        "pasta",
+        "biscuits",
+        "eggs"
+      ],
+      "strategy": "as_entered",
+      "n_items": 8,
+      "n_boxes": 0,
+      "order": "gondola_1_west_a dairy gondola_3_b+gondola_2_east_b gondola_2_west_a+gondola_1_east_a",
+      "J": 15.668986517334421,
+      "J_opt": 13.97548360784483,
+      "n_stops": 4
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r01_n12",
+      "names": [
+        "baby_care",
+        "milk",
+        "cleaning",
+        "water_beverages",
+        "bakery",
+        "fruits",
+        "spices",
+        "sugar_salt",
+        "cooking_oil",
+        "snacks",
+        "pasta",
+        "soap_shampoo"
+      ],
+      "strategy": "as_entered",
+      "n_items": 12,
+      "n_boxes": 0,
+      "order": "gondola_3_b+gondola_2_east_b dairy gondola_3_a+gondola_2_east_a tea_coffee gondola_1_west_a produce gondola_2_west_b+gondola_1_east_b",
+      "J": 37.05721193543465,
+      "J_opt": 15.008326335710006,
+      "n_stops": 7
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r02_n3",
+      "names": [
+        "toiletries",
+        "pet_food",
+        "biscuits"
+      ],
+      "strategy": "as_entered",
+      "n_items": 3,
+      "n_boxes": 0,
+      "order": "gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a gondola_2_west_a+gondola_1_east_a",
+      "J": 10.269848634016164,
+      "J_opt": 7.540559271465241,
+      "n_stops": 3
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r03_n6",
+      "names": [
+        "sauces",
+        "water_beverages",
+        "pet_food",
+        "baby_care",
+        "toiletries",
+        "sugar_salt"
+      ],
+      "strategy": "as_entered",
+      "n_items": 6,
+      "n_boxes": 0,
+      "order": "gondola_3_b+gondola_2_east_b tea_coffee gondola_3_a+gondola_2_east_a gondola_2_west_b+gondola_1_east_b",
+      "J": 24.79741377810477,
+      "J_opt": 12.77903698060966,
+      "n_stops": 4
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r04_n9",
+      "names": [
+        "baby_care",
+        "cooking_oil",
+        "water_beverages",
+        "pasta",
+        "bread",
+        "dal_pulses",
+        "fruits",
+        "sugar_salt",
+        "tea_coffee"
+      ],
+      "strategy": "as_entered",
+      "n_items": 9,
+      "n_boxes": 0,
+      "order": "gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a tea_coffee gondola_1_west_a gondola_2_west_b+gondola_1_east_b produce",
+      "J": 26.885891440310534,
+      "J_opt": 13.556854451505247,
+      "n_stops": 6
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r05_n4",
+      "names": [
+        "pet_food",
+        "dal_pulses",
+        "pasta",
+        "toiletries"
+      ],
+      "strategy": "as_entered",
+      "n_items": 4,
+      "n_boxes": 0,
+      "order": "gondola_3_a+gondola_2_east_a gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b",
+      "J": 11.925483577297449,
+      "J_opt": 8.581980643220938,
+      "n_stops": 3
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r06_n5",
+      "names": [
+        "biscuits",
+        "pet_food",
+        "sauces",
+        "cleaning",
+        "eggs"
+      ],
+      "strategy": "as_entered",
+      "n_items": 5,
+      "n_boxes": 0,
+      "order": "gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b dairy",
+      "J": 13.97548360784483,
+      "J_opt": 13.97548360784483,
+      "n_stops": 4
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r07_n4",
+      "names": [
+        "pasta",
+        "soap_shampoo",
+        "bakery",
+        "pet_food"
+      ],
+      "strategy": "as_entered",
+      "n_items": 4,
+      "n_boxes": 0,
+      "order": "gondola_3_b+gondola_2_east_b gondola_1_west_a gondola_3_a+gondola_2_east_a",
+      "J": 16.384062287498132,
+      "J_opt": 6.6263456954693005,
+      "n_stops": 3
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r08_n3",
+      "names": [
+        "rice",
+        "cleaning",
+        "juice"
+      ],
+      "strategy": "as_entered",
+      "n_items": 3,
+      "n_boxes": 0,
+      "order": "gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a tea_coffee",
+      "J": 12.831118509402856,
+      "J_opt": 10.620458304681643,
+      "n_stops": 3
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r09_n11",
+      "names": [
+        "fruits",
+        "sugar_salt",
+        "detergent",
+        "jam_spreads",
+        "pet_food",
+        "tea_coffee",
+        "eggs",
+        "dal_pulses",
+        "cooking_oil",
+        "breakfast_cereal",
+        "sauces"
+      ],
+      "strategy": "as_entered",
+      "n_items": 11,
+      "n_boxes": 0,
+      "order": "produce gondola_2_west_b+gondola_1_east_b gondola_3_a+gondola_2_east_a gondola_1_west_b tea_coffee dairy gondola_3_b+gondola_2_east_b",
+      "J": 28.704520617511744,
+      "J_opt": 15.098275830711527,
+      "n_stops": 7
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r10_n4",
+      "names": [
+        "pet_food",
+        "dal_pulses",
+        "milk",
+        "juice"
+      ],
+      "strategy": "as_entered",
+      "n_items": 4,
+      "n_boxes": 0,
+      "order": "gondola_3_a+gondola_2_east_a gondola_2_west_b+gondola_1_east_b dairy tea_coffee",
+      "J": 16.37045839036331,
+      "J_opt": 14.159798185642092,
+      "n_stops": 4
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r11_n8",
+      "names": [
+        "spices",
+        "jam_spreads",
+        "dal_pulses",
+        "rice",
+        "bakery",
+        "biscuits",
+        "milk",
+        "fruits"
+      ],
+      "strategy": "as_entered",
+      "n_items": 8,
+      "n_boxes": 0,
+      "order": "gondola_3_a+gondola_2_east_a gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_1_west_a dairy produce",
+      "J": 25.625231249745422,
+      "J_opt": 15.334671937301998,
+      "n_stops": 7
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r12_n5",
+      "names": [
+        "sugar_salt",
+        "detergent",
+        "bread",
+        "juice",
+        "fruits"
+      ],
+      "strategy": "as_entered",
+      "n_items": 5,
+      "n_boxes": 0,
+      "order": "gondola_2_west_b+gondola_1_east_b gondola_3_a+gondola_2_east_a gondola_1_west_a tea_coffee produce",
+      "J": 17.001829249669953,
+      "J_opt": 13.48614377233292,
+      "n_stops": 5
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r13_n3",
+      "names": [
+        "snacks",
+        "bakery",
+        "sugar_salt"
+      ],
+      "strategy": "as_entered",
+      "n_items": 3,
+      "n_boxes": 0,
+      "order": "gondola_2_west_b+gondola_1_east_b gondola_1_west_a",
+      "J": 8.531980642475878,
+      "J_opt": 4.897056347819536,
+      "n_stops": 2
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r14_n11",
+      "names": [
+        "pet_food",
+        "tea_coffee",
+        "toiletries",
+        "detergent",
+        "vegetables",
+        "soap_shampoo",
+        "eggs",
+        "rice",
+        "juice",
+        "water_beverages",
+        "jam_spreads"
+      ],
+      "strategy": "as_entered",
+      "n_items": 11,
+      "n_boxes": 0,
+      "order": "gondola_3_a+gondola_2_east_a tea_coffee gondola_3_b+gondola_2_east_b produce dairy gondola_2_west_a+gondola_1_east_a gondola_1_west_b",
+      "J": 39.974978931879114,
+      "J_opt": 16.62964670342921,
+      "n_stops": 7
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r15_n4",
+      "names": [
+        "toiletries",
+        "bakery",
+        "curd_paneer",
+        "juice"
+      ],
+      "strategy": "as_entered",
+      "n_items": 4,
+      "n_boxes": 0,
+      "order": "gondola_3_b+gondola_2_east_b gondola_1_west_a dairy tea_coffee",
+      "J": 18.83111859880983,
+      "J_opt": 12.281980698355227,
+      "n_stops": 4
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r16_n4",
+      "names": [
+        "baby_care",
+        "spices",
+        "soap_shampoo",
+        "dal_pulses"
+      ],
+      "strategy": "as_entered",
+      "n_items": 4,
+      "n_boxes": 0,
+      "order": "gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a gondola_2_west_b+gondola_1_east_b",
+      "J": 12.06984866083825,
+      "J_opt": 8.581980643220938,
+      "n_stops": 3
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r17_n12",
+      "names": [
+        "snacks",
+        "toiletries",
+        "jam_spreads",
+        "dal_pulses",
+        "soap_shampoo",
+        "frozen",
+        "water_beverages",
+        "eggs",
+        "atta_flour",
+        "vegetables",
+        "sugar_salt",
+        "breakfast_cereal"
+      ],
+      "strategy": "as_entered",
+      "n_items": 12,
+      "n_boxes": 0,
+      "order": "gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_1_west_b dairy tea_coffee gondola_2_west_a+gondola_1_east_a produce",
+      "J": 26.124369060048,
+      "J_opt": 16.70035738260153,
+      "n_stops": 7
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r18_n12",
+      "names": [
+        "biscuits",
+        "juice",
+        "baby_care",
+        "cleaning",
+        "sugar_salt",
+        "dal_pulses",
+        "bread",
+        "cooking_oil",
+        "frozen",
+        "sauces",
+        "vegetables",
+        "bakery"
+      ],
+      "strategy": "as_entered",
+      "n_items": 12,
+      "n_boxes": 0,
+      "order": "gondola_2_west_a+gondola_1_east_a tea_coffee gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a gondola_2_west_b+gondola_1_east_b gondola_1_west_a dairy produce",
+      "J": 34.13858274184218,
+      "J_opt": 16.73761568335977,
+      "n_stops": 8
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r19_n5",
+      "names": [
+        "jam_spreads",
+        "frozen",
+        "pasta",
+        "curd_paneer",
+        "water_beverages"
+      ],
+      "strategy": "as_entered",
+      "n_items": 5,
+      "n_boxes": 0,
+      "order": "gondola_1_west_b dairy gondola_3_b+gondola_2_east_b tea_coffee",
+      "J": 18.243250624405867,
+      "J_opt": 12.37193019335675,
+      "n_stops": 4
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r20_n5",
+      "names": [
+        "toiletries",
+        "fruits",
+        "vegetables",
+        "pasta",
+        "curd_paneer"
+      ],
+      "strategy": "as_entered",
+      "n_items": 5,
+      "n_boxes": 0,
+      "order": "gondola_3_b+gondola_2_east_b produce dairy",
+      "J": 15.565433125198076,
+      "J_opt": 11.03345254232685,
+      "n_stops": 3
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r21_n9",
+      "names": [
+        "eggs",
+        "snacks",
+        "frozen",
+        "cooking_oil",
+        "bread",
+        "bakery",
+        "breakfast_cereal",
+        "sugar_salt",
+        "tea_coffee"
+      ],
+      "strategy": "as_entered",
+      "n_items": 9,
+      "n_boxes": 0,
+      "order": "dairy gondola_2_west_b+gondola_1_east_b gondola_3_a+gondola_2_east_a gondola_1_west_a gondola_1_west_b tea_coffee",
+      "J": 22.19386034871554,
+      "J_opt": 15.805382622434784,
+      "n_stops": 6
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r22_n6",
+      "names": [
+        "atta_flour",
+        "juice",
+        "toiletries",
+        "pet_food",
+        "breakfast_cereal",
+        "curd_paneer"
+      ],
+      "strategy": "as_entered",
+      "n_items": 6,
+      "n_boxes": 0,
+      "order": "gondola_2_west_a+gondola_1_east_a tea_coffee gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a gondola_1_west_b dairy",
+      "J": 26.827312795674956,
+      "J_opt": 16.629646703429202,
+      "n_stops": 6
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r23_n7",
+      "names": [
+        "atta_flour",
+        "bread",
+        "fruits",
+        "pasta",
+        "eggs",
+        "rice",
+        "pet_food"
+      ],
+      "strategy": "as_entered",
+      "n_items": 7,
+      "n_boxes": 0,
+      "order": "gondola_2_west_a+gondola_1_east_a gondola_1_west_a produce gondola_3_b+gondola_2_east_b dairy gondola_3_a+gondola_2_east_a",
+      "J": 28.728784686585236,
+      "J_opt": 15.888225336143861,
+      "n_stops": 6
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r24_n8",
+      "names": [
+        "bread",
+        "soap_shampoo",
+        "milk",
+        "rice",
+        "sauces",
+        "snacks",
+        "baby_care",
+        "jam_spreads"
+      ],
+      "strategy": "as_entered",
+      "n_items": 8,
+      "n_boxes": 0,
+      "order": "gondola_1_west_a gondola_3_b+gondola_2_east_b dairy gondola_2_west_a+gondola_1_east_a gondola_2_west_b+gondola_1_east_b gondola_1_west_b",
+      "J": 23.972540031660287,
+      "J_opt": 14.913961252914262,
+      "n_stops": 6
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r25_n11",
+      "names": [
+        "frozen",
+        "water_beverages",
+        "vegetables",
+        "toiletries",
+        "biscuits",
+        "juice",
+        "sauces",
+        "tea_coffee",
+        "baby_care",
+        "cleaning",
+        "bakery"
+      ],
+      "strategy": "as_entered",
+      "n_items": 11,
+      "n_boxes": 0,
+      "order": "dairy tea_coffee produce gondola_3_b+gondola_2_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_1_west_a",
+      "J": 25.468734131667876,
+      "J_opt": 16.35893602127665,
+      "n_stops": 7
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r26_n6",
+      "names": [
+        "jam_spreads",
+        "breakfast_cereal",
+        "biscuits",
+        "detergent",
+        "rice",
+        "baby_care"
+      ],
+      "strategy": "as_entered",
+      "n_items": 6,
+      "n_boxes": 0,
+      "order": "gondola_1_west_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b",
+      "J": 10.3112699908707,
+      "J_opt": 10.269848634016165,
+      "n_stops": 4
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r27_n4",
+      "names": [
+        "atta_flour",
+        "pet_food",
+        "bread",
+        "pasta"
+      ],
+      "strategy": "as_entered",
+      "n_items": 4,
+      "n_boxes": 0,
+      "order": "gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_1_west_a gondola_3_b+gondola_2_east_b",
+      "J": 16.26898652627513,
+      "J_opt": 7.540559271465241,
+      "n_stops": 4
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r28_n4",
+      "names": [
+        "eggs",
+        "rice",
+        "atta_flour",
+        "bakery"
+      ],
+      "strategy": "as_entered",
+      "n_items": 4,
+      "n_boxes": 0,
+      "order": "dairy gondola_2_west_a+gondola_1_east_a gondola_1_west_a",
+      "J": 13.036143765627399,
+      "J_opt": 9.602691336549363,
+      "n_stops": 3
+    },
+    {
+      "kind": "list",
+      "list_id": "s7_r29_n6",
+      "names": [
+        "rice",
+        "frozen",
+        "bread",
+        "sauces",
+        "curd_paneer",
+        "eggs"
+      ],
+      "strategy": "as_entered",
+      "n_items": 6,
+      "n_boxes": 0,
+      "order": "gondola_2_west_a+gondola_1_east_a dairy gondola_1_west_a gondola_3_b+gondola_2_east_b",
+      "J": 20.12462150233896,
+      "J_opt": 13.97548360784483,
+      "n_stops": 4
+    }
+  ],
+  "started": "2026-10-16 22:34:02"
+}

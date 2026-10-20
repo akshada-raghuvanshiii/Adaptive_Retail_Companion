@@ -1,0 +1,317 @@
+{
+  "robot_radius": 0.22,
+  "required_clearance": 0.32,
+  "checks": [
+    {
+      "check": "store inside current map bounds",
+      "ok": true,
+      "detail": "store X -3.5..4.5, Y -3.0..4.0; map X -4.225..5.925, Y -4.021..4.929; margins W 0.73, E 1.42, S 1.02, N 0.93 m"
+    },
+    {
+      "check": "fixtures do not overlap",
+      "ok": true,
+      "detail": "none"
+    },
+    {
+      "check": "placement shopper",
+      "ok": true,
+      "detail": "(-3.00, -2.45) radius 0.25, clearance to fixtures 0.40 m"
+    },
+    {
+      "check": "placement person",
+      "ok": true,
+      "detail": "(4.15, 3.60) radius 0.15, clearance to fixtures 0.25 m"
+    },
+    {
+      "check": "placement overhead_cam",
+      "ok": true,
+      "detail": "(1.80, 0.50) radius 0.00, clearance to fixtures 0.60 m"
+    },
+    {
+      "check": "spawn point clearance",
+      "ok": true,
+      "detail": "0.70 m (need 0.32)"
+    },
+    {
+      "check": "free space connected",
+      "ok": true,
+      "detail": "13574 of 13574 robot-feasible cells reachable from spawn"
+    },
+    {
+      "check": "destination produce",
+      "ok": true,
+      "detail": "(-1.40, 0.05, 90 deg) clearance 0.55 m, reachable=True, faces produce_display=True at 0.55 m"
+    },
+    {
+      "check": "destination dairy",
+      "ok": true,
+      "detail": "(-2.20, 2.75, 90 deg) clearance 0.55 m, reachable=True, faces dairy_fridge=True at 0.55 m"
+    },
+    {
+      "check": "destination tea_coffee",
+      "ok": true,
+      "detail": "(-2.45, 0.40, 180 deg) clearance 0.55 m, reachable=True, faces tea_coffee_shelf=True at 0.55 m"
+    },
+    {
+      "check": "destination checkout",
+      "ok": true,
+      "detail": "(-1.80, -1.25, -90 deg) clearance 0.55 m, reachable=True, faces checkout_counter=True at 0.55 m"
+    },
+    {
+      "check": "destination gondola_1_west_a",
+      "ok": true,
+      "detail": "(0.15, -0.40, 0 deg) clearance 0.55 m, reachable=True, faces gondola_1=True at 0.55 m"
+    },
+    {
+      "check": "destination gondola_1_east_a",
+      "ok": true,
+      "detail": "(1.80, -0.40, 180 deg) clearance 0.60 m, reachable=True, faces gondola_1=True at 0.60 m"
+    },
+    {
+      "check": "destination gondola_1_west_b",
+      "ok": true,
+      "detail": "(0.15, 1.40, 0 deg) clearance 0.55 m, reachable=True, faces gondola_1=True at 0.55 m"
+    },
+    {
+      "check": "destination gondola_1_east_b",
+      "ok": true,
+      "detail": "(1.80, 1.40, 180 deg) clearance 0.60 m, reachable=True, faces gondola_1=True at 0.60 m"
+    },
+    {
+      "check": "destination gondola_2_west_a",
+      "ok": true,
+      "detail": "(1.80, -0.40, 0 deg) clearance 0.60 m, reachable=True, faces gondola_2=True at 0.60 m"
+    },
+    {
+      "check": "destination gondola_2_east_a",
+      "ok": true,
+      "detail": "(3.47, -0.40, 180 deg) clearance 0.57 m, reachable=True, faces gondola_2=True at 0.57 m"
+    },
+    {
+      "check": "destination gondola_2_west_b",
+      "ok": true,
+      "detail": "(1.80, 1.40, 0 deg) clearance 0.60 m, reachable=True, faces gondola_2=True at 0.60 m"
+    },
+    {
+      "check": "destination gondola_2_east_b",
+      "ok": true,
+      "detail": "(3.47, 1.40, 180 deg) clearance 0.57 m, reachable=True, faces gondola_2=True at 0.57 m"
+    },
+    {
+      "check": "destination gondola_3_a",
+      "ok": true,
+      "detail": "(3.47, -0.40, 0 deg) clearance 0.57 m, reachable=True, faces gondola_3=True at 0.58 m"
+    },
+    {
+      "check": "destination gondola_3_b",
+      "ok": true,
+      "detail": "(3.47, 1.40, 0 deg) clearance 0.57 m, reachable=True, faces gondola_3=True at 0.58 m"
+    },
+    {
+      "check": "width: aisle gondola 1-2",
+      "ok": true,
+      "detail": "1.20 m (robot turn-in-place + margin needs 0.64 m)"
+    },
+    {
+      "check": "width: aisle gondola 2-3",
+      "ok": true,
+      "detail": "1.15 m (robot turn-in-place + margin needs 0.64 m)"
+    },
+    {
+      "check": "width: gap produce - gondola 1",
+      "ok": true,
+      "detail": "1.60 m (robot turn-in-place + margin needs 0.64 m)"
+    },
+    {
+      "check": "width: gap tea/coffee - produce",
+      "ok": true,
+      "detail": "1.10 m (robot turn-in-place + margin needs 0.64 m)"
+    },
+    {
+      "check": "width: cross aisle south (gondolas - wall)",
+      "ok": true,
+      "detail": "1.90 m (robot turn-in-place + margin needs 0.64 m)"
+    },
+    {
+      "check": "width: cross aisle north (gondolas - wall)",
+      "ok": true,
+      "detail": "1.90 m (robot turn-in-place + margin needs 0.64 m)"
+    },
+    {
+      "check": "width: gap fridge - produce",
+      "ok": true,
+      "detail": "1.70 m (robot turn-in-place + margin needs 0.64 m)"
+    },
+    {
+      "check": "width: gap checkout - produce",
+      "ok": true,
+      "detail": "2.40 m (robot turn-in-place + margin needs 0.64 m)"
+    }
+  ],
+  "destinations": [
+    {
+      "id": "produce",
+      "x": -1.4,
+      "y": 0.05,
+      "yaw_deg": 90.0,
+      "clearance_m": 0.55,
+      "distance_to_own_fixture_m": 0.55,
+      "reachable": true,
+      "heading_ok": true,
+      "ok": true
+    },
+    {
+      "id": "dairy",
+      "x": -2.2,
+      "y": 2.75,
+      "yaw_deg": 90.0,
+      "clearance_m": 0.55,
+      "distance_to_own_fixture_m": 0.55,
+      "reachable": true,
+      "heading_ok": true,
+      "ok": true
+    },
+    {
+      "id": "tea_coffee",
+      "x": -2.45,
+      "y": 0.4,
+      "yaw_deg": 180.0,
+      "clearance_m": 0.55,
+      "distance_to_own_fixture_m": 0.55,
+      "reachable": true,
+      "heading_ok": true,
+      "ok": true
+    },
+    {
+      "id": "checkout",
+      "x": -1.8,
+      "y": -1.25,
+      "yaw_deg": -90.0,
+      "clearance_m": 0.55,
+      "distance_to_own_fixture_m": 0.55,
+      "reachable": true,
+      "heading_ok": true,
+      "ok": true
+    },
+    {
+      "id": "gondola_1_west_a",
+      "x": 0.15,
+      "y": -0.4,
+      "yaw_deg": 0.0,
+      "clearance_m": 0.55,
+      "distance_to_own_fixture_m": 0.55,
+      "reachable": true,
+      "heading_ok": true,
+      "ok": true
+    },
+    {
+      "id": "gondola_1_east_a",
+      "x": 1.8,
+      "y": -0.4,
+      "yaw_deg": 180.0,
+      "clearance_m": 0.6,
+      "distance_to_own_fixture_m": 0.6,
+      "reachable": true,
+      "heading_ok": true,
+      "ok": true
+    },
+    {
+      "id": "gondola_1_west_b",
+      "x": 0.15,
+      "y": 1.4,
+      "yaw_deg": 0.0,
+      "clearance_m": 0.55,
+      "distance_to_own_fixture_m": 0.55,
+      "reachable": true,
+      "heading_ok": true,
+      "ok": true
+    },
+    {
+      "id": "gondola_1_east_b",
+      "x": 1.8,
+      "y": 1.4,
+      "yaw_deg": 180.0,
+      "clearance_m": 0.6,
+      "distance_to_own_fixture_m": 0.6,
+      "reachable": true,
+      "heading_ok": true,
+      "ok": true
+    },
+    {
+      "id": "gondola_2_west_a",
+      "x": 1.8,
+      "y": -0.4,
+      "yaw_deg": 0.0,
+      "clearance_m": 0.6,
+      "distance_to_own_fixture_m": 0.6,
+      "reachable": true,
+      "heading_ok": true,
+      "ok": true
+    },
+    {
+      "id": "gondola_2_east_a",
+      "x": 3.475,
+      "y": -0.4,
+      "yaw_deg": 180.0,
+      "clearance_m": 0.575,
+      "distance_to_own_fixture_m": 0.575,
+      "reachable": true,
+      "heading_ok": true,
+      "ok": true
+    },
+    {
+      "id": "gondola_2_west_b",
+      "x": 1.8,
+      "y": 1.4,
+      "yaw_deg": 0.0,
+      "clearance_m": 0.6,
+      "distance_to_own_fixture_m": 0.6,
+      "reachable": true,
+      "heading_ok": true,
+      "ok": true
+    },
+    {
+      "id": "gondola_2_east_b",
+      "x": 3.475,
+      "y": 1.4,
+      "yaw_deg": 180.0,
+      "clearance_m": 0.575,
+      "distance_to_own_fixture_m": 0.575,
+      "reachable": true,
+      "heading_ok": true,
+      "ok": true
+    },
+    {
+      "id": "gondola_3_a",
+      "x": 3.475,
+      "y": -0.4,
+      "yaw_deg": 0.0,
+      "clearance_m": 0.575,
+      "distance_to_own_fixture_m": 0.575,
+      "reachable": true,
+      "heading_ok": true,
+      "ok": true
+    },
+    {
+      "id": "gondola_3_b",
+      "x": 3.475,
+      "y": 1.4,
+      "yaw_deg": 0.0,
+      "clearance_m": 0.575,
+      "distance_to_own_fixture_m": 0.575,
+      "reachable": true,
+      "heading_ok": true,
+      "ok": true
+    }
+  ],
+  "widths_m": {
+    "aisle gondola 1-2": 1.2,
+    "aisle gondola 2-3": 1.15,
+    "gap produce - gondola 1": 1.6,
+    "gap tea/coffee - produce": 1.1,
+    "cross aisle south (gondolas - wall)": 1.9,
+    "cross aisle north (gondolas - wall)": 1.9,
+    "gap fridge - produce": 1.6999999999999997,
+    "gap checkout - produce": 2.4
+  }
+}

@@ -1,0 +1,592 @@
+#!/usr/bin/env python3
+
+import rclpy
+from rclpy.node import Node
+from rclpy.action import ActionClient
+
+from nav_msgs.msg import Path
+from nav2_msgs.action import FollowPath
+from std_msgs.msg import Bool
+
+from rclpy.qos import (
+    QoSProfile,
+    ReliabilityPolicy,
+    DurabilityPolicy
+)
+
+
+class PlannedPathToTEB(Node):
+
+    def __init__(self):
+
+        super().__init__('planned_path_to_teb')
+
+        # ============================================================
+        # NAV2 FOLLOW PATH ACTION CLIENT
+        # ============================================================
+
+        self.action_client = ActionClient(
+            self,
+            FollowPath,
+            '/follow_path'
+        )
+
+        # ============================================================
+        # DIJKSTRA PATH SUBSCRIBER
+        # ============================================================
+
+        self.path_subscriber = self.create_subscription(
+            Path,
+            '/planned_path',
+            self.path_callback,
+            10
+        )
+
+        # ============================================================
+        # NAVIGATION COMPLETION PUBLISHER
+        # ============================================================
+
+        completion_qos = QoSProfile(
+            depth=1,
+            reliability=ReliabilityPolicy.RELIABLE,
+            durability=DurabilityPolicy.TRANSIENT_LOCAL
+        )
+
+        self.completion_publisher = self.create_publisher(
+            Bool,
+            '/navigation_goal_reached',
+            completion_qos
+        )
+
+        # ============================================================
+        # DIRECT ZERO VELOCITY COMMAND
+        #
+        state_qos = QoSProfile(
+            depth=1,
+            reliability=ReliabilityPolicy.RELIABLE,
+            durability=DurabilityPolicy.VOLATILE
+        )
+
+        self.wait_subscriber = self.create_subscription(
+            Bool,
+            '/wait_for_person',
+            self.wait_callback,
+            state_qos
+        )
+
+        self.emergency_subscriber = self.create_subscription(
+            Bool,
+            '/emergency_stop_active',
+            self.emergency_callback,
+            state_qos
+        )
+
+        # ============================================================
+        # STATE
+        # ============================================================
+
+        self.goal_handle = None
+
+        # True while a FollowPath action is running.
+        self.navigation_active = False
+
+        # Most recent Dijkstra path.
+        #
+        # We keep this so that after WAIT ends, the robot can resume
+        # the same overarching shopping route.
+        self.latest_path = None
+
+        # WAIT state from Behaviour Tree.
+        self.waiting_for_person = False
+
+        # Emergency state from Behaviour Tree.
+        self.emergency_stop = False
+
+        # True while we are cancelling a FollowPath action because
+        # the robot has been told to stop.
+        self.stop_requested = False
+
+        # ============================================================
+        # ZERO VELOCITY TIMER
+        #
+        # Continuously publishes zero velocity while stopped.
+        # This prevents the robot from continuing to coast because
+        # of a previously issued command.
+        # ============================================================
+
+
+        self.get_logger().info(
+            'Dijkstra → Nav2 FollowPath → TEB bridge started.'
+        )
+
+    # ================================================================
+    # DIJKSTRA PATH CALLBACK
+    # ================================================================
+
+    def path_callback(self, msg):
+
+        if not msg.poses:
+
+            self.get_logger().warn(
+                'Received empty Dijkstra path.'
+            )
+
+            return
+
+        # Always remember the newest path.
+        self.latest_path = msg
+
+        self.get_logger().info(
+            f'Received Dijkstra path with '
+            f'{len(msg.poses)} poses.'
+        )
+
+        # ============================================================
+        # DO NOT START NAVIGATION WHILE PERSON WAIT / EMERGENCY
+        # IS ACTIVE.
+        # ============================================================
+
+        if self.waiting_for_person or self.emergency_stop:
+
+            self.get_logger().info(
+                'Robot is stopped by Behaviour Tree. '
+                'Path stored for later resumption.'
+            )
+
+            return
+
+        # ============================================================
+        # DO NOT START ANOTHER ACTION WHILE ONE IS ACTIVE
+        # ============================================================
+
+        if self.navigation_active:
+
+            self.get_logger().info(
+                'TEB is currently navigating. '
+                'Ignoring updated Dijkstra path.'
+            )
+
+            return
+
+        self.start_navigation()
+
+    # ================================================================
+    # START NAVIGATION
+    # ================================================================
+
+    def start_navigation(self):
+
+        if self.latest_path is None:
+
+            self.get_logger().warn(
+                'No Dijkstra path available to start.'
+            )
+
+            return
+
+        if self.waiting_for_person or self.emergency_stop:
+
+            return
+
+        # ============================================================
+        # WAIT FOR NAV2 FOLLOW PATH SERVER
+        # ============================================================
+
+        if not self.action_client.wait_for_server(
+            timeout_sec=2.0
+        ):
+
+            self.get_logger().error(
+                'Nav2 FollowPath action server '
+                'is not available.'
+            )
+
+            return
+
+        # ============================================================
+        # CREATE FOLLOW PATH GOAL
+        # ============================================================
+
+        goal_msg = FollowPath.Goal()
+
+        goal_msg.path = self.latest_path
+
+        goal_msg.controller_id = 'TEB'
+
+        goal_msg.goal_checker_id = 'goal_checker'
+
+        goal_msg.progress_checker_id = 'progress_checker'
+
+        self.get_logger().info(
+            'Sending Dijkstra path to TEB...'
+        )
+
+        # Mark active before sending.
+
+        self.navigation_active = True
+        self.stop_requested = False
+
+        send_goal_future = (
+            self.action_client.send_goal_async(
+                goal_msg,
+                feedback_callback=self.feedback_callback
+            )
+        )
+
+        send_goal_future.add_done_callback(
+            self.goal_response_callback
+        )
+
+    # ================================================================
+    # WAIT CALLBACK
+    # ================================================================
+
+    def wait_callback(self, msg):
+
+        new_wait_state = msg.data
+
+        # ------------------------------------------------------------
+        # ENTER WAIT
+        # ------------------------------------------------------------
+
+        if new_wait_state and not self.waiting_for_person:
+
+            self.waiting_for_person = True
+
+            self.get_logger().warn(
+                'Behaviour Tree requested WAIT. '
+                'Stopping robot.'
+            )
+
+            self.stop_robot()
+
+        # ------------------------------------------------------------
+        # EXIT WAIT
+        # ------------------------------------------------------------
+
+        elif not new_wait_state and self.waiting_for_person:
+
+            self.waiting_for_person = False
+
+            self.get_logger().info(
+                'Behaviour Tree cleared WAIT. '
+                'Robot may resume navigation.'
+            )
+
+            self.resume_navigation_if_allowed()
+
+    # ================================================================
+    # EMERGENCY CALLBACK
+    # ================================================================
+
+    def emergency_callback(self, msg):
+
+        new_emergency_state = msg.data
+
+        # ------------------------------------------------------------
+        # ENTER EMERGENCY STOP
+        # ------------------------------------------------------------
+
+        if new_emergency_state and not self.emergency_stop:
+
+            self.emergency_stop = True
+
+            self.get_logger().error(
+                'EMERGENCY STOP ACTIVE. '
+                'Cancelling navigation and stopping robot.'
+            )
+
+            self.stop_robot()
+
+        # ------------------------------------------------------------
+        # EXIT EMERGENCY STOP
+        # ------------------------------------------------------------
+
+        elif not new_emergency_state and self.emergency_stop:
+
+            self.emergency_stop = False
+
+            self.get_logger().warn(
+                'Emergency stop cleared. '
+                'Robot may resume navigation.'
+            )
+
+            self.resume_navigation_if_allowed()
+
+    # ================================================================
+    # STOP ROBOT
+    # ================================================================
+
+    def stop_robot(self):
+
+        # Publish zero immediately.
+
+
+        # ------------------------------------------------------------
+        # CANCEL ACTIVE FOLLOW PATH
+        # ------------------------------------------------------------
+
+        if self.navigation_active and self.goal_handle is not None:
+
+            self.stop_requested = True
+
+            self.get_logger().warn(
+                'Cancelling active TEB FollowPath action.'
+            )
+
+            cancel_future = (
+                self.goal_handle.cancel_goal_async()
+            )
+
+            cancel_future.add_done_callback(
+                self.cancel_callback
+            )
+
+        else:
+
+            self.get_logger().info(
+                'No active TEB goal. '
+                'Robot held at zero velocity.'
+            )
+
+    # ================================================================
+    # CANCEL CALLBACK
+    # ================================================================
+
+    def cancel_callback(self, future):
+
+        try:
+
+            cancel_response = future.result()
+
+            self.get_logger().info(
+                'TEB FollowPath cancellation requested.'
+            )
+
+        except Exception as error:
+
+            self.get_logger().error(
+                f'Failed to cancel TEB FollowPath: '
+                f'{error}'
+            )
+
+    # ================================================================
+    # ZERO VELOCITY
+    # ================================================================
+
+    def resume_navigation_if_allowed(self):
+
+        # Emergency or WAIT still active.
+        if self.waiting_for_person or self.emergency_stop:
+
+            return
+
+        # If cancellation is still completing, wait for its result.
+        if self.navigation_active:
+
+            self.get_logger().info(
+                'Waiting for previous TEB goal to finish cancelling.'
+            )
+
+            return
+
+        # Clear stop state.
+
+        self.stop_requested = False
+
+        # Resume the latest Dijkstra path.
+
+        if self.latest_path is not None:
+
+            self.get_logger().info(
+                'Resuming latest Dijkstra path.'
+            )
+
+            self.start_navigation()
+
+    # ================================================================
+    # FOLLOW PATH GOAL RESPONSE
+    # ================================================================
+
+    def goal_response_callback(self, future):
+
+        try:
+
+            self.goal_handle = future.result()
+
+        except Exception as error:
+
+            self.navigation_active = False
+
+            self.get_logger().error(
+                f'Failed to send FollowPath goal: '
+                f'{error}'
+            )
+
+            self.resume_navigation_if_allowed()
+
+            return
+
+        # ============================================================
+        # GOAL REJECTED
+        # ============================================================
+
+        if not self.goal_handle.accepted:
+
+            self.navigation_active = False
+            self.goal_handle = None
+
+            self.get_logger().error(
+                'TEB rejected the Dijkstra path.'
+            )
+
+            return
+
+        # ============================================================
+        # GOAL ACCEPTED
+        # ============================================================
+
+        self.get_logger().info(
+            'TEB accepted the Dijkstra path.'
+        )
+
+        result_future = (
+            self.goal_handle.get_result_async()
+        )
+
+        result_future.add_done_callback(
+            self.result_callback
+        )
+
+    # ================================================================
+    # TEB FEEDBACK
+    # ================================================================
+
+    def feedback_callback(self, feedback_msg):
+
+        feedback = feedback_msg.feedback
+
+        self.get_logger().info(
+            f'TEB distance to goal: '
+            f'{feedback.distance_to_goal:.2f} m | '
+            f'speed: {feedback.speed:.2f} m/s',
+            throttle_duration_sec=1.0
+        )
+
+    # ================================================================
+    # FOLLOW PATH RESULT
+    # ================================================================
+
+    def result_callback(self, future):
+
+        was_stop_requested = self.stop_requested
+
+        self.navigation_active = False
+        self.goal_handle = None
+
+        try:
+
+            result = future.result().result
+
+        except Exception as error:
+
+            self.get_logger().error(
+                f'Failed to obtain TEB result: '
+                f'{error}'
+            )
+
+            return
+
+        # ============================================================
+        # ACTION WAS CANCELLED BECAUSE OF WAIT / EMERGENCY
+        # ============================================================
+
+        if was_stop_requested:
+
+            self.get_logger().info(
+                'TEB navigation stopped by '
+                'Behaviour Tree.'
+            )
+
+            # Keep zero velocity while stopped.
+
+
+            # If the BT has already cleared the stop condition
+            # by the time cancellation completed, resume.
+
+            if not self.waiting_for_person and not self.emergency_stop:
+
+                self.stop_requested = False
+
+                self.resume_navigation_if_allowed()
+
+            return
+
+        # ============================================================
+        # SUCCESS
+        # ============================================================
+
+        if result.error_code == 0:
+
+            self.get_logger().info(
+                'TEB successfully completed the path.'
+            )
+
+            # --------------------------------------------------------
+            # Tell Shopping Manager that the current navigation
+            # goal has been reached.
+            # --------------------------------------------------------
+
+            completion_message = Bool()
+
+            completion_message.data = True
+
+            self.completion_publisher.publish(
+                completion_message
+            )
+
+            self.get_logger().info(
+                'Published: /navigation_goal_reached = True'
+            )
+
+        # ============================================================
+        # FAILURE
+        # ============================================================
+
+        else:
+
+            self.get_logger().error(
+                f'TEB navigation failed. '
+                f'Error code: {result.error_code} | '
+                f'{result.error_msg}'
+            )
+
+
+# ====================================================================
+# MAIN
+# ====================================================================
+
+def main(args=None):
+
+    rclpy.init(args=args)
+
+    node = PlannedPathToTEB()
+
+    try:
+
+        rclpy.spin(node)
+
+    except KeyboardInterrupt:
+
+        pass
+
+    finally:
+
+        node.destroy_node()
+
+        rclpy.shutdown()
+
+
+if __name__ == '__main__':
+
+    main()

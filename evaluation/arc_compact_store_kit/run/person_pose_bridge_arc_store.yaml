@@ -1,0 +1,7 @@
+# Copy of arc_behavior_tree/config/person_pose_bridge.yaml for the compact store world.
+# Only change: the world name in the service path (default -> arc_store), because
+# gazebo_person_pose calls /world/<world_name>/set_pose and the world is named arc_store.
+- service_name: "/world/arc_store/set_pose"
+  ros_type_name: "ros_gz_interfaces/srv/SetEntityPose"
+  gz_req_type_name: "gz.msgs.Pose"
+  gz_rep_type_name: "gz.msgs.Boolean"

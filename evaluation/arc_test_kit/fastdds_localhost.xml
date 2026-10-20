@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- ARC test kit: keep every ROS 2 (Fast DDS) participant on this laptop.
+     Data goes over shared memory or loopback (127.0.0.1) only, so Wi-Fi turning
+     on/off or changing network can no longer cut nodes off from each other.
+     Loaded through FASTRTPS_DEFAULT_PROFILES_FILE in env.sh. -->
+<profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
+  <transport_descriptors>
+    <transport_descriptor>
+      <transport_id>arc_udp_loopback</transport_id>
+      <type>UDPv4</type>
+      <interfaceWhiteList>
+        <address>127.0.0.1</address>
+      </interfaceWhiteList>
+    </transport_descriptor>
+    <transport_descriptor>
+      <transport_id>arc_shm</transport_id>
+      <type>SHM</type>
+    </transport_descriptor>
+  </transport_descriptors>
+  <participant profile_name="arc_localhost_participant" is_default_profile="true">
+    <rtps>
+      <userTransports>
+        <transport_id>arc_shm</transport_id>
+        <transport_id>arc_udp_loopback</transport_id>
+      </userTransports>
+      <useBuiltinTransports>false</useBuiltinTransports>
+    </rtps>
+  </participant>
+</profiles>

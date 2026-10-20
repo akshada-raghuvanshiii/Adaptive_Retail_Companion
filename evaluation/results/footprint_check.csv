@@ -1,0 +1,5 @@
+footprint,radius_m,start_free,stops_reachable,max_snap_m,path_longer_than_kit_grid_pct,unreachable
+kit grid (C1/C2),0.15,1,9/9,0.0,0.0,
+"ARC planner, TurtleBot tests",0.2,1,9/9,0.0,1.6,
+"cart, straight (lenient)",0.355,1,9/9,0.0,9.7,
+"cart, turning (strict)",0.586,1,9/9,0.85,5.1,

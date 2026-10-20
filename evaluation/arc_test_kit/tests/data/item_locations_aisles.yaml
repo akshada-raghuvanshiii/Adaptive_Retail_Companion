@@ -1,0 +1,264 @@
+# ARC compact store: items placed by aisle (assign_items.py). Frame: map.
+frame_id: map
+items:
+  atta_flour:
+    x: 1.8
+    y: -0.4
+    yaw: 0.0
+    shelf: gondola_2
+    face: west
+    aisle: Aisle 2
+    section: Rice & flour
+    stop: gondola_2_west_a
+  baby_care:
+    x: 3.475
+    y: 1.4
+    yaw: 0.0
+    shelf: gondola_3
+    face: west
+    aisle: Aisle 3
+    section: Personal & baby care
+    stop: gondola_3_b
+  bakery:
+    x: 0.15
+    y: -0.4
+    yaw: 0.0
+    shelf: gondola_1
+    face: west
+    aisle: Aisle 1
+    section: Bakery
+    stop: gondola_1_west_a
+  biscuits:
+    x: 1.8
+    y: -0.4
+    yaw: 3.1416
+    shelf: gondola_1
+    face: east
+    aisle: Aisle 2
+    section: Biscuits
+    stop: gondola_1_east_a
+  bread:
+    x: 0.15
+    y: -0.4
+    yaw: 0.0
+    shelf: gondola_1
+    face: west
+    aisle: Aisle 1
+    section: Bakery
+    stop: gondola_1_west_a
+  breakfast_cereal:
+    x: 0.15
+    y: 1.4
+    yaw: 0.0
+    shelf: gondola_1
+    face: west
+    aisle: Aisle 1
+    section: Breakfast
+    stop: gondola_1_west_b
+  cleaning:
+    x: 3.475
+    y: -0.4
+    yaw: 0.0
+    shelf: gondola_3
+    face: west
+    aisle: Aisle 3
+    section: Household & pets
+    stop: gondola_3_a
+  cooking_oil:
+    x: 3.475
+    y: -0.4
+    yaw: 3.1416
+    shelf: gondola_2
+    face: east
+    aisle: Aisle 3
+    section: Oil & spices
+    stop: gondola_2_east_a
+  curd_paneer:
+    x: -2.2
+    y: 2.75
+    yaw: 1.5708
+    shelf: dairy_fridge
+    face: south
+    aisle: Fresh
+    section: Dairy & frozen
+    stop: dairy
+  dal_pulses:
+    x: 1.8
+    y: 1.4
+    yaw: 0.0
+    shelf: gondola_2
+    face: west
+    aisle: Aisle 2
+    section: Dal, sugar & salt
+    stop: gondola_2_west_b
+  detergent:
+    x: 3.475
+    y: -0.4
+    yaw: 0.0
+    shelf: gondola_3
+    face: west
+    aisle: Aisle 3
+    section: Household & pets
+    stop: gondola_3_a
+  eggs:
+    x: -2.2
+    y: 2.75
+    yaw: 1.5708
+    shelf: dairy_fridge
+    face: south
+    aisle: Fresh
+    section: Dairy & frozen
+    stop: dairy
+  frozen:
+    x: -2.2
+    y: 2.75
+    yaw: 1.5708
+    shelf: dairy_fridge
+    face: south
+    aisle: Fresh
+    section: Dairy & frozen
+    stop: dairy
+  fruits:
+    x: -1.4
+    y: 0.05
+    yaw: 1.5708
+    shelf: produce_display
+    face: south
+    aisle: Fresh
+    section: Fruit & vegetables
+    stop: produce
+  jam_spreads:
+    x: 0.15
+    y: 1.4
+    yaw: 0.0
+    shelf: gondola_1
+    face: west
+    aisle: Aisle 1
+    section: Breakfast
+    stop: gondola_1_west_b
+  juice:
+    x: -2.45
+    y: 0.4
+    yaw: 3.1416
+    shelf: tea_coffee_shelf
+    face: east
+    aisle: Fresh
+    section: Tea, coffee & drinks
+    stop: tea_coffee
+  milk:
+    x: -2.2
+    y: 2.75
+    yaw: 1.5708
+    shelf: dairy_fridge
+    face: south
+    aisle: Fresh
+    section: Dairy & frozen
+    stop: dairy
+  pasta:
+    x: 3.475
+    y: 1.4
+    yaw: 3.1416
+    shelf: gondola_2
+    face: east
+    aisle: Aisle 3
+    section: Pasta & sauces
+    stop: gondola_2_east_b
+  pet_food:
+    x: 3.475
+    y: -0.4
+    yaw: 0.0
+    shelf: gondola_3
+    face: west
+    aisle: Aisle 3
+    section: Household & pets
+    stop: gondola_3_a
+  rice:
+    x: 1.8
+    y: -0.4
+    yaw: 0.0
+    shelf: gondola_2
+    face: west
+    aisle: Aisle 2
+    section: Rice & flour
+    stop: gondola_2_west_a
+  sauces:
+    x: 3.475
+    y: 1.4
+    yaw: 3.1416
+    shelf: gondola_2
+    face: east
+    aisle: Aisle 3
+    section: Pasta & sauces
+    stop: gondola_2_east_b
+  snacks:
+    x: 1.8
+    y: 1.4
+    yaw: 3.1416
+    shelf: gondola_1
+    face: east
+    aisle: Aisle 2
+    section: Snacks
+    stop: gondola_1_east_b
+  soap_shampoo:
+    x: 3.475
+    y: 1.4
+    yaw: 0.0
+    shelf: gondola_3
+    face: west
+    aisle: Aisle 3
+    section: Personal & baby care
+    stop: gondola_3_b
+  spices:
+    x: 3.475
+    y: -0.4
+    yaw: 3.1416
+    shelf: gondola_2
+    face: east
+    aisle: Aisle 3
+    section: Oil & spices
+    stop: gondola_2_east_a
+  sugar_salt:
+    x: 1.8
+    y: 1.4
+    yaw: 0.0
+    shelf: gondola_2
+    face: west
+    aisle: Aisle 2
+    section: Dal, sugar & salt
+    stop: gondola_2_west_b
+  tea_coffee:
+    x: -2.45
+    y: 0.4
+    yaw: 3.1416
+    shelf: tea_coffee_shelf
+    face: east
+    aisle: Fresh
+    section: Tea, coffee & drinks
+    stop: tea_coffee
+  toiletries:
+    x: 3.475
+    y: 1.4
+    yaw: 0.0
+    shelf: gondola_3
+    face: west
+    aisle: Aisle 3
+    section: Personal & baby care
+    stop: gondola_3_b
+  vegetables:
+    x: -1.4
+    y: 0.05
+    yaw: 1.5708
+    shelf: produce_display
+    face: south
+    aisle: Fresh
+    section: Fruit & vegetables
+    stop: produce
+  water_beverages:
+    x: -2.45
+    y: 0.4
+    yaw: 3.1416
+    shelf: tea_coffee_shelf
+    face: east
+    aisle: Fresh
+    section: Tea, coffee & drinks
+    stop: tea_coffee

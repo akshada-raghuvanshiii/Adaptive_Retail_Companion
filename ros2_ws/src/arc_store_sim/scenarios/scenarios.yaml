@@ -1,0 +1,14 @@
+# Expected outcomes for the help-offer trigger. Times are sim seconds from world start;
+# each actor loops with the period given in cycle_s, so use t mod cycle_s.
+# These are scripted, observable movement patterns, not a model of anyone's state of mind.
+actors:
+  shopper_normal:    {cycle_s: 89.13, target_items: [biscuits, milk], help_offer_expected: false}
+  shopper_searching: {cycle_s: 154.38, target_items: [pasta], help_offer_expected: true, no_progress_window_s: [25.75, 108.62]}
+  shopper_browsing:  {cycle_s: 40.42, target_items: [rice, atta_flour, dal_pulses], help_offer_expected: false, note: 'hard negative: walks back and forth but stops at items'}
+  passer_by:         {cycle_s: 74.0, help_offer_expected: false}
+  staff_checkout:    {cycle_s: 45.25, help_offer_expected: false, note: 'long stops by design; not a shopper'}
+worlds:
+  arc_store.sdf: [drivable shopper only]
+  arc_store_normal.sdf: [shopper_normal]
+  arc_store_searching.sdf: [shopper_searching]
+  arc_store_busy.sdf: [shopper_normal, shopper_searching, shopper_browsing, passer_by, staff_checkout]

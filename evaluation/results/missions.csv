@@ -1,0 +1,254 @@
+label,mission,list_id,strategy,n_items,n_stops,order,planned_cost_J,exact_cost_J,driven_total,time_total,legs_ok,legs_total,completed,recoveries,collisions,n_obstacles
+smoke,smoke_s5_000,pair00,pair,0,1,gondola_1_west_a->gondola_3_a+gondola_2_east_a,4.3435,4.3435,4.2884,58.14,1,1,1,0,0,0
+teb_icp,teb_icp_s7_000,s7_r00_n8,as_entered,8,4,gondola_1_west_a dairy gondola_3_b+gondola_2_east_b gondola_2_west_a+gondola_1_east_a,15.6104,13.9462,19.0435,255.17,4,4,1,0,0,0
+teb_icp,teb_icp_s7_001,s7_r01_n12,as_entered,12,7,gondola_3_b+gondola_2_east_b dairy gondola_3_a+gondola_2_east_a tea_coffee gondola_1_west_a produce gondola_2_west_b+gondola_1_east_b,36.7865,14.929,35.2602,483.9,7,7,1,4,0,0
+teb_icp,teb_icp_s7_002,s7_r02_n3,as_entered,3,3,gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a gondola_2_west_a+gondola_1_east_a,10.2698,7.5906,10.2932,157.44,3,3,1,2,0,0
+teb_icp,teb_icp_s7_003,s7_r03_n6,as_entered,6,4,gondola_3_b+gondola_2_east_b tea_coffee gondola_3_a+gondola_2_east_a gondola_2_west_b+gondola_1_east_b,24.6681,12.629,16.5166,231.49,2,4,0,0,0,0
+teb_icp,teb_icp_s7_003,s7_r03_n6,as_entered,6,4,gondola_3_b+gondola_2_east_b tea_coffee gondola_3_a+gondola_2_east_a gondola_2_west_b+gondola_1_east_b,24.6681,12.629,23.0867,308.46,4,4,1,0,0,0
+teb_icp,teb_icp_s7_004,s7_r04_n9,as_entered,9,6,gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a tea_coffee gondola_1_west_a gondola_2_west_b+gondola_1_east_b produce,26.6445,13.4069,26.5585,392.62,6,6,1,10,0,0
+teb_icp,teb_icp_s7_005,s7_r05_n4,as_entered,4,3,gondola_3_a+gondola_2_east_a gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b,11.8755,8.4613,10.6974,156.28,3,3,1,0,0,0
+teb_icp,teb_icp_s7_006,s7_r06_n5,as_entered,5,4,gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b dairy,13.9755,13.9755,13.4585,184.26,4,4,1,0,0,0
+teb_icp,teb_icp_s7_007,s7_r07_n4,as_entered,4,3,gondola_3_b+gondola_2_east_b gondola_1_west_a gondola_3_a+gondola_2_east_a,16.2926,6.6056,15.6164,207.61,3,3,1,2,0,0
+teb_icp,teb_icp_s7_008,s7_r08_n3,as_entered,3,3,gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a tea_coffee,12.8604,10.6705,11.991,178.8,3,3,1,2,0,0
+teb_icp,teb_icp_s7_009,s7_r09_n11,as_entered,11,7,produce gondola_2_west_b+gondola_1_east_b gondola_3_a+gondola_2_east_a gondola_1_west_b tea_coffee dairy gondola_3_b+gondola_2_east_b,28.5252,14.9776,26.3406,405.7,7,7,1,6,0,0
+teb_icp,teb_icp_s7_010,s7_r10_n4,as_entered,4,4,gondola_3_a+gondola_2_east_a gondola_2_west_b+gondola_1_east_b dairy tea_coffee,16.3412,14.1512,15.7078,238.61,4,4,1,4,0,0
+teb_icp,teb_icp_s7_011,s7_r11_n8,as_entered,8,7,gondola_3_a+gondola_2_east_a gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_1_west_a dairy produce,25.4838,15.314,24.7163,404.39,7,7,1,10,0,0
+teb_icp,teb_icp_s7_012,s7_r12_n5,as_entered,5,5,gondola_2_west_b+gondola_1_east_b gondola_3_a+gondola_2_east_a gondola_1_west_a tea_coffee produce,16.9311,13.4069,15.6848,256.18,5,5,1,6,0,0
+teb_icp,teb_icp_s7_013,s7_r13_n3,as_entered,3,2,gondola_2_west_b+gondola_1_east_b gondola_1_west_a,8.3906,4.8263,7.8609,128.45,2,2,1,2,0,0
+teb_icp,teb_icp_s7_014,s7_r14_n11,as_entered,11,7,gondola_3_a+gondola_2_east_a tea_coffee gondola_3_b+gondola_2_east_b produce dairy gondola_2_west_a+gondola_1_east_a gondola_1_west_b,39.675,16.6796,38.434,501.7,7,7,1,2,0,0
+teb_icp,teb_icp_s7_015,s7_r15_n4,as_entered,4,4,gondola_3_b+gondola_2_east_b gondola_1_west_a dairy tea_coffee,18.7311,12.232,17.5877,255.9,4,4,1,4,0,0
+teb_icp,teb_icp_s7_016,s7_r16_n4,as_entered,4,3,gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a gondola_2_west_b+gondola_1_east_b,12.0406,8.4613,9.322,165.41,3,3,1,2,0,0
+teb_icp,teb_icp_s7_017,s7_r17_n12,as_entered,12,7,gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_1_west_b dairy tea_coffee gondola_2_west_a+gondola_1_east_a produce,25.9537,16.6504,22.7247,367.04,7,7,1,6,0,0
+teb_icp,teb_icp_s7_018,s7_r18_n12,as_entered,12,8,gondola_2_west_a+gondola_1_east_a tea_coffee gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a gondola_2_west_b+gondola_1_east_b gondola_1_west_a dairy produce,33.98,16.7583,31.1012,470.71,8,8,1,4,0,0
+teb_icp,teb_icp_s7_019,s7_r19_n5,as_entered,5,4,gondola_1_west_b dairy gondola_3_b+gondola_2_east_b tea_coffee,18.114,12.3219,14.4399,237.07,4,4,1,2,0,0
+teb_icp,teb_icp_s7_020,s7_r20_n5,as_entered,5,3,gondola_3_b+gondola_2_east_b produce dairy,15.4361,10.9835,13.8597,203.59,3,3,1,0,0,0
+teb_icp,teb_icp_s7_021,s7_r21_n9,as_entered,9,6,dairy gondola_2_west_b+gondola_1_east_b gondola_3_a+gondola_2_east_a gondola_1_west_a gondola_1_west_b tea_coffee,22.106,15.7554,19.6663,323.2,5,6,0,3,0,0
+teb_icp,teb_icp_s7_022,s7_r22_n6,as_entered,6,6,gondola_2_west_a+gondola_1_east_a tea_coffee gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a gondola_1_west_b dairy,26.7273,16.6796,25.5558,359.71,6,6,1,6,0,0
+teb_icp,teb_icp_s7_023,s7_r23_n7,as_entered,7,6,gondola_2_west_a+gondola_1_east_a gondola_1_west_a produce gondola_3_b+gondola_2_east_b dairy gondola_3_a+gondola_2_east_a,28.5495,15.9089,23.5402,362.8,6,6,1,4,0,0
+teb_icp,teb_icp_s7_024,s7_r24_n8,as_entered,8,6,gondola_1_west_a gondola_3_b+gondola_2_east_b dairy gondola_2_west_a+gondola_1_east_a gondola_2_west_b+gondola_1_east_b gondola_1_west_b,23.8018,14.814,18.1758,324.75,6,6,1,6,0,0
+teb_icp,teb_icp_s7_025,s7_r25_n11,as_entered,11,7,dairy tea_coffee produce gondola_3_b+gondola_2_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_1_west_a,25.4102,16.3796,20.9562,354.41,7,7,1,4,0,0
+teb_icp,teb_icp_s7_026,s7_r26_n6,as_entered,6,4,gondola_1_west_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,10.2906,10.2698,5.4641,152.85,4,4,1,2,0,0
+teb_icp,teb_icp_s7_027,s7_r27_n4,as_entered,4,4,gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_1_west_a gondola_3_b+gondola_2_east_b,16.2776,7.5906,13.716,211.4,4,4,1,0,0,0
+teb_icp,teb_icp_s7_028,s7_r28_n4,as_entered,4,3,dairy gondola_2_west_a+gondola_1_east_a gondola_1_west_a,12.9776,9.5734,10.7547,169.17,3,3,1,2,0,0
+teb_icp,teb_icp_s7_029,s7_r29_n6,as_entered,6,4,gondola_2_west_a+gondola_1_east_a dairy gondola_1_west_a gondola_3_b+gondola_2_east_b,20.0453,13.9462,17.6365,253.11,4,4,1,2,0,0
+teb_icp_pairs,teb_icp_pairs_s5_000,pair00,pair,0,1,gondola_1_west_a->gondola_3_a+gondola_2_east_a,4.3435,4.3435,3.7696,53.73,1,1,1,0,0,0
+teb_icp_pairs,teb_icp_pairs_s5_001,pair01,pair,0,1,tea_coffee->gondola_3_a+gondola_2_east_a,7.0698,7.0698,5.7523,79.19,1,1,1,0,0,0
+teb_icp_pairs,teb_icp_pairs_s5_002,pair02,pair,0,1,produce->dairy,3.1778,3.1778,3.0205,55.14,1,1,1,2,0,0
+teb_icp_pairs,teb_icp_pairs_s5_003,pair03,pair,0,1,tea_coffee->gondola_1_west_a,2.9314,2.9314,2.8091,50.73,1,1,1,2,0,0
+teb_icp_pairs,teb_icp_pairs_s5_004,pair04,pair,0,1,gondola_1_west_a->gondola_2_west_b+gondola_1_east_b,4.3642,4.3642,4.2067,72.97,1,1,1,2,0,0
+teb_icp_pairs,teb_icp_pairs_s5_005,pair05,pair,0,1,gondola_3_b+gondola_2_east_b->gondola_1_west_a,6.1435,6.1435,5.9853,82.25,1,1,1,2,0,0
+teb_icp_pairs,teb_icp_pairs_s5_006,pair06,pair,0,1,gondola_2_west_b+gondola_1_east_b->gondola_3_a+gondola_2_east_a,4.4349,4.4349,4.1171,54.71,1,1,1,0,0,0
+teb_icp_pairs,teb_icp_pairs_s5_007,pair07,pair,0,1,dairy->gondola_1_west_a,4.3284,4.3284,3.994,60.36,1,1,1,2,0,0
+teb_icp_pairs,teb_icp_pairs_s5_008,pair08,pair,0,1,gondola_3_a+gondola_2_east_a->home,4.8056,4.8056,4.321,66.16,1,1,1,0,0,0
+teb_icp_pairs,teb_icp_pairs_s5_009,pair09,pair,0,1,dairy->gondola_1_west_b,2.9092,2.9092,1.496,48.71,1,1,1,2,0,0
+teb_icp_pairs,teb_icp_pairs_s5_010,pair10,pair,0,1,produce->gondola_2_west_b+gondola_1_east_b,4.6734,4.6734,2.4618,71.35,0,1,0,3,0,0
+teb_icp_pairs,teb_icp_pairs_s5_011,pair11,pair,0,1,gondola_3_a+gondola_2_east_a->dairy,8.1849,8.1849,3.4437,57.25,0,1,0,0,0,0
+teb_icp_pairs,teb_icp_pairs_s5_011,pair11,pair,0,1,gondola_3_a+gondola_2_east_a->dairy,8.1849,8.1849,8.0837,102.13,1,1,1,0,0,0
+teb_icp_pairs,teb_icp_pairs_s5_012,pair12,pair,0,1,gondola_2_west_a+gondola_1_east_a->produce,4.1956,4.1956,4.1804,58.62,1,1,1,0,0,0
+teb_icp_pairs,teb_icp_pairs_s5_013,pair13,pair,0,1,gondola_2_west_b+gondola_1_east_b->produce,4.8027,4.8027,4.687,67.36,1,1,1,0,0,0
+teb_icp_pairs,teb_icp_pairs_s5_014,pair14,pair,0,1,gondola_3_b+gondola_2_east_b->tea_coffee,7.387,7.387,7.1953,92.19,1,1,1,0,0,0
+teb_icp_pairs,teb_icp_pairs_s5_015,pair15,pair,0,1,gondola_2_west_a+gondola_1_east_a->tea_coffee,5.3906,5.3906,5.34,79.44,1,1,1,2,0,0
+teb_icp_pairs,teb_icp_pairs_s5_016,pair16,pair,0,1,produce->gondola_3_b+gondola_2_east_b,6.482,6.482,6.2393,76.15,1,1,1,0,0,0
+teb_icp_pairs,teb_icp_pairs_s5_017,pair17,pair,0,1,gondola_2_west_a+gondola_1_east_a->gondola_3_b+gondola_2_east_b,4.3935,4.3935,3.8461,55.62,1,1,1,0,0,0
+teb_icp_pairs,teb_icp_pairs_s5_018,pair18,pair,0,1,produce->gondola_1_west_b,2.1385,2.1385,2.113,29.33,1,1,1,0,0,0
+teb_icp_pairs,teb_icp_pairs_s5_019,pair19,pair,0,1,dairy->gondola_3_a+gondola_2_east_a,8.1849,8.1849,7.0788,94.11,1,1,1,0,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_000,pair00,pair,0,1,gondola_1_west_a->gondola_3_a+gondola_2_east_a,4.3435,4.3435,0.1658,14.54,0,1,0,3,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_001,pair01,pair,0,1,tea_coffee->gondola_3_a+gondola_2_east_a,7.0698,7.0698,5.8516,78.23,1,1,1,2,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_002,pair02,pair,0,1,produce->dairy,3.1778,3.1778,3.0998,45.96,1,1,1,0,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_003,pair03,pair,0,1,tea_coffee->gondola_1_west_a,2.9314,2.9314,0.181,9.26,0,1,0,3,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_004,pair04,pair,0,1,gondola_1_west_a->gondola_2_west_b+gondola_1_east_b,4.4642,4.4642,0.1188,5.73,0,1,0,3,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_005,pair05,pair,0,1,gondola_3_b+gondola_2_east_b->gondola_1_west_a,6.1435,6.1435,0.0218,5.38,0,1,0,3,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_006,pair06,pair,0,1,gondola_2_west_b+gondola_1_east_b->gondola_3_a+gondola_2_east_a,4.3935,4.3935,4.8952,80.21,1,1,1,0,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_007,pair07,pair,0,1,dairy->gondola_1_west_a,4.3577,4.3577,3.4228,47.55,1,1,1,0,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_008,pair08,pair,0,1,gondola_3_a+gondola_2_east_a->home,4.8056,4.8056,4.03,57.36,1,1,1,0,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_009,pair09,pair,0,1,dairy->gondola_1_west_b,2.9092,2.9092,2.0472,31.9,1,1,1,0,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_010,pair10,pair,0,1,produce->gondola_2_west_b+gondola_1_east_b,4.8027,4.8027,4.1431,51.6,1,1,1,0,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_011,pair11,pair,0,1,gondola_3_a+gondola_2_east_a->dairy,8.1849,8.1849,4.3721,59.72,1,1,1,2,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_012,pair12,pair,0,1,gondola_2_west_a+gondola_1_east_a->produce,4.1956,4.1956,3.8379,55.27,1,1,1,0,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_013,pair13,pair,0,1,gondola_2_west_b+gondola_1_east_b->produce,4.8027,4.8027,4.1634,59.43,1,1,1,2,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_014,pair14,pair,0,1,gondola_3_b+gondola_2_east_b->tea_coffee,7.387,7.387,2.7674,44.34,0,1,0,3,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_015,pair15,pair,0,1,gondola_2_west_a+gondola_1_east_a->tea_coffee,5.3906,5.3906,0.0809,5.32,0,1,0,3,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_016,pair16,pair,0,1,produce->gondola_3_b+gondola_2_east_b,6.482,6.482,4.6324,68.67,1,1,1,0,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_017,pair17,pair,0,1,gondola_2_west_a+gondola_1_east_a->gondola_3_b+gondola_2_east_b,4.3935,4.3935,3.6537,56.9,1,1,1,0,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_018,pair18,pair,0,1,produce->gondola_1_west_b,2.1385,2.1385,1.1044,36.49,1,1,1,0,0,0
+rpp_icp_pairs,rpp_icp_pairs_s5_019,pair19,pair,0,1,dairy->gondola_3_a+gondola_2_east_a,8.1849,8.1849,7.4851,112.06,1,1,1,0,0,0
+teb_icp_boxes,teb_icp_boxes_s9_000,pair00,pair,0,1,tea_coffee->gondola_3_b+gondola_2_east_b,7.5284,7.5284,5.0319,89.98,0,1,0,3,1,3
+teb_icp_boxes,teb_icp_boxes_s9_001,pair01,pair,0,1,gondola_2_west_b+gondola_1_east_b->tea_coffee,5.7491,5.7491,0,3.0,1,1,1,0,0,0
+teb_icp_boxes,teb_icp_boxes_s9_002,pair02,pair,0,1,dairy->home,3.837,3.837,0.93,41.46,0,1,0,3,0,0
+teb_icp_boxes,teb_icp_boxes_s9_003,pair03,pair,0,1,gondola_1_west_a->dairy,4.2991,4.2991,2.7787,64.95,0,1,0,3,1,2
+teb_icp_boxes,teb_icp_boxes_s9_004,pair04,pair,0,1,produce->gondola_2_west_b+gondola_1_east_b,4.7613,4.7613,4.2775,68.5,1,1,1,0,1,3
+teb_icp_boxes,teb_icp_boxes_s9_001,pair01,pair,0,1,gondola_2_west_b+gondola_1_east_b->tea_coffee,5.6784,5.6784,1.7868,59.46,0,1,0,3,1,3
+teb_icp_boxes,teb_icp_boxes_s9_002,pair02,pair,0,1,dairy->home,3.9249,3.9249,3.9211,51.94,1,1,1,0,1,1
+teb_icp_boxes,teb_icp_boxes_s9_003,pair03,pair,0,1,gondola_1_west_a->dairy,4.387,4.387,3.1002,73.0,0,1,0,3,1,2
+teb_icp_boxes,teb_icp_boxes_s9_004,pair04,pair,0,1,produce->gondola_2_west_b+gondola_1_east_b,4.7734,4.7734,1.4313,57.34,0,1,0,3,1,3
+teb_icp_boxes,teb_icp_boxes_s9_005,pair05,pair,0,1,gondola_3_a+gondola_2_east_a->tea_coffee,7.0491,7.0491,5.0715,106.01,0,1,0,2,1,1
+teb_icp_boxes,teb_icp_boxes_s9_006,pair06,pair,0,1,gondola_1_west_b->tea_coffee,3.0435,3.0435,3.1556,50.58,1,1,1,0,0,1
+teb_icp_boxes,teb_icp_boxes_s9_007,pair07,pair,0,1,gondola_3_a+gondola_2_east_a->home,4.7556,4.7556,1.3444,53.72,0,1,0,3,1,3
+teb_icp_boxes,teb_icp_boxes_s9_008,pair08,pair,0,1,dairy->gondola_3_a+gondola_2_east_a,8.2642,8.2642,3.7076,72.97,0,1,0,3,1,2
+teb_icp_boxes,teb_icp_boxes_s9_009,pair09,pair,0,1,gondola_3_a+gondola_2_east_a->gondola_1_west_b,6.0935,6.0935,1.6816,58.32,0,1,0,3,1,3
+teb_icp_boxes,teb_icp_boxes_s9_010,pair10,pair,0,1,dairy->produce,3.1192,3.1192,0.9212,43.67,0,1,0,3,1,2
+teb_icp_boxes,teb_icp_boxes_s9_011,pair11,pair,0,1,gondola_1_west_a->tea_coffee,2.9314,2.9314,0.0166,22.14,1,1,1,2,0,0
+teb_icp_boxes,teb_icp_boxes_s9_012,pair12,pair,0,1,tea_coffee->gondola_2_west_a+gondola_1_east_a,5.3491,5.3491,5.0506,66.32,1,1,1,0,1,1
+teb_icp_boxes,teb_icp_boxes_s9_013,pair13,pair,0,1,tea_coffee->gondola_1_west_a,2.9314,2.9314,1.7113,51.85,0,1,0,3,1,1
+teb_icp_boxes,teb_icp_boxes_s9_014,pair14,pair,0,1,tea_coffee->gondola_3_a+gondola_2_east_a,7.0491,7.0491,3.3368,73.51,0,1,0,0,1,3
+teb_icp_c2,teb_icp_c2_s21_000,s21_n5_0,as_entered,5,4,gondola_1_west_b produce gondola_3_b+gondola_2_east_b gondola_2_west_b+gondola_1_east_b,12.7882,8.9376,12.8981,189.28,4,4,1,1,0,0
+teb_icp_c2,teb_icp_c2_s21_001,s21_n5_0,nn_dijkstra,5,4,produce gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b,8.9376,8.9376,8.6292,144.34,4,4,1,3,0,0
+teb_icp_c2,teb_icp_c2_s21_002,s21_n5_0,exact,5,4,produce gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b,8.9376,8.9376,8.7152,151.79,2,4,0,6,0,0
+teb_icp_c2,teb_icp_c2_s21_003,s21_n5_1,as_entered,5,4,tea_coffee gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a dairy,20.0583,13.3042,19.9322,287.76,4,4,1,5,0,0
+teb_icp_c2,teb_icp_c2_s21_004,s21_n5_1,nn_dijkstra,5,4,tea_coffee dairy gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,13.3042,13.3042,13.5387,203.91,4,4,1,6,0,0
+teb_icp_c2,teb_icp_c2_s21_005,s21_n5_1,exact,5,4,tea_coffee dairy gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,13.3042,13.3042,13.1057,209.41,4,4,1,6,0,0
+teb_icp_c2,teb_icp_c2_s21_006,s21_n5_2,as_entered,5,5,gondola_1_west_b dairy gondola_3_a+gondola_2_east_a tea_coffee gondola_2_west_a+gondola_1_east_a,25.0874,14.8711,24.7361,348.7,5,5,1,4,0,0
+teb_icp_c2,teb_icp_c2_s21_007,s21_n5_2,nn_dijkstra,5,5,gondola_1_west_b dairy tea_coffee gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a,14.8711,14.8711,14.1875,228.96,5,5,1,4,0,0
+teb_icp_c2,teb_icp_c2_s21_008,s21_n5_2,exact,5,5,gondola_1_west_b dairy tea_coffee gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a,14.8711,14.8711,14.7638,235.45,5,5,1,4,0,0
+teb_icp_c2,teb_icp_c2_s21_009,s21_n5_3,as_entered,5,5,gondola_2_west_a+gondola_1_east_a dairy gondola_3_a+gondola_2_east_a produce gondola_1_west_a,25.4989,14.1004,23.117,339.07,5,5,1,2,0,0
+teb_icp_c2,teb_icp_c2_s21_010,s21_n5_3,nn_dijkstra,5,5,gondola_1_west_a produce dairy gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a,14.5376,14.1004,14.5088,240.11,4,5,0,9,0,0
+teb_icp_c2,teb_icp_c2_s21_011,s21_n5_3,exact,5,5,dairy produce gondola_1_west_a gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a,14.1004,14.1004,11.8928,191.51,5,5,1,0,0,0
+teb_icp_c2,teb_icp_c2_s21_012,s21_n5_4,as_entered,5,5,gondola_1_west_a tea_coffee gondola_2_west_b+gondola_1_east_b gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,15.3569,13.6154,14.4917,252.85,4,5,0,9,0,0
+teb_icp_c2,teb_icp_c2_s21_013,s21_n5_4,nn_dijkstra,5,5,gondola_1_west_a tea_coffee gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,13.6154,13.6154,12.101,228.87,5,5,1,6,0,0
+teb_icp_c2,teb_icp_c2_s21_014,s21_n5_4,exact,5,5,gondola_1_west_a tea_coffee gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,13.6154,13.6154,13.4137,241.29,4,5,0,10,0,0
+teb_icp_c2,teb_icp_c2_s21_015,s21_n5_5,as_entered,5,5,gondola_3_b+gondola_2_east_b produce gondola_3_a+gondola_2_east_a gondola_2_west_b+gondola_1_east_b tea_coffee,28.4173,12.8376,26.3946,382.33,5,5,1,2,0,0
+teb_icp_c2,teb_icp_c2_s21_016,s21_n5_5,nn_dijkstra,5,5,produce tea_coffee gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,12.8376,12.8376,11.5794,221.12,4,5,0,10,0,0
+teb_icp_c2,teb_icp_c2_s21_017,s21_n5_5,exact,5,5,produce tea_coffee gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,12.8376,12.8376,9.554,221.43,4,5,0,8,0,0
+teb_icp_c2,teb_icp_c2_s21_018,s21_n5_6,as_entered,5,5,produce gondola_2_west_a+gondola_1_east_a gondola_1_west_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,16.2447,12.2225,15.7255,255.37,5,5,1,6,0,0
+teb_icp_c2,teb_icp_c2_s21_019,s21_n5_6,nn_dijkstra,5,5,produce gondola_1_west_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a gondola_2_west_a+gondola_1_east_a,12.379,12.2225,11.3908,214.06,2,5,0,9,0,0
+teb_icp_c2,teb_icp_c2_s21_020,s21_n5_6,exact,5,5,gondola_1_west_b produce gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,12.2225,12.2225,9.2361,224.03,5,5,1,4,0,0
+teb_icp_c2,teb_icp_c2_s21_021,s21_n5_7,as_entered,5,3,gondola_3_b+gondola_2_east_b tea_coffee gondola_2_west_a+gondola_1_east_a,18.6539,12.4619,15.9764,238.5,3,3,1,2,0,0
+teb_icp_c2,teb_icp_c2_s21_022,s21_n5_7,nn_dijkstra,5,3,tea_coffee gondola_2_west_a+gondola_1_east_a gondola_3_b+gondola_2_east_b,12.4619,12.4619,9.9894,172.84,3,3,1,4,0,0
+teb_icp_c2,teb_icp_c2_s21_023,s21_n5_7,exact,5,3,tea_coffee gondola_2_west_a+gondola_1_east_a gondola_3_b+gondola_2_east_b,12.4619,12.4619,11.0746,170.34,3,3,1,1,0,0
+teb_icp_c2,teb_icp_c2_s21_024,s21_n5_8,as_entered,5,5,dairy gondola_2_west_a+gondola_1_east_a gondola_1_west_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,19.2296,13.9876,17.3888,288.41,5,5,1,5,0,0
+teb_icp_c2,teb_icp_c2_s21_025,s21_n5_8,nn_dijkstra,5,5,gondola_1_west_a gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b dairy,13.9876,13.9876,11.8321,228.12,5,5,1,6,0,0
+teb_icp_c2,teb_icp_c2_s21_026,s21_n5_8,exact,5,5,gondola_1_west_a gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b dairy,13.9876,13.9876,13.4959,237.31,4,5,0,7,0,0
+teb_icp_c2,teb_icp_c2_s21_027,s21_n5_9,as_entered,5,4,gondola_1_west_a gondola_2_west_a+gondola_1_east_a tea_coffee gondola_1_west_b,11.5018,10.0426,8.8257,188.88,4,4,1,4,0,0
+teb_icp_c2,teb_icp_c2_s21_028,s21_n5_9,nn_dijkstra,5,4,gondola_1_west_a gondola_1_west_b tea_coffee gondola_2_west_a+gondola_1_east_a,10.6669,10.0426,8.1643,182.21,4,4,1,4,0,0
+teb_icp_c2,teb_icp_c2_s21_029,s21_n5_9,exact,5,4,gondola_1_west_b tea_coffee gondola_1_west_a gondola_2_west_a+gondola_1_east_a,10.0426,10.0426,9.4798,151.61,4,4,1,0,0,0
+teb_icp_c2,teb_icp_c2_s21_030,s21_n8_0,as_entered,8,6,gondola_1_west_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a dairy tea_coffee gondola_1_west_a,21.2755,14.9497,18.4245,304.87,6,6,1,5,0,0
+teb_icp_c2,teb_icp_c2_s21_031,s21_n8_0,nn_dijkstra,8,6,gondola_1_west_a gondola_1_west_b dairy tea_coffee gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,16.5154,14.9497,11.7944,266.65,5,6,0,10,0,0
+teb_icp_c2,teb_icp_c2_s21_032,s21_n8_0,exact,8,6,gondola_1_west_a tea_coffee dairy gondola_1_west_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,14.9497,14.9497,13.8033,231.81,6,6,1,5,0,0
+teb_icp_c2,teb_icp_c2_s21_033,s21_n8_1,as_entered,8,5,gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b tea_coffee gondola_3_a+gondola_2_east_a gondola_1_west_a,25.703,13.6154,21.2625,346.18,5,5,1,4,0,0
+teb_icp_c2,teb_icp_c2_s21_034,s21_n8_1,nn_dijkstra,8,5,gondola_1_west_a tea_coffee gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,13.6154,13.6154,12.1152,230.25,4,5,0,8,0,0
+teb_icp_c2,teb_icp_c2_s21_035,s21_n8_1,exact,8,5,gondola_1_west_a tea_coffee gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,13.6154,13.6154,12.1079,234.08,4,5,0,10,0,0
+teb_icp_c2,teb_icp_c2_s21_036,s21_n8_2,as_entered,8,6,tea_coffee gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a gondola_1_west_a gondola_2_west_a+gondola_1_east_a,19.8075,14.4962,14.1105,310.93,6,6,1,8,0,0
+teb_icp_c2,teb_icp_c2_s21_037,s21_n8_2,nn_dijkstra,8,6,gondola_1_west_a gondola_2_west_a+gondola_1_east_a gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a tea_coffee,16.5018,14.4962,13.7572,258.19,6,6,1,4,0,0
+teb_icp_c2,teb_icp_c2_s21_038,s21_n8_2,exact,8,6,tea_coffee gondola_1_west_a gondola_2_west_a+gondola_1_east_a gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,14.4962,14.4962,8.5258,232.11,6,6,1,5,0,0
+teb_icp_c2,teb_icp_c2_s21_039,s21_n8_3,as_entered,8,5,gondola_3_b+gondola_2_east_b tea_coffee dairy gondola_3_a+gondola_2_east_a gondola_1_west_a,28.2868,14.082,22.9643,373.46,5,5,1,3,0,0
+teb_icp_c2,teb_icp_c2_s21_040,s21_n8_3,nn_dijkstra,8,5,gondola_1_west_a tea_coffee dairy gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,14.082,14.082,12.5493,229.53,5,5,1,8,0,0
+teb_icp_c2,teb_icp_c2_s21_041,s21_n8_3,exact,8,5,gondola_1_west_a tea_coffee dairy gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,14.082,14.082,10.6432,233.34,5,5,1,9,0,0
+teb_icp_c2,teb_icp_c2_s21_042,s21_n8_4,as_entered,8,6,produce gondola_2_west_b+gondola_1_east_b dairy gondola_1_west_b gondola_3_a+gondola_2_east_a tea_coffee,27.093,15.1276,22.596,383.37,4,6,0,6,0,0
+teb_icp_c2,teb_icp_c2_s21_043,s21_n8_4,nn_dijkstra,8,6,produce tea_coffee dairy gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_3_a+gondola_2_east_a,15.1276,15.1276,10.0066,247.45,6,6,1,6,0,0
+teb_icp_c2,teb_icp_c2_s21_044,s21_n8_4,exact,8,6,produce tea_coffee dairy gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_3_a+gondola_2_east_a,15.1276,15.1276,5.2194,229.44,5,6,0,4,0,0
+teb_icp_c2,teb_icp_c2_s21_045,s21_n8_5,as_entered,8,7,dairy gondola_2_west_a+gondola_1_east_a gondola_1_west_a gondola_1_west_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a tea_coffee,28.1788,16.8468,22.6842,389.66,7,7,1,3,0,0
+teb_icp_c2,teb_icp_c2_s21_046,s21_n8_5,nn_dijkstra,8,7,gondola_1_west_a gondola_1_west_b dairy tea_coffee gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,17.4711,16.8468,11.9934,290.43,5,7,0,10,0,0
+teb_icp_c2,teb_icp_c2_s21_047,s21_n8_5,exact,8,7,gondola_1_west_b dairy tea_coffee gondola_1_west_a gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,16.8468,16.8468,12.1942,282.71,7,7,1,7,0,0
+teb_icp_c2,teb_icp_c2_s21_048,s21_n8_6,as_entered,8,6,gondola_2_west_a+gondola_1_east_a tea_coffee gondola_1_west_a gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a dairy,27.5888,16.4004,20.2004,395.53,6,6,1,5,0,0
+teb_icp_c2,teb_icp_c2_s21_049,s21_n8_6,nn_dijkstra,8,6,gondola_1_west_a gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b dairy tea_coffee,16.4412,16.4004,14.2254,284.08,6,6,1,7,0,0
+teb_icp_c2,teb_icp_c2_s21_050,s21_n8_6,exact,8,6,dairy tea_coffee gondola_1_west_a gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,16.4004,16.4004,14.5592,284.83,6,6,1,6,0,0
+teb_icp_c2,teb_icp_c2_s21_051,s21_n8_7,as_entered,8,6,gondola_3_a+gondola_2_east_a gondola_2_west_a+gondola_1_east_a gondola_3_b+gondola_2_east_b produce gondola_1_west_b gondola_2_west_b+gondola_1_east_b,23.2137,12.479,15.7424,329.73,6,6,1,5,0,0
+teb_icp_c2,teb_icp_c2_s21_052,s21_n8_7,nn_dijkstra,8,6,produce gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,12.479,12.479,10.3769,245.29,4,6,0,12,0,0
+teb_icp_c2,teb_icp_c2_s21_053,s21_n8_7,exact,8,6,produce gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,12.479,12.479,11.9365,216.8,4,6,0,6,0,0
+teb_icp_c2,teb_icp_c2_s21_054,s21_n8_8,as_entered,8,6,gondola_1_west_b gondola_3_b+gondola_2_east_b dairy gondola_3_a+gondola_2_east_a gondola_2_west_a+gondola_1_east_a gondola_2_west_b+gondola_1_east_b,24.9811,15.3619,17.0183,338.21,6,6,1,2,0,0
+teb_icp_c2,teb_icp_c2_s21_055,s21_n8_8,nn_dijkstra,8,6,gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b dairy,16.8462,15.3619,13.6627,266.84,4,6,0,5,0,0
+teb_icp_c2,teb_icp_c2_s21_056,s21_n8_8,exact,8,6,gondola_1_west_b dairy gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,15.3619,15.3619,12.9375,262.4,3,6,0,9,0,0
+teb_icp_c2,teb_icp_c2_s21_057,s21_n8_9,as_entered,8,7,gondola_2_west_a+gondola_1_east_a gondola_1_west_b gondola_1_west_a produce gondola_2_west_b+gondola_1_east_b dairy tea_coffee,23.0595,13.2497,21.2747,373.13,6,7,0,8,0,0
+teb_icp_c2,teb_icp_c2_s21_058,s21_n8_9,nn_dijkstra,8,7,gondola_1_west_a produce tea_coffee dairy gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a,13.2497,13.2497,9.5223,247.53,6,7,0,8,0,0
+teb_icp_c2,teb_icp_c2_s21_059,s21_n8_9,exact,8,7,gondola_1_west_a produce tea_coffee dairy gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a,13.2497,13.2497,11.4513,247.2,7,7,1,10,0,0
+teb_icp_c2,teb_icp_c2_s21_060,s21_n12_0,as_entered,12,8,gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b tea_coffee dairy gondola_3_a+gondola_2_east_a produce gondola_1_west_b gondola_2_west_a+gondola_1_east_a,37.4057,16.9276,31.3362,500.86,7,8,0,5,0,0
+teb_icp_c2,teb_icp_c2_s21_061,s21_n12_0,nn_dijkstra,12,8,produce tea_coffee dairy gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,16.9276,16.9276,11.9538,296.85,5,8,0,10,0,0
+teb_icp_c2,teb_icp_c2_s21_062,s21_n12_0,exact,12,8,produce tea_coffee dairy gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,16.9276,16.9276,11.3789,301.07,6,8,0,10,0,0
+teb_icp_c2,teb_icp_c2_s21_063,s21_n12_1,as_entered,12,8,dairy gondola_2_west_b+gondola_1_east_b gondola_3_a+gondola_2_east_a tea_coffee gondola_1_west_b gondola_3_b+gondola_2_east_b gondola_1_west_a produce,35.485,15.964,29.5462,498.14,7,8,0,10,0,0
+teb_icp_c2,teb_icp_c2_s21_064,s21_n12_1,nn_dijkstra,12,8,gondola_1_west_a produce tea_coffee dairy gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,15.964,15.964,12.1917,283.04,8,8,1,7,0,0
+teb_icp_c2,teb_icp_c2_s21_065,s21_n12_1,exact,12,8,gondola_1_west_a produce tea_coffee dairy gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,15.964,15.964,13.1035,289.0,8,8,1,8,0,0
+teb_icp_c2,teb_icp_c2_s21_066,s21_n12_2,as_entered,12,8,gondola_3_b+gondola_2_east_b gondola_2_west_b+gondola_1_east_b dairy produce tea_coffee gondola_3_a+gondola_2_east_a gondola_1_west_b gondola_1_west_a,32.6738,15.964,20.8791,455.34,6,8,0,8,0,0
+teb_icp_c2,teb_icp_c2_s21_067,s21_n12_2,nn_dijkstra,12,8,gondola_1_west_a produce tea_coffee dairy gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,15.964,15.964,10.5679,288.23,6,8,0,10,0,0
+teb_icp_c2,teb_icp_c2_s21_068,s21_n12_2,exact,12,8,gondola_1_west_a produce tea_coffee dairy gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,15.964,15.964,12.6601,282.27,7,8,0,8,0,0
+teb_icp_c2,teb_icp_c2_s21_069,s21_n12_3,as_entered,12,7,produce gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b gondola_1_west_a tea_coffee dairy gondola_2_west_b+gondola_1_east_b,25.3711,15.0962,17.1032,359.95,5,7,0,7,0,0
+teb_icp_c2,teb_icp_c2_s21_070,s21_n12_3,nn_dijkstra,12,7,gondola_1_west_a produce tea_coffee dairy gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,15.0962,15.0962,12.6491,270.0,7,7,1,12,0,0
+teb_icp_c2,teb_icp_c2_s21_071,s21_n12_3,exact,12,7,gondola_1_west_a produce tea_coffee dairy gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,15.0962,15.0962,12.3296,270.77,7,7,1,11,0,0
+teb_icp_c2,teb_icp_c2_s21_072,s21_n12_4,as_entered,12,8,gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b dairy gondola_1_west_a tea_coffee produce gondola_2_west_b+gondola_1_east_b,27.3037,16.8376,18.7057,408.24,8,8,1,7,0,0
+teb_icp_c2,teb_icp_c2_s21_073,s21_n12_4,nn_dijkstra,12,8,gondola_1_west_a produce tea_coffee dairy gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,16.8376,16.8376,13.2595,312.64,7,8,0,9,0,0
+teb_icp_c2,teb_icp_c2_s21_074,s21_n12_4,exact,12,8,gondola_1_west_a produce tea_coffee dairy gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,16.8376,16.8376,9.5298,298.49,7,8,0,8,0,0
+teb_icp_c2,teb_icp_c2_s21_075,s21_n12_5,as_entered,12,7,gondola_1_west_a gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a dairy tea_coffee gondola_2_west_a+gondola_1_east_a gondola_2_west_b+gondola_1_east_b,26.2761,16.8376,19.0834,381.66,7,7,1,6,0,0
+teb_icp_c2,teb_icp_c2_s21_076,s21_n12_5,nn_dijkstra,12,7,gondola_1_west_a gondola_2_west_a+gondola_1_east_a gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a tea_coffee dairy,18.9554,16.8376,11.8749,309.33,6,7,0,8,0,0
+teb_icp_c2,teb_icp_c2_s21_077,s21_n12_5,exact,12,7,gondola_1_west_a tea_coffee dairy gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,16.8376,16.8376,14.9718,298.27,7,7,1,10,0,0
+teb_icp_c2,teb_icp_c2_s21_078,s21_n12_6,as_entered,12,8,gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a produce dairy gondola_2_west_b+gondola_1_east_b gondola_1_west_a tea_coffee gondola_2_west_a+gondola_1_east_a,34.1915,16.8376,18.3192,492.04,6,8,0,11,0,0
+teb_icp_c2,teb_icp_c2_s21_079,s21_n12_6,nn_dijkstra,12,8,gondola_1_west_a produce tea_coffee dairy gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,16.8376,16.8376,13.5512,333.98,7,8,0,13,0,0
+teb_icp_c2,teb_icp_c2_s21_080,s21_n12_6,exact,12,8,gondola_1_west_a produce tea_coffee dairy gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,16.8376,16.8376,15.0746,297.48,7,8,0,10,0,0
+teb_icp_c2,teb_icp_c2_s21_081,s21_n12_7,as_entered,12,7,gondola_2_west_a+gondola_1_east_a gondola_1_west_b gondola_3_b+gondola_2_east_b gondola_1_west_a tea_coffee gondola_2_west_b+gondola_1_east_b gondola_3_a+gondola_2_east_a,31.1551,15.3569,25.1533,455.87,4,7,0,13,0,0
+teb_icp_c2,teb_icp_c2_s21_082,s21_n12_7,nn_dijkstra,12,7,gondola_1_west_a gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b tea_coffee,18.619,15.3569,15.8933,315.89,6,7,0,9,0,0
+teb_icp_c2,teb_icp_c2_s21_083,s21_n12_7,exact,12,7,gondola_1_west_a tea_coffee gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,15.3569,15.3569,12.5349,281.85,5,7,0,11,0,0
+teb_icp_c2,teb_icp_c2_s21_084,s21_n12_8,as_entered,12,7,gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a dairy tea_coffee gondola_2_west_a+gondola_1_east_a gondola_1_west_b gondola_2_west_b+gondola_1_east_b,30.8631,16.9276,17.6554,429.62,6,7,0,6,0,0
+teb_icp_c2,teb_icp_c2_s21_085,s21_n12_8,nn_dijkstra,12,7,gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b dairy tea_coffee,19.2997,16.9276,16.6052,321.77,5,7,0,8,0,0
+teb_icp_c2,teb_icp_c2_s21_086,s21_n12_8,exact,12,7,tea_coffee dairy gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,16.9276,16.9276,9.9111,274.14,5,7,0,7,0,0
+teb_icp_c2,teb_icp_c2_s21_087,s21_n12_9,as_entered,12,8,gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_2_west_a+gondola_1_east_a dairy gondola_3_a+gondola_2_east_a produce gondola_1_west_b gondola_1_west_a,35.9001,17.2054,22.6576,488.79,7,8,0,4,0,0
+teb_icp_c2,teb_icp_c2_s21_088,s21_n12_9,nn_dijkstra,12,8,gondola_1_west_a produce gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b dairy,19.6918,17.2054,15.9929,316.82,6,8,0,8,0,0
+teb_icp_c2,teb_icp_c2_s21_089,s21_n12_9,exact,12,8,gondola_1_west_a produce dairy gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,17.2054,17.2054,16.0724,327.37,6,8,0,12,0,0
+teb_icp_boxes,teb_icp_boxes_s9_015,pair15,pair,0,1,gondola_3_b+gondola_2_east_b->home,5.7556,5.7556,1.6388,58.83,0,1,0,3,1,3
+teb_icp_boxes,teb_icp_boxes_s9_016,pair16,pair,0,1,gondola_3_b+gondola_2_east_b->dairy,6.4056,6.4056,1.4122,57.79,0,1,0,3,1,2
+teb_icp_boxes,teb_icp_boxes_s9_017,pair17,pair,0,1,produce->gondola_3_b+gondola_2_east_b,6.432,6.432,2.9375,61.68,0,1,0,3,1,1
+teb_icp_boxes,teb_icp_boxes_s9_018,pair18,pair,0,1,gondola_1_west_a->gondola_3_b+gondola_2_east_b,6.0935,6.0935,5.9767,87.98,1,1,1,2,0,0
+teb_icp_boxes,teb_icp_boxes_s9_019,pair19,pair,0,1,gondola_2_west_b+gondola_1_east_b->dairy,4.7056,4.7056,2.0312,41.41,0,1,0,2,1,1
+teb_wheel,teb_wheel_s7_000,s7_r00_n8,as_entered,8,4,gondola_1_west_a dairy gondola_3_b+gondola_2_east_b gondola_2_west_a+gondola_1_east_a,15.569,13.9048,15.5152,222.14,4,4,1,3,0,0
+teb_wheel,teb_wheel_s7_001,s7_r01_n12,as_entered,12,7,gondola_3_b+gondola_2_east_b dairy gondola_3_a+gondola_2_east_a tea_coffee gondola_1_west_a produce gondola_2_west_b+gondola_1_east_b,36.7451,14.9169,35.8421,496.51,7,7,1,2,0,0
+teb_wheel,teb_wheel_s7_002,s7_r02_n3,as_entered,3,3,gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a gondola_2_west_a+gondola_1_east_a,10.1991,7.5906,10.1385,164.02,3,3,1,2,0,0
+teb_wheel,teb_wheel_s7_003,s7_r03_n6,as_entered,6,4,gondola_3_b+gondola_2_east_b tea_coffee gondola_3_a+gondola_2_east_a gondola_2_west_b+gondola_1_east_b,24.5146,12.6169,1.3565,33.72,0,4,0,0,0,0
+teb_wheel,teb_wheel_s7_003,s7_r03_n6,as_entered,6,4,gondola_3_b+gondola_2_east_b tea_coffee gondola_3_a+gondola_2_east_a gondola_2_west_b+gondola_1_east_b,24.5439,12.6462,24.0472,310.06,4,4,1,0,0,0
+teb_wheel,teb_wheel_s7_004,s7_r04_n9,as_entered,9,6,gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a tea_coffee gondola_1_west_a gondola_2_west_b+gondola_1_east_b produce,26.6909,13.424,19.6027,312.23,4,6,0,3,1,0
+teb_icp_pc,teb_icp_pc_s7_000,s7_r00_n8,as_entered,8,4,gondola_1_west_a dairy gondola_3_b+gondola_2_east_b gondola_2_west_a+gondola_1_east_a,15.669,13.9755,15.8913,238.67,4,4,1,1,0,0
+teb_icp_pc,teb_icp_pc_s7_001,s7_r01_n12,as_entered,12,7,gondola_3_b+gondola_2_east_b dairy gondola_3_a+gondola_2_east_a tea_coffee gondola_1_west_a produce gondola_2_west_b+gondola_1_east_b,37.0572,15.0083,35.7282,488.3,7,7,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_002,s7_r02_n3,as_entered,3,3,gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a gondola_2_west_a+gondola_1_east_a,10.2698,7.5406,10.2126,151.21,3,3,1,1,0,0
+teb_icp_pc,teb_icp_pc_s7_003,s7_r03_n6,as_entered,6,4,gondola_3_b+gondola_2_east_b tea_coffee gondola_3_a+gondola_2_east_a gondola_2_west_b+gondola_1_east_b,24.7974,12.779,24.4934,320.87,4,4,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_004,s7_r04_n9,as_entered,9,6,gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a tea_coffee gondola_1_west_a gondola_2_west_b+gondola_1_east_b produce,26.8859,13.5569,8.5893,156.2,2,6,0,0,1,0
+teb_icp_pc,teb_icp_pc_s7_006,s7_r06_n5,as_entered,5,4,gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b dairy,14.0169,14.0169,13.8405,197.02,4,4,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_007,s7_r07_n4,as_entered,4,3,gondola_3_b+gondola_2_east_b gondola_1_west_a gondola_3_a+gondola_2_east_a,16.3255,6.5971,16.1153,225.27,3,3,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_008,s7_r08_n3,as_entered,3,3,gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a tea_coffee,12.8725,10.6912,12.2638,178.94,3,3,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_009,s7_r09_n11,as_entered,11,7,produce gondola_2_west_b+gondola_1_east_b gondola_3_a+gondola_2_east_a gondola_1_west_b tea_coffee dairy gondola_3_b+gondola_2_east_b,28.7459,15.1276,28.5417,406.4,7,7,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_010,s7_r10_n4,as_entered,4,4,gondola_3_a+gondola_2_east_a gondola_2_west_b+gondola_1_east_b dairy tea_coffee,16.4119,14.2305,15.6673,231.84,4,4,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_011,s7_r11_n8,as_entered,8,7,gondola_3_a+gondola_2_east_a gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_1_west_a dairy produce,25.5959,15.4054,23.5986,394.69,7,7,1,1,0,0
+teb_icp_pc,teb_icp_pc_s7_012,s7_r12_n5,as_entered,5,5,gondola_2_west_b+gondola_1_east_b gondola_3_a+gondola_2_east_a gondola_1_west_a tea_coffee produce,17.0433,13.5569,16.4395,259.31,5,5,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_013,s7_r13_n3,as_entered,3,2,gondola_2_west_b+gondola_1_east_b gondola_1_west_a,8.5906,4.9263,7.5234,130.82,2,2,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_014,s7_r14_n11,as_entered,11,7,gondola_3_a+gondola_2_east_a tea_coffee gondola_3_b+gondola_2_east_b produce dairy gondola_2_west_a+gondola_1_east_a gondola_1_west_b,40.0043,16.7004,37.9281,540.64,7,7,1,1,0,0
+teb_icp_pc,teb_icp_pc_s7_015,s7_r15_n4,as_entered,4,4,gondola_3_b+gondola_2_east_b gondola_1_west_a dairy tea_coffee,18.8018,12.282,18.5196,275.06,4,4,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_016,s7_r16_n4,as_entered,4,3,gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a gondola_2_west_b+gondola_1_east_b,12.1113,8.6113,11.38,179.02,3,3,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_017,s7_r17_n12,as_entered,12,7,gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_1_west_b dairy tea_coffee gondola_2_west_a+gondola_1_east_a produce,26.2122,16.7296,23.2661,381.16,7,7,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_018,s7_r18_n12,as_entered,12,8,gondola_2_west_a+gondola_1_east_a tea_coffee gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a gondola_2_west_b+gondola_1_east_b gondola_1_west_a dairy produce,34.2386,16.8083,30.2223,490.17,8,8,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_019,s7_r19_n5,as_entered,5,4,gondola_1_west_b dairy gondola_3_b+gondola_2_east_b tea_coffee,18.2433,12.3719,16.5978,256.83,4,4,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_020,s7_r20_n5,as_entered,5,3,gondola_3_b+gondola_2_east_b produce dairy,15.5654,11.0335,14.2217,211.45,3,3,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_021,s7_r21_n9,as_entered,9,6,dairy gondola_2_west_b+gondola_1_east_b gondola_3_a+gondola_2_east_a gondola_1_west_a gondola_1_west_b tea_coffee,22.2353,15.8761,21.0414,342.67,6,6,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_022,s7_r22_n6,as_entered,6,6,gondola_2_west_a+gondola_1_east_a tea_coffee gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a gondola_1_west_b dairy,26.8273,16.7004,24.1505,385.18,6,6,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_023,s7_r23_n7,as_entered,7,6,gondola_2_west_a+gondola_1_east_a gondola_1_west_a produce gondola_3_b+gondola_2_east_b dairy gondola_3_a+gondola_2_east_a,28.7288,15.9296,27.1829,385.37,6,6,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_024,s7_r24_n8,as_entered,8,6,gondola_1_west_a gondola_3_b+gondola_2_east_b dairy gondola_2_west_a+gondola_1_east_a gondola_2_west_b+gondola_1_east_b gondola_1_west_b,24.0018,14.914,21.3959,355.23,6,6,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_025,s7_r25_n11,as_entered,11,7,dairy tea_coffee produce gondola_3_b+gondola_2_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_1_west_a,25.5223,16.4004,20.8926,369.25,7,7,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_026,s7_r26_n6,as_entered,6,4,gondola_1_west_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,10.382,10.3113,8.4604,155.75,4,4,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_027,s7_r27_n4,as_entered,4,4,gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_1_west_a gondola_3_b+gondola_2_east_b,16.2518,7.582,12.6959,226.15,4,4,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_028,s7_r28_n4,as_entered,4,3,dairy gondola_2_west_a+gondola_1_east_a gondola_1_west_a,13.0654,9.632,11.1722,185.28,3,3,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_029,s7_r29_n6,as_entered,6,4,gondola_2_west_a+gondola_1_east_a dairy gondola_1_west_a gondola_3_b+gondola_2_east_b,20.1246,14.0169,17.8127,266.34,4,4,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_000,s7_r00_n8,exact,8,4,gondola_1_west_a gondola_2_west_a+gondola_1_east_a gondola_3_b+gondola_2_east_b dairy,13.9755,13.9755,13.9129,225.31,4,4,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_001,s7_r01_n12,exact,12,7,gondola_1_west_a produce tea_coffee dairy gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,15.1083,15.1083,15.0193,267.77,7,7,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_002,s7_r02_n3,exact,3,3,gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,7.5113,7.5113,7.5323,147.09,3,3,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_003,s7_r03_n6,exact,6,4,tea_coffee gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,12.879,12.879,12.2937,209.06,4,4,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_004,s7_r04_n9,exact,9,6,gondola_1_west_a produce tea_coffee gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,13.6569,13.6569,13.4211,245.35,6,6,1,2,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_005,s7_r05_n4,exact,4,3,gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,8.682,8.682,8.6696,144.23,3,3,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_006,s7_r06_n5,exact,5,4,gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b dairy,13.9755,13.9755,13.2192,217.36,4,4,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_007,s7_r07_n4,exact,4,3,gondola_1_west_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,6.6263,6.6263,6.178,121.28,3,3,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_008,s7_r08_n3,exact,3,3,tea_coffee gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a,10.5912,10.5912,10.0626,154.07,3,3,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_009,s7_r09_n11,exact,11,7,produce tea_coffee dairy gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,15.1983,15.1983,14.1125,253.73,7,7,1,2,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_010,s7_r10_n4,exact,4,4,tea_coffee dairy gondola_2_west_b+gondola_1_east_b gondola_3_a+gondola_2_east_a,14.1598,14.1598,14.0224,217.04,4,4,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_011,s7_r11_n8,exact,8,7,gondola_1_west_a produce dairy gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a,15.3054,15.3054,14.297,260.4,7,7,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_012,s7_r12_n5,exact,5,5,gondola_1_west_a produce tea_coffee gondola_2_west_b+gondola_1_east_b gondola_3_a+gondola_2_east_a,13.4861,13.4861,11.8569,217.56,5,5,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_013,s7_r13_n3,exact,3,2,gondola_1_west_a gondola_2_west_b+gondola_1_east_b,4.9263,4.9263,4.9367,99.46,2,2,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_014,s7_r14_n11,exact,11,7,gondola_1_west_b dairy tea_coffee produce gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,16.6004,16.6004,15.6821,283.29,7,7,1,1,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_015,s7_r15_n4,exact,4,4,gondola_1_west_a tea_coffee dairy gondola_3_b+gondola_2_east_b,12.3113,12.3113,11.4847,178.57,4,4,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_016,s7_r16_n4,exact,4,3,gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a,8.682,8.682,6.939,142.62,3,3,1,1,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_017,s7_r17_n12,exact,12,7,gondola_1_west_b dairy tea_coffee produce gondola_2_west_a+gondola_1_east_a gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b,16.7711,16.7711,14.519,273.15,7,7,1,2,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_018,s7_r18_n12,exact,12,8,gondola_1_west_a produce tea_coffee dairy gondola_2_west_b+gondola_1_east_b gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,16.7376,16.7376,14.8856,282.69,8,8,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_019,s7_r19_n5,exact,5,4,tea_coffee dairy gondola_1_west_b gondola_3_b+gondola_2_east_b,12.4426,12.4426,10.6044,176.85,4,4,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_020,s7_r20_n5,exact,5,3,produce dairy gondola_3_b+gondola_2_east_b,11.0335,11.0335,9.0218,163.36,3,3,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_021,s7_r21_n9,exact,9,6,gondola_1_west_a tea_coffee dairy gondola_1_west_b gondola_2_west_b+gondola_1_east_b gondola_3_a+gondola_2_east_a,15.8054,15.8054,12.9814,263.58,6,6,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_022,s7_r22_n6,exact,6,6,gondola_1_west_b dairy tea_coffee gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,16.6004,16.6004,14.5407,261.1,6,6,1,1,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_023,s7_r23_n7,exact,7,6,dairy produce gondola_1_west_a gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,15.8589,15.8589,15.4304,258.74,6,6,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_024,s7_r24_n8,exact,8,6,gondola_1_west_a gondola_2_west_a+gondola_1_east_a gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b gondola_1_west_b dairy,15.0554,15.0554,12.4435,252.94,6,6,1,1,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_025,s7_r25_n11,exact,11,7,dairy tea_coffee produce gondola_1_west_a gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,16.3589,16.3589,14.4166,271.38,7,7,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_026,s7_r26_n6,exact,6,4,gondola_1_west_b gondola_3_b+gondola_2_east_b gondola_3_a+gondola_2_east_a gondola_2_west_a+gondola_1_east_a,10.3113,10.3113,8.9301,167.85,4,4,1,1,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_027,s7_r27_n4,exact,4,4,gondola_1_west_a gondola_2_west_a+gondola_1_east_a gondola_3_a+gondola_2_east_a gondola_3_b+gondola_2_east_b,7.5113,7.5113,4.9589,142.83,4,4,1,2,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_028,s7_r28_n4,exact,4,3,gondola_1_west_a gondola_2_west_a+gondola_1_east_a dairy,9.632,9.632,9.4177,155.5,3,3,1,0,0,0
+teb_icp_pc_final,teb_icp_pc_final_s7_029,s7_r29_n6,exact,6,4,gondola_1_west_a gondola_2_west_a+gondola_1_east_a gondola_3_b+gondola_2_east_b dairy,13.9755,13.9755,11.3212,223.7,4,4,1,0,0,0
+teb_icp_pc,teb_icp_pc_s7_005,s7_r05_n4,as_entered,4,3,gondola_3_a+gondola_2_east_a gondola_2_west_b+gondola_1_east_b gondola_3_b+gondola_2_east_b,11.979,8.582,11.221,164.84,3,3,1,0,0,0

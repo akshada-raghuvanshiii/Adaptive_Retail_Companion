@@ -1,0 +1,9 @@
+test: smoke
+started: 2026-10-15 10:53:10 IST
+command: python3 arc_tests/mission_runner.py --out results --label smoke --pairs 1 --seed 5 
+host: akshada-raghuvanshi-HP-Laptop-14s-dq2xxx  user: akshada-raghuvanshi
+cpu: 11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz  cores: 8
+ram: 7.4Gi
+os: Ubuntu 24.04.4 LTS
+ros: jazzy
+gazebo: Gazebo Sim, version 8.11.0

@@ -1,0 +1,9 @@
+test: a2-pc
+started: 2026-10-17 13:12:15 IST
+command: python3 arc_tests/mission_runner.py --out results --label teb_icp_pc --lists 30 --size-range 3-12 --strategies as_entered --seed 7 --start-at 6
+host: akshada-raghuvanshi-HP-Laptop-14s-dq2xxx  user: akshada-raghuvanshi
+cpu: 11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz  cores: 8
+ram: 7.4Gi
+os: Ubuntu 24.04.4 LTS
+ros: jazzy
+gazebo: Gazebo Sim, version 8.11.0

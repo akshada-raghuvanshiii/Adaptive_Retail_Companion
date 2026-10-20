@@ -1,0 +1,475 @@
+<title>ARC Run Sheet</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one narrow column of numbered run steps, each a checkable card with a copyable command and the line you should see. */
+:root{
+  --bg:#f4f6f5; --panel:#ffffff; --ink:#17201e; --muted:#5b6965; --line:#d6dedb;
+  --accent:#0f6b5c; --accent-soft:#e1f0ec; --code-bg:#14201d; --code-fg:#d8efe8;
+  --warn:#9a5b00; --warn-soft:#fbf0dc; --stop:#a3262a; --stop-soft:#f9e3e3; --done:#7d8b87;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1514; --panel:#172120; --ink:#e3ece9; --muted:#97a8a3; --line:#2a3836;
+  --accent:#5cc7b2; --accent-soft:#1b302c; --code-bg:#0a100f; --code-fg:#cfe9e1;
+  --warn:#e8b25a; --warn-soft:#2e2414; --stop:#f08a8d; --stop-soft:#341a1b; --done:#6c7d78; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1514; --panel:#172120; --ink:#e3ece9; --muted:#97a8a3; --line:#2a3836;
+  --accent:#5cc7b2; --accent-soft:#1b302c; --code-bg:#0a100f; --code-fg:#cfe9e1;
+  --warn:#e8b25a; --warn-soft:#2e2414; --stop:#f08a8d; --stop-soft:#341a1b; --done:#6c7d78; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--sans);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:30px;line-height:1.15;margin:0;text-wrap:balance}
+h2{font-size:19px;margin:0;text-wrap:balance}
+p{margin:0}
+.lede{color:var(--muted);max-width:62ch}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chip{font:500 12px/1 var(--mono);padding:6px 9px;border:1px solid var(--line);border-radius:4px;background:var(--panel);color:var(--muted)}
+.progress{display:flex;align-items:center;gap:10px;font:500 13px var(--mono);color:var(--muted)}
+.bar{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
+section{display:flex;flex-direction:column;gap:12px}
+.sec-head{display:flex;flex-direction:column;gap:4px;border-top:2px solid var(--ink);padding-top:12px}
+.sec-head p{color:var(--muted);font-size:14px}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 14px 14px 12px;display:grid;grid-template-columns:28px 1fr;gap:4px 10px}
+.step.done{opacity:.6}
+.step.done .st{text-decoration:line-through;color:var(--done)}
+.step input[type=checkbox]{width:18px;height:18px;margin:3px 0 0;accent-color:var(--accent);cursor:pointer}
+.body{min-width:0;display:flex;flex-direction:column;gap:8px}
+.st{font-weight:600}
+.where{font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:4px 6px;border-radius:3px;align-self:flex-start}
+.time{font:500 12px var(--mono);color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.cmd{position:relative;background:var(--code-bg);color:var(--code-fg);border-radius:5px;font:13px/1.5 var(--mono);display:flex;align-items:stretch;min-width:0}
+.cmd code{flex:1;padding:10px 12px;overflow-x:auto;white-space:pre;min-width:0}
+.cmd button{flex:none;border:0;border-left:1px solid #2c3b37;background:transparent;color:var(--code-fg);font:600 12px var(--mono);padding:0 12px;cursor:pointer;border-radius:0 5px 5px 0}
+.cmd button:hover{background:#22312d}
+.cmd button:focus-visible,.step input:focus-visible,.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.see{font-size:13.5px;color:var(--muted)}
+.see b{color:var(--ink);font-weight:600}
+.see code,.note code,td code,li code{font:12.5px var(--mono);background:var(--accent-soft);padding:1px 4px;border-radius:3px;color:var(--ink)}
+.note{border-left:3px solid var(--warn);background:var(--warn-soft);padding:10px 12px;border-radius:0 5px 5px 0;font-size:14px}
+.note.stop{border-left-color:var(--stop);background:var(--stop-soft)}
+.note strong{color:var(--warn)}
+.note.stop strong{color:var(--stop)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+td:first-child{font:600 12.5px var(--mono);white-space:nowrap}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button{font:600 13px var(--sans);padding:8px 12px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:5px;cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.reset{align-self:flex-start;font:500 12px var(--mono);background:none;border:1px solid var(--line);color:var(--muted);padding:6px 10px;border-radius:4px;cursor:pointer}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);font:600 13px var(--mono);padding:8px 14px;border-radius:5px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:480px){h1{font-size:25px}.step{grid-template-columns:24px 1fr}}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="eyebrow">ARC capstone · compact store</span>
+  <h1>ARC Run Sheet</h1>
+  <p class="lede">Every terminal for bringing ARC up from a cold laptop: a normal shopping run, and the phase 2 test run on its own tab. Tick each step as you go; ticks stay in this browser.</p>
+  <div class="meta">
+    <span class="chip">kit 2026-10-16.5 (v18)</span>
+    <span class="chip">Ubuntu 24.04 · Jazzy · Harmonic</span>
+    <span class="chip">normal run ≈ 20 min to ready</span>
+  </div>
+  <div class="progress"><span id="count">0 / 0</span><div class="bar"><i id="fill"></i></div></div>
+</header>
+
+<div class="tabs" role="tablist">
+  <button role="tab" id="tab-normal" aria-selected="true" data-panel="p-normal">Normal run</button>
+  <button role="tab" id="tab-run" aria-selected="false" data-panel="p-run">Test run (phase 2)</button>
+  <button role="tab" id="tab-fix" aria-selected="false" data-panel="p-fix">If something breaks</button>
+  <button role="tab" id="tab-pi" aria-selected="false" data-panel="p-pi">Pi + webcam</button>
+</div>
+
+<!-- ============ NORMAL ============ -->
+<div id="p-normal" class="panel" style="display:flex;flex-direction:column;gap:28px">
+<section>
+  <div class="sec-head"><h2>Before you start</h2><p>Once per boot.</p></div>
+  <div class="step" data-id="n1"><input type="checkbox" id="c-n1" aria-label="done"><div class="body">
+    <span class="st">Wi-Fi off, loopback multicast on</span>
+    <div class="row"><span class="where">Terminal K</span></div>
+    <div class="cmd"><code>nmcli radio wifi off &amp;&amp; sudo ip link set lo multicast on &amp;&amp; ros2 daemon stop</code><button>Copy</button></div>
+    <p class="see">Nothing in the run needs internet. Wi-Fi changes have cut Gazebo off from ROS mid-run before; multicast on <code>lo</code> lets the nodes find each other.</p>
+  </div></div>
+</section>
+<section>
+  <div class="sec-head"><h2>Quick way: one command, then three terminals</h2><p>Bring-up opens and checks the simulation, SLAM, mapping and navigation windows for you (the same T1–B6 as the manual way). It loads your own <code>teb_controller.yaml</code>.</p></div>
+  <div class="step" data-id="n2"><input type="checkbox" id="c-n2" aria-label="done"><div class="body">
+    <span class="st">Bring up the stack</span>
+    <div class="row"><span class="where">Terminal K</span><span class="time">≈ 15 min</span></div>
+    <div class="cmd"><code>cd ~/arc_test_kit &amp;&amp; source env.sh &amp;&amp; ./bringup.sh all</code><button>Copy</button></div>
+    <p class="see">Ends with <b>navigation stack is up</b>. auto_map drives the store for about 8 min first: don't touch the robot. B6 is set to <b>LEAD</b> for you.</p>
+  </div></div>
+  <div class="step" data-id="n3"><input type="checkbox" id="c-n3" aria-label="done"><div class="body">
+    <span class="st">RViz</span>
+    <div class="row"><span class="where">Terminal R</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; rviz2 -d ~/arc_compact_store_kit/run/arc_nav.rviz --ros-args -p use_sim_time:=true</code><button>Copy</button></div>
+    <p class="see">Map, scan, robot and the yellow <code>/planned_path</code>.</p>
+  </div></div>
+  <div class="step" data-id="n4"><input type="checkbox" id="c-n4" aria-label="done"><div class="body">
+    <span class="st">Store labels (B8)</span>
+    <div class="row"><span class="where">Terminal L</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; python3 ~/arc_compact_store_kit/ros_tools/item_markers.py</code><button>Copy</button></div>
+    <p class="see">Aisle and item labels appear in RViz on <code>/arc/store_markers</code>.</p>
+  </div></div>
+  <div class="step" data-id="n5"><input type="checkbox" id="c-n5" aria-label="done"><div class="body">
+    <span class="st">Shopping Manager (B7), always last</span>
+    <div class="row"><span class="where">Terminal S</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run arc_planner shopping_manager</code><button>Copy</button></div>
+    <p class="see">Enter the shopping list in this window when it asks. The cart drives to each item in nearest-next order.</p>
+  </div></div>
+  <div class="step" data-id="n6"><input type="checkbox" id="c-n6" aria-label="done"><div class="body">
+    <span class="st">Change the BT mode while it runs</span>
+    <div class="row"><span class="where">B6_person_state window</span></div>
+    
+    <p class="see">Click into the <b>B6_person_state</b> window and type <b>3</b> (LEAD) or <b>1</b> (FOLLOW). With 2 or 4 the cart does not move.</p>
+  </div></div>
+  <div class="step" data-id="n7"><input type="checkbox" id="c-n7" aria-label="done"><div class="body">
+    <span class="st">Check the pose against Gazebo (any time)</span>
+    <div class="row"><span class="where">Terminal K</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; python3 ~/arc_compact_store_kit/ros_tools/check_frames.py --model arc --samples 1</code><button>Copy</button></div>
+    <p class="see"><b>PASS</b> means the map pose is within 0.15 m and 5° of the truth.</p>
+  </div></div>
+  <div class="step" data-id="n8"><input type="checkbox" id="c-n8" aria-label="done"><div class="body">
+    <span class="st">Shut everything down</span>
+    <div class="row"><span class="where">Terminal K</span></div>
+    <div class="cmd"><code>~/arc_test_kit/bringup.sh stop &amp;&amp; nmcli radio wifi on</code><button>Copy</button></div>
+    <p class="see">Closes all nodes, including RViz, labels and the Shopping Manager, then turns Wi-Fi back on.</p>
+  </div></div>
+</section>
+<section>
+  <div class="sec-head"><h2>Manual way: every terminal yourself</h2><p>Use this if <code>gnome-terminal</code> windows don't open, or to show each node during a demo. Each command already starts with <code>source ~/arc_test_kit/env.sh</code>. Wait for each check before the next row.</p></div>
+  <div class="step" data-id="m0"><input type="checkbox" id="c-m0" aria-label="done"><div class="body">
+    <span class="st">Clean start</span>
+    <div class="row"><span class="where">Terminal K</span></div>
+    <div class="cmd"><code>~/arc_test_kit/bringup.sh stop</code><button>Copy</button></div>
+    <p class="see">Kills anything left from earlier runs.</p>
+  </div></div>
+  <div class="step" data-id="m1"><input type="checkbox" id="c-m1" aria-label="done"><div class="body">
+    <span class="st">T1 Gazebo, compact store</span>
+    <div class="row"><span class="where">T1</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 launch arc_store_sim store.launch.py world:=arc_store.sdf</code><button>Copy</button></div>
+    <p class="see">The compact store opens. <code>world:=</code> is required: the launch default is the old store.</p>
+  </div></div>
+  <div class="step" data-id="m2"><input type="checkbox" id="c-m2" aria-label="done"><div class="body">
+    <span class="st">T2 Robot description</span>
+    <div class="row"><span class="where">T2</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; export TURTLEBOT3_MODEL=burger &amp;&amp; ros2 launch turtlebot3_gazebo robot_state_publisher.launch.py use_sim_time:=true</code><button>Copy</button></div>
+    <p class="see"><b>Robot initialized</b>.</p>
+  </div></div>
+  <div class="step" data-id="m3"><input type="checkbox" id="c-m3" aria-label="done"><div class="body">
+    <span class="st">T3 Spawn the robot, then the bridge</span>
+    <div class="row"><span class="where">T3</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run ros_gz_sim create -name arc -file $(ros2 pkg prefix turtlebot3_gazebo)/share/turtlebot3_gazebo/models/turtlebot3_burger/model.sdf -x 0.0 -y 0.0 -z 0.01 -Y 0.0 &amp;&amp; ros2 run ros_gz_bridge parameter_bridge --ros-args -p config_file:=$HOME/slam_ws/src/arc_store_sim/config/arc_store_burger_bridge.yaml -p use_sim_time:=true</code><button>Copy</button></div>
+    <p class="see">Robot at x 0, y 0, yaw 0 (required, so map = world). Check in Terminal K: <code>timeout 4 ros2 topic hz /scan</code> ≈ 5 Hz.</p>
+  </div></div>
+  <div class="step" data-id="m4"><input type="checkbox" id="c-m4" aria-label="done"><div class="body">
+    <span class="st">T5a ICP lidar odometry</span>
+    <div class="row"><span class="where">T5a</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run rtabmap_odom icp_odometry --Icp/PointToPlane true --Icp/VoxelSize 0.05 --Icp/MaxCorrespondenceDistance 0.5 --Icp/Iterations 10 --Icp/Epsilon 0.001 --Icp/OutlierRatio 0.7 --Icp/CorrespondenceRatio 0.2 --Odom/ScanKeyFrameThr 0.4 --OdomF2M/ScanSubtractRadius 0.05 --OdomF2M/ScanMaxSize 15000 --Reg/Force3DoF true --ros-args -p use_sim_time:=true -p frame_id:=base_footprint -p odom_frame_id:=icp_odom -p guess_frame_id:=odom -p publish_tf:=true -r scan:=/scan -r odom:=/odom_icp</code><button>Copy</button></div>
+    <p class="see">Check: <code>timeout 4 ros2 topic hz /odom_icp</code> ≈ 5 Hz.</p>
+  </div></div>
+  <div class="step" data-id="m5"><input type="checkbox" id="c-m5" aria-label="done"><div class="body">
+    <span class="st">T5b RTAB-Map, new map</span>
+    <div class="row"><span class="where">T5b</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run rtabmap_slam rtabmap -d --Reg/Strategy 1 --Reg/Force3DoF true --Grid/Sensor 0 --Grid/RangeMin 0.2 --RGBD/NeighborLinkRefining true --Optimizer/GravitySigma 0 --Icp/PointToPlane true --Icp/VoxelSize 0.05 --Icp/MaxCorrespondenceDistance 0.5 --ros-args -r __ns:=/rtabmap -p use_sim_time:=true -p frame_id:=base_footprint -p subscribe_depth:=false -p subscribe_rgb:=false -p subscribe_scan:=true -p approx_sync:=true -r scan:=/scan -r odom:=/odom_icp</code><button>Copy</button></div>
+    <p class="see">Check: <code>timeout 5 ros2 run tf2_ros tf2_echo map base_footprint</code> near 0, 0.</p>
+  </div></div>
+  <div class="step" data-id="m6"><input type="checkbox" id="c-m6" aria-label="done"><div class="body">
+    <span class="st">Map the store</span>
+    <div class="row"><span class="where">Terminal K</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; python3 ~/arc_compact_store_kit/ros_tools/auto_map.py</code><button>Copy</button></div>
+    <p class="see">Expect <b>11 reached, 0 skipped</b> and a small map error. No BT, teleop or Shopping Manager while it drives.</p>
+  </div></div>
+  <div class="step" data-id="m7"><input type="checkbox" id="c-m7" aria-label="done"><div class="body">
+    <span class="st">Lock the map</span>
+    <div class="row"><span class="where">Terminal K</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 service call /rtabmap/set_mode_localization std_srvs/srv/Empty</code><button>Copy</button></div>
+    <p class="see">Then <code>check_frames.py</code> (step n7) should PASS.</p>
+  </div></div>
+  <div class="step" data-id="m8"><input type="checkbox" id="c-m8" aria-label="done"><div class="body">
+    <span class="st">B1 Controller (your TEB-like)</span>
+    <div class="row"><span class="where">B1</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run nav2_controller controller_server --ros-args --params-file $HOME/slam_ws/src/arc_planner/config/teb_controller.yaml -r cmd_vel:=/cmd_vel_nav</code><button>Copy</button></div>
+    <p class="see">Waits for B2 to activate it.</p>
+  </div></div>
+  <div class="step" data-id="m9"><input type="checkbox" id="c-m9" aria-label="done"><div class="body">
+    <span class="st">B2 Lifecycle manager</span>
+    <div class="row"><span class="where">B2</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run nav2_lifecycle_manager lifecycle_manager --ros-args -r __node:=lifecycle_manager_controller -p use_sim_time:=true -p autostart:=true -p node_names:=&quot;[&#x27;controller_server&#x27;]&quot;</code><button>Copy</button></div>
+    <p class="see"><b>Managed nodes are active</b>.</p>
+  </div></div>
+  <div class="step" data-id="m10"><input type="checkbox" id="c-m10" aria-label="done"><div class="body">
+    <span class="st">B3 Dijkstra planner</span>
+    <div class="row"><span class="where">B3</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run arc_planner dijkstra_planner --ros-args -p use_sim_time:=true</code><button>Copy</button></div>
+    <p class="see">Gets the map from RTAB-Map.</p>
+  </div></div>
+  <div class="step" data-id="m11"><input type="checkbox" id="c-m11" aria-label="done"><div class="body">
+    <span class="st">B4 Path to TEB</span>
+    <div class="row"><span class="where">B4</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run arc_planner planned_path_to_teb --ros-args -p use_sim_time:=true</code><button>Copy</button></div>
+    <p class="see"></p>
+  </div></div>
+  <div class="step" data-id="m12"><input type="checkbox" id="c-m12" aria-label="done"><div class="body">
+    <span class="st">B5 BT stack + motion gate</span>
+    <div class="row"><span class="where">B5</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 launch arc_behavior_tree arc_bt_stack.launch.py</code><button>Copy</button></div>
+    <p class="see"></p>
+  </div></div>
+  <div class="step" data-id="m13"><input type="checkbox" id="c-m13" aria-label="done"><div class="body">
+    <span class="st">B6 Person state</span>
+    <div class="row"><span class="where">B6</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run arc_behavior_tree person_state_input</code><button>Copy</button></div>
+    <p class="see">Type <b>3</b> (LEAD) or <b>1</b> (FOLLOW). With 2 or 4 nothing moves. Keep this window to change modes.</p>
+  </div></div>
+  <div class="step" data-id="m14"><input type="checkbox" id="c-m14" aria-label="done"><div class="body">
+    <span class="st">RViz and labels (B8)</span>
+    <div class="row"><span class="where">Terminal R</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; (python3 ~/arc_compact_store_kit/ros_tools/item_markers.py &amp;) &amp;&amp; rviz2 -d ~/arc_compact_store_kit/run/arc_nav.rviz --ros-args -p use_sim_time:=true</code><button>Copy</button></div>
+    <p class="see">Optional, but this is what you show.</p>
+  </div></div>
+  <div class="step" data-id="m15"><input type="checkbox" id="c-m15" aria-label="done"><div class="body">
+    <span class="st">B7 Shopping Manager, last</span>
+    <div class="row"><span class="where">B7</span></div>
+    <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run arc_planner shopping_manager</code><button>Copy</button></div>
+    <p class="see">Enter the list when it asks.</p>
+  </div></div>
+</section>
+<p class="note"><strong>Don't mix runs.</strong> Never run the Shopping Manager together with the test runner (<code>./run.sh a2</code> etc.), and never teleop while the BT stack is up: the motion gate owns <code>/cmd_vel</code>.</p>
+</div>
+
+<!-- ============ PHASE 2 ============ -->
+<div id="p-run" class="panel" style="display:none;flex-direction:column;gap:28px">
+
+<section>
+  <div class="sec-head"><h2>Before you start</h2><p>Once per boot. One terminal is enough for this part. Skip step 3 if you did it for a normal run since booting.</p></div>
+
+  <div class="step" data-id="s1"><input type="checkbox" id="c-s1" aria-label="done"><div class="body">
+    <span class="st">Install or refresh the kit (v18)</span>
+    <span class="where">Terminal K</span>
+    <div class="cmd"><code>cd ~ && unzip -o ~/Downloads/arc_test_kit_v18.zip -d ~ && chmod +x ~/arc_test_kit/run.sh ~/arc_test_kit/bringup.sh && cat ~/arc_test_kit/VERSION</code><button>Copy</button></div>
+    <p class="see">You should see <b>2026-10-16.5</b>. Your <code>results/</code> folder is not in the zip, so earlier data is kept.</p>
+  </div></div>
+
+  <div class="step" data-id="s2"><input type="checkbox" id="c-s2" aria-label="done"><div class="body">
+    <span class="st">Offline tests</span>
+    <span class="where">Terminal K</span>
+    <div class="cmd"><code>cd ~/arc_test_kit && python3 -m unittest discover -s tests</code><button>Copy</button></div>
+    <p class="see">Last line: <b>OK</b>.</p>
+  </div></div>
+
+  <div class="step" data-id="s3"><input type="checkbox" id="c-s3" aria-label="done"><div class="body">
+    <span class="st">Wi-Fi off, loopback multicast on</span>
+    <span class="where">Terminal K</span>
+    <div class="cmd"><code>nmcli radio wifi off && sudo ip link set lo multicast on && ros2 daemon stop</code><button>Copy</button></div>
+    <p class="see">Asks for your password. Without multicast on <code>lo</code>, bring-up stops with a <b>STOP</b> line on purpose.</p>
+  </div></div>
+
+  <div class="step" data-id="s4"><input type="checkbox" id="c-s4" aria-label="done"><div class="body">
+    <span class="st">Charger in, no sleep while on AC</span>
+    <span class="where">Terminal K</span>
+    <div class="cmd"><code>gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'</code><button>Copy</button></div>
+    <p class="see">Stops the laptop suspending in the middle of a 3-hour run. Undo afterwards with <code>gsettings reset org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type</code>.</p>
+  </div></div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Bring the stack up with the progress check</h2><p>Terminal K is your only typing terminal. Bring-up opens every other window itself.</p></div>
+
+  <div class="step" data-id="s5"><input type="checkbox" id="c-s5" aria-label="done"><div class="body">
+    <span class="st">Set up Terminal K</span>
+    <span class="where">Terminal K</span>
+    <div class="cmd"><code>cd ~/arc_test_kit && source env.sh</code><button>Copy</button></div>
+    <p class="see">Every terminal you open yourself needs <code>source ~/arc_test_kit/env.sh</code>, or it will not see the nodes.</p>
+  </div></div>
+
+  <div class="step" data-id="s6"><input type="checkbox" id="c-s6" aria-label="done"><div class="body">
+    <span class="st">Write the progress-check controller file</span>
+    <span class="where">Terminal K</span>
+    <div class="cmd"><code>./run.sh make-progress && grep -n -A4 "progress_checker" configs/teb_progress.yaml</code><button>Copy</button></div>
+    <p class="see">Shows <b>required_movement_radius: 0.25</b> and <b>movement_time_allowance: 20.0</b>. Your own <code>teb_controller.yaml</code> is only read.</p>
+  </div></div>
+
+  <div class="step" data-id="s7"><input type="checkbox" id="c-s7" aria-label="done"><div class="body">
+    <span class="st">Full bring-up on the progress-check controller</span>
+    <span class="where">Terminal K</span><span class="time">≈ 15 min · auto_map drives ≈ 8 min, don't touch the robot</span>
+    <div class="cmd"><code>TEB_YAML=$PWD/configs/teb_progress.yaml ./bringup.sh all</code><button>Copy</button></div>
+    <p class="see">Ends with <b>navigation stack is up</b>. In the printed limits look for <b>progress_checker.required_movement_radius = 0.25</b>. If it shows 0.5 or "not reported", the original file was loaded; stop and run this step again.</p>
+  </div></div>
+
+  <div class="tablewrap"><table>
+    <thead><tr><th>Window</th><th>What it is</th><th>Touch it?</th></tr></thead>
+    <tbody>
+      <tr><td>T1_gazebo</td><td>Gazebo, compact store</td><td>No. Minimise it to save CPU</td></tr>
+      <tr><td>T2_robot_description</td><td>Robot state publisher</td><td>No</td></tr>
+      <tr><td>T3_spawn_bridge</td><td>Spawns <code>arc</code>, ROS–Gazebo bridge</td><td>No</td></tr>
+      <tr><td>T5a_icp_odometry</td><td>ICP lidar odometry</td><td>No</td></tr>
+      <tr><td>T5b_rtabmap</td><td>RTAB-Map, locked to localisation</td><td>No</td></tr>
+      <tr><td>B1_controller</td><td>TEB-like controller, progress file</td><td>No</td></tr>
+      <tr><td>B2_lifecycle</td><td>Activates the controller</td><td>No</td></tr>
+      <tr><td>B3_dijkstra</td><td>Dijkstra planner</td><td>No</td></tr>
+      <tr><td>B4_path_to_teb</td><td>Path → FollowPath</td><td>No</td></tr>
+      <tr><td>B5_bt_stack</td><td>BT + motion gate</td><td>No</td></tr>
+      <tr><td>B6_person_state</td><td>Typed <code>3</code> (LEAD) for you</td><td>No. Leave it on LEAD</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note"><strong>Do not start</strong> the Shopping Manager (B7), teleop or RViz. The runner replaces B7, and teleop fights the motion gate.</p>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Run A2-pc, then A2-final</h2><p>Same 30 lists (seed 7) as A2, so the report can pair them.</p></div>
+
+  <div class="step" data-id="s8"><input type="checkbox" id="c-s8" aria-label="done"><div class="body">
+    <span class="st">Probe</span>
+    <span class="where">Terminal K</span><span class="time">≈ 1 min</span>
+    <div class="cmd"><code>./run.sh probe</code><button>Copy</button></div>
+    <p class="see">Every line <b>[OK]</b>. Any <b>[FAIL]</b>: stop and send me the output.</p>
+  </div></div>
+
+  <div class="step" data-id="s9"><input type="checkbox" id="c-s9" aria-label="done"><div class="body">
+    <span class="st">A2-pc: progress check 0.25 m / 20 s, typed order</span>
+    <span class="where">Terminal K</span><span class="time">≈ 2.5–3 h</span>
+    <div class="cmd"><code>./run.sh a2-pc</code><button>Copy</button></div>
+    <p class="see">Label <b>teb_icp_pc</b>. If it stops at once with a label mismatch, the controller did not load the progress file: repeat step 7.</p>
+  </div></div>
+
+  <div class="step" data-id="s10"><input type="checkbox" id="c-s10" aria-label="done"><div class="body">
+    <span class="st">A2-final: progress check + exact ordering</span>
+    <span class="where">Terminal K</span><span class="time">≈ 2–2.5 h</span>
+    <div class="cmd"><code>./run.sh probe && ./run.sh a2-final</code><button>Copy</button></div>
+    <p class="see">Label <b>teb_icp_pc_final</b>. Same stack, no restart needed.</p>
+  </div></div>
+
+  <div class="step" data-id="s11"><input type="checkbox" id="c-s11" aria-label="done"><div class="body">
+    <span class="st">Report and pack</span>
+    <span class="where">Terminal K</span><span class="time">≈ 1 min</span>
+    <div class="cmd"><code>./run.sh report && ./run.sh pack</code><button>Copy</button></div>
+    <p class="see">Send me <code>results/results.md</code> and the <code>arc_results_….zip</code>. That fills the remaining paper items: phase 2, A4 pairs 15–19, A3 jointly-completed times.</p>
+  </div></div>
+
+  <div class="step" data-id="s12"><input type="checkbox" id="c-s12" aria-label="done"><div class="body">
+    <span class="st">Afterwards: Wi-Fi and sleep back on</span>
+    <span class="where">Terminal K</span>
+    <div class="cmd"><code>nmcli radio wifi on && gsettings reset org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type</code><button>Copy</button></div>
+    <p class="see">Only once the report is written.</p>
+  </div></div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Safe to do while it runs</h2><p>These are offline and don't touch the simulation. Open a second terminal with <code>cd ~/arc_test_kit && source env.sh</code>.</p></div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Command</th><th>What for</th></tr></thead>
+    <tbody>
+      <tr><td>./run.sh status</td><td>How far the run is, and the resume number</td></tr>
+      <tr><td>./run.sh note "…"</td><td>Write a line in the lab notebook</td></tr>
+      <tr><td>./run.sh shot "…"</td><td>Screenshot into the run logs</td></tr>
+      <tr><td>./run.sh c1-checkout X,Y</td><td>Ordering benchmark ending at the checkout, once you have its coordinates</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+</div>
+
+<!-- ============ FIXES ============ -->
+<div id="p-fix" class="panel" style="display:none;flex-direction:column;gap:12px">
+  <div class="sec-head"><h2>If something breaks</h2><p>Rows are written as they happen, so nothing already logged is lost.</p></div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>What you see</th><th>Do this</th></tr></thead>
+    <tbody>
+      <tr><td>Run crashed or you pressed Ctrl-C</td><td><code>./run.sh status</code> prints N, then <code>./run.sh a2-pc --start-at N</code> (or <code>a2-final</code>)</td></tr>
+      <tr><td>A window says "exited"</td><td><code>./bringup.sh status</code>. If a nav node died: <code>TEB_YAML=$PWD/configs/teb_progress.yaml ./bringup.sh nav</code>, then probe and resume</td></tr>
+      <tr><td>Gazebo, ICP or RTAB-Map died</td><td>Map is gone. Repeat step 7 (full bring-up), probe, resume with <code>--start-at</code>, and note it: <code>./run.sh note "restarted stack, new map, from list N"</code></td></tr>
+      <tr><td>Bring-up prints STOP (multicast)</td><td><code>sudo ip link set lo multicast on && ros2 daemon stop</code>, then run it again</td></tr>
+      <tr><td>auto_map did not reach 11 waypoints</td><td>Don't use that map. Run step 7 again</td></tr>
+      <tr><td>Probe: test box spawn/remove FAIL</td><td><code>./run.sh clear-boxes</code>, then probe again</td></tr>
+      <tr><td>Label mismatch at start</td><td>Wrong controller loaded. Repeat step 7; check 0.25 in the printed limits</td></tr>
+      <tr><td>A run used the wrong stack</td><td><code>./run.sh void LABEL "reason"</code> sets its rows aside (kept in <code>results/void/</code>)</td></tr>
+      <tr><td>Wi-Fi came back on mid-run</td><td>Turn it off; if nodes stopped seeing each other, restart as for a dead Gazebo</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note stop"><strong>Never</strong> run the old <code>RESTORE.sh</code> in <code>arc_backups/compact_store_20261012_133112</code>: it predates the goal-frame guard in <code>dijkstra_planner.py</code>.</p>
+  <p class="note"><strong>Back to the original controller</strong> (not needed for phase 2): <code>./bringup.sh nav</code> without <code>TEB_YAML</code> restarts B1–B6 on your own <code>teb_controller.yaml</code>.</p>
+</div>
+
+<!-- ============ PI ============ -->
+<div id="p-pi" class="panel" style="display:none;flex-direction:column;gap:12px">
+  <div class="sec-head"><h2>Pi + webcam (in preparation)</h2><p>Nothing here is built yet. The node list waits on inspecting your person-state code, so these steps will be added once that is done.</p></div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Machine</th><th>Runs</th></tr></thead>
+    <tbody>
+      <tr><td>Laptop</td><td>Gazebo, RTAB-Map, Dijkstra, TEB-like controller, BT, motion gate (unchanged)</td></tr>
+      <tr><td>Raspberry Pi</td><td>Webcam, person detection (own package, not in <code>arc_person_follower</code>), Arduino bridge</td></tr>
+      <tr><td>Arduino Uno</td><td>Motors and Hall sensors (<code>arc_motor_bridge.ino</code>)</td></tr>
+      <tr><td>Link</td><td>Ethernet cable, static IPs, Wi-Fi stays off; a separate DDS profile for the demo only</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="step" data-id="p1"><input type="checkbox" id="c-p1" aria-label="done"><div class="body">
+    <span class="st">Inspect what produces the person state</span>
+    <span class="where">Laptop</span><span class="time">read-only</span>
+    <div class="cmd"><code>ls ~/slam_ws/src; grep -rnE "person_state|motion_gate|person_|usb_cam|v4l2|VideoCapture|image_raw|yolo|behavior_mode" --include=*.py --include=*.cpp --include=*.hpp --include=*.xml --include=*.yaml --include=*.launch.py ~/slam_ws/src | head -100</code><button>Copy</button></div>
+    <p class="see">Send me the output. Safe during a run: it only reads files.</p>
+  </div></div>
+
+  <div class="step" data-id="p2"><input type="checkbox" id="c-p2" aria-label="done"><div class="body">
+    <span class="st">Tell me about the Pi and camera</span>
+    <span class="where">Pi</span><span class="time">read-only</span>
+    <div class="cmd"><code>cat /proc/device-tree/model; echo; free -h | head -2; grep PRETTY /etc/os-release; ls /dev/video* 2>/dev/null; lsusb</code><button>Copy</button></div>
+    <p class="see">Gives model, RAM, OS and the webcam. ROS 2 Jazzy installs directly only on <b>Ubuntu 24.04</b>; anything else needs a decision before installing.</p>
+  </div></div>
+</div>
+</div>
+<button class="reset" id="reset" style="margin:20px auto 0;display:block">Clear ticks on this tab</button>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  const KEY="arc-run-sheet-v1";
+  let state={};
+  try{state=JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){state={}}
+  const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
+  const steps=[...document.querySelectorAll(".step")];
+  function refresh(){
+    const tab=document.querySelector('.tabs button[aria-selected="true"]');
+    const runSteps=steps.filter(s=>s.closest("#"+tab.dataset.panel));
+    const n=runSteps.filter(s=>s.querySelector("input").checked).length;
+    document.getElementById("count").textContent=n+" / "+runSteps.length+" steps · "+tab.textContent;
+    document.getElementById("fill").style.width=(runSteps.length?100*n/runSteps.length:0)+"%";
+  }
+  steps.forEach(s=>{
+    const cb=s.querySelector("input"); const id=s.dataset.id;
+    cb.checked=!!state[id]; s.classList.toggle("done",cb.checked);
+    cb.addEventListener("change",()=>{state[id]=cb.checked;s.classList.toggle("done",cb.checked);save();refresh()});
+  });
+  refresh();
+  document.getElementById("reset").addEventListener("click",()=>{const p=document.querySelector('.tabs button[aria-selected="true"]').dataset.panel;steps.filter(s=>s.closest("#"+p)).forEach(s=>{state[s.dataset.id]=false;s.querySelector("input").checked=false;s.classList.remove("done")});save();refresh()});
+  const toast=document.getElementById("toast"); let tt;
+  function show(m){toast.textContent=m;toast.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove("on"),1400)}
+  document.querySelectorAll(".cmd button").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const code=b.parentElement.querySelector("code"); const text=code.textContent;
+      const fallback=()=>{const r=document.createRange();r.selectNodeContents(code);const sel=getSelection();sel.removeAllRanges();sel.addRange(r);show("Selected. Press Ctrl+C")};
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(()=>{b.textContent="Copied";show("Copied");setTimeout(()=>b.textContent="Copy",1200)},fallback)}else fallback();
+    });
+  });
+  const tabs=[...document.querySelectorAll(".tabs button")];
+  function select(t){tabs.forEach(x=>{const on=x===t;x.setAttribute("aria-selected",on);document.getElementById(x.dataset.panel).style.display=on?"flex":"none"});refresh()}
+  tabs.forEach(t=>t.addEventListener("click",()=>select(t)));
+  const h=location.hash.slice(1); const m={test:"tab-run",fix:"tab-fix",pi:"tab-pi"}; if(m[h])select(document.getElementById(m[h]));
+})();
+</script>

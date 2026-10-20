@@ -1,0 +1,68 @@
+controller_server:
+  ros__parameters:
+    use_sim_time: true
+    enable_stamped_cmd_vel: true
+    controller_frequency: 10.0
+    controller_plugins:
+    - TEB
+    TEB:
+      plugin: nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController
+      desired_linear_vel: 0.15
+      lookahead_dist: 0.4
+      min_lookahead_dist: 0.25
+      max_lookahead_dist: 0.7
+      lookahead_time: 1.5
+      rotate_to_heading_angular_vel: 0.5
+      transform_tolerance: 0.2
+      use_velocity_scaled_lookahead_dist: false
+      min_approach_linear_velocity: 0.05
+      approach_velocity_scaling_dist: 0.4
+      use_collision_detection: true
+      max_allowed_time_to_collision_up_to_carrot: 1.0
+      use_regulated_linear_velocity_scaling: true
+      use_cost_regulated_linear_velocity_scaling: false
+      regulated_linear_scaling_min_radius: 0.9
+      regulated_linear_scaling_min_speed: 0.1
+      use_rotate_to_heading: true
+      rotate_to_heading_min_angle: 0.785
+      allow_reversing: false
+      max_angular_accel: 1.0
+      max_robot_pose_search_dist: 10.0
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      use_sim_time: true
+      global_frame: map
+      robot_base_frame: base_footprint
+      update_frequency: 10.0
+      publish_frequency: 5.0
+      rolling_window: true
+      width: 4
+      height: 4
+      resolution: 0.05
+      footprint: '[[0.105, 0.0], [0.074, 0.074], [0.0, 0.105], [-0.074, 0.074], [-0.105,
+        0.0], [-0.074, -0.074], [0.0, -0.105], [0.074, -0.074]]'
+      plugins:
+      - static_layer
+      - obstacle_layer
+      - inflation_layer
+      static_layer:
+        plugin: nav2_costmap_2d::StaticLayer
+        map_topic: /rtabmap/map
+        map_subscribe_transient_local: true
+      obstacle_layer:
+        plugin: nav2_costmap_2d::ObstacleLayer
+        observation_sources: scan
+        scan:
+          topic: /scan
+          data_type: LaserScan
+          marking: true
+          clearing: true
+          obstacle_max_range: 3.0
+          raytrace_max_range: 3.5
+          max_obstacle_height: 1.0
+          min_obstacle_height: 0.0
+      inflation_layer:
+        plugin: nav2_costmap_2d::InflationLayer
+        cost_scaling_factor: 3.0
+        inflation_radius: 0.25

@@ -1,0 +1,24 @@
+# colcon
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+
+# Python
+__pycache__/
+*.pyc
+
+# Large or generated files
+*.pt
+*.npz
+*.npy
+*.bag
+*.db3
+*.mcap
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+*.bak
+*.bak_*
+*.orig

@@ -1,0 +1,5 @@
+label,mission,strategy,n_items,n_stops,leg,stop_id,goal_x,goal_y,planned_len,paths_received,driven_len_true,driven_len_map,time_s,success,reason,reached_msg,final_dist,ctrl_aborts,resends,stall_events,n_obstacles,min_obstacle_clearance,min_static_clearance,max_pos_err,w_sign_changes,mean_abs_wdot,reverse_s,idle_wait_s,cmd_msgs
+teb_icp_pc,teb_icp_pc_s7_000,as_entered,8,4,-1,home,0.0,0.0,0.05,2,0.1011,0.1916,12.7,1,arrived,1,0.025,0,0,0,0,,0.59,0.0155,0,0.0446,0.0,0.0,108
+teb_icp_pc,teb_icp_pc_s7_000,as_entered,8,4,0,gondola_1_west_a,0.15,-0.4,0.4621,4,0.5288,0.6306,17.63,1,arrived,1,0.024,0,0,0,0,,0.439,0.0143,0,0.0691,0.0,0.0,163
+teb_icp_pc,teb_icp_pc_s7_000,as_entered,8,4,1,dairy,-2.2,2.75,4.3577,19,4.3001,4.6894,58.59,1,arrived,1,0.049,0,0,0,0,,0.11,0.0903,17,0.3253,0.0,0.0,545
+teb_icp_pc,teb_icp_pc_s7_000,as_entered,8,4,2,gondola_3_b+gondola_2_east_b,3.475,1.4,6.4349,26,5.9951,6.4437,76.36,1,arrived,1,0.024,0,0,0,0,,0.11,0.0498,7,0.1374,0.0,0.0,710

@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+
+<package format="3">
+
+  <name>arc_behavior_tree</name>
+
+  <version>0.0.0</version>
+
+  <description>
+    Behaviour Tree and person behaviour controller for ARC robotics project.
+  </description>
+
+  <maintainer email="user@example.com">
+    arc_project
+  </maintainer>
+
+  <license>Apache-2.0</license>
+
+
+  <buildtool_depend>
+    ament_cmake
+  </buildtool_depend>
+
+
+  <depend>
+    rclcpp
+  </depend>
+
+  <depend>
+    std_msgs
+  </depend>
+
+  <depend>
+    geometry_msgs
+  </depend>
+
+  <depend>
+    nav_msgs
+  </depend>
+
+  <depend>
+    behaviortree_cpp
+  </depend>
+
+  <depend>
+    ament_index_cpp
+  </depend>
+
+  <depend>
+    ros_gz_interfaces
+  </depend>
+
+  <depend>
+    tf2
+  </depend>
+
+  <depend>
+    tf2_ros
+  </depend>
+
+  <exec_depend>
+    ros_gz_bridge
+  </exec_depend>
+
+  <exec_depend>
+    launch_ros
+  </exec_depend>
+
+
+  <export>
+
+    <build_type>
+      ament_cmake
+    </build_type>
+
+  </export>
+
+</package>

@@ -1,0 +1,21 @@
+--- md5 of key files
+b2c797e03fe419803f7faeea71d738e8  /home/akshada-raghuvanshi/slam_ws/src/arc_behavior_tree_backup/behavior_trees/person_assistant.xml
+de0723c8ad99661846afaeea49b07d78  /home/akshada-raghuvanshi/slam_ws/src/arc_behavior_tree_backup/package.xml
+b2c797e03fe419803f7faeea71d738e8  /home/akshada-raghuvanshi/slam_ws/src/arc_behavior_tree/behavior_trees/person_assistant.xml
+b2c797e03fe419803f7faeea71d738e8  /home/akshada-raghuvanshi/slam_ws/src/arc_behavior_tree_claude/arc_behavior_tree/behavior_trees/person_assistant.xml
+de0723c8ad99661846afaeea49b07d78  /home/akshada-raghuvanshi/slam_ws/src/arc_behavior_tree_claude/arc_behavior_tree/package.xml
+824aaec7dd63ea577a90d22986e4e0fa  /home/akshada-raghuvanshi/slam_ws/src/arc_behavior_tree/package.xml
+a6b489f49c4a77dbbaa05872fecf2bd8  /home/akshada-raghuvanshi/slam_ws/src/arc_planner/arc_planner/dijkstra_planner.py
+9cd691a94cdaae8851889b5907704dc0  /home/akshada-raghuvanshi/slam_ws/src/arc_planner/arc_planner/planned_path_to_teb.py
+c6cbcd7f45bfb1f0e98c9d8b0eecbce6  /home/akshada-raghuvanshi/slam_ws/src/arc_planner/arc_planner/shopping_manager.py
+be4540f07db9449e118c1350aa6a4750  /home/akshada-raghuvanshi/slam_ws/src/arc_planner_backup/arc_planner/dijkstra_planner.py
+c9e731d09d1eedf93e7d4d8c19a9826c  /home/akshada-raghuvanshi/slam_ws/src/arc_planner_backup/arc_planner/planned_path_to_teb.py
+15f0a9e9ad405b49bf96d4d50da3204b  /home/akshada-raghuvanshi/slam_ws/src/arc_planner_backup/arc_planner/shopping_manager.py
+6ea73715a79b66f096721edcf5d05e01  /home/akshada-raghuvanshi/slam_ws/src/arc_planner_backup/config/teb_controller.yaml
+be4540f07db9449e118c1350aa6a4750  /home/akshada-raghuvanshi/slam_ws/src/arc_planner_claude/arc_planner/arc_planner/dijkstra_planner.py
+c9e731d09d1eedf93e7d4d8c19a9826c  /home/akshada-raghuvanshi/slam_ws/src/arc_planner_claude/arc_planner/arc_planner/planned_path_to_teb.py
+15f0a9e9ad405b49bf96d4d50da3204b  /home/akshada-raghuvanshi/slam_ws/src/arc_planner_claude/arc_planner/arc_planner/shopping_manager.py
+6ea73715a79b66f096721edcf5d05e01  /home/akshada-raghuvanshi/slam_ws/src/arc_planner_claude/arc_planner/config/teb_controller.yaml
+5dcc85e0ea029f692255ab1b3ef7b753  /home/akshada-raghuvanshi/slam_ws/src/arc_planner/config/teb_controller.yaml
+2c38b31b4a81190a5ad2af882eb110fa  /home/akshada-raghuvanshi/slam_ws/src/arc_store_sim_backup_20261011_230126/config/item_locations.yaml
+1a8beeb5ac60ddac1c3378b2c4596fa8  /home/akshada-raghuvanshi/slam_ws/src/arc_store_sim/config/item_locations.yaml

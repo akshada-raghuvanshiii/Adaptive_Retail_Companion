@@ -1,0 +1,144 @@
+{
+  "nodes": [
+    "/_ros2cli_daemon_0_10ff1755a0d34128b473d7bd2df9fd09",
+    "/arc_motion_gate",
+    "/arc_store_bridge",
+    "/arc_test_watcher",
+    "/controller_server",
+    "/dijkstra_planner",
+    "/icp_odometry",
+    "/lifecycle_manager_controller",
+    "/local_costmap/local_costmap",
+    "/person_assistant_bt",
+    "/person_state_input",
+    "/planned_path_to_teb",
+    "/robot_state_publisher",
+    "/ros_gz_bridge",
+    "/ros_gz_bridge",
+    "/rtabmap/rtabmap",
+    "/rtabmap/transform_listener_impl_58042de94f60",
+    "/transform_listener_impl_5672b1888e30",
+    "/transform_listener_impl_5fd8cd5d2f80"
+  ],
+  "stack": {
+    "icp_odometry_running": true,
+    "rtabmap_odom_topic": "/odom_icp",
+    "odometry": "icp",
+    "controller_plugin": "teb_local_planner/TebController",
+    "controller": "teb",
+    "progress_radius": 0.25,
+    "progress": "relaxed",
+    "shopping_manager_running": false
+  },
+  "goal_topic": "/goal_pose",
+  "map": {
+    "w": 179,
+    "h": 161,
+    "res": 0.05000000074505806
+  },
+  "truth_source": "gzcli",
+  "bt_mode": "LEAD",
+  "items_file": "/home/akshada-raghuvanshi/slam_ws/src/arc_store_sim/config/item_locations.yaml",
+  "report": [
+    [
+      "OK",
+      "node dijkstra",
+      "/dijkstra_planner"
+    ],
+    [
+      "OK",
+      "node controller_server",
+      "/controller_server"
+    ],
+    [
+      "OK",
+      "node planned_path_to_teb",
+      "/planned_path_to_teb"
+    ],
+    [
+      "OK",
+      "node rtabmap",
+      "/rtabmap/rtabmap, /rtabmap/transform_listener_impl_58042de94f60"
+    ],
+    [
+      "OK",
+      "node motion_gate",
+      "/arc_motion_gate"
+    ],
+    [
+      "OK",
+      "RTAB-Map odometry",
+      "icp (/odom_icp); icp_odometry running: True"
+    ],
+    [
+      "OK",
+      "controller plugin",
+      "teb_local_planner/TebController"
+    ],
+    [
+      "OK",
+      "goal topic",
+      "/goal_pose (subscribed by /dijkstra_planner)"
+    ],
+    [
+      "OK",
+      "/navigation_goal_reached",
+      "published by planned_path_to_teb"
+    ],
+    [
+      "OK",
+      "FollowPath action status",
+      "publisher present, no goals yet"
+    ],
+    [
+      "OK",
+      "map /rtabmap/map",
+      "179x161 @ 0.050 m"
+    ],
+    [
+      "OK",
+      "TF map -> base_footprint",
+      "x=-0.01 y=0.06 yaw=-80.1"
+    ],
+    [
+      "OK",
+      "Gazebo true pose",
+      "x=-0.02 y=0.05 yaw=-80.3 (source gzcli)"
+    ],
+    [
+      "OK",
+      "map vs truth",
+      "0.009 m, 0.0 deg (PASS)"
+    ],
+    [
+      "OK",
+      "/cmd_vel type",
+      "TwistStamped (matches arc_motion_gate)"
+    ],
+    [
+      "OK",
+      "BT mode /arc/behavior_mode",
+      "LEAD"
+    ],
+    [
+      "OK",
+      "item file",
+      "/home/akshada-raghuvanshi/slam_ws/src/arc_store_sim/config/item_locations.yaml: 29 items, 9 driving stops"
+    ],
+    [
+      "OK",
+      "gz CLI",
+      "found"
+    ],
+    [
+      "OK",
+      "leftover test boxes",
+      "none in Gazebo"
+    ],
+    [
+      "OK",
+      "spawn/remove test box",
+      "works (checked in `gz model --list`)"
+    ]
+  ]
+}

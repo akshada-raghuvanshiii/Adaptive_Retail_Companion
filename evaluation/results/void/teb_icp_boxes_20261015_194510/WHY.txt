@@ -1,0 +1,1 @@
+12 test boxes left in Gazebo (removal not verified - kit bug), later legs drove into blocked aisles; map pose lost 3.15 m at pair14

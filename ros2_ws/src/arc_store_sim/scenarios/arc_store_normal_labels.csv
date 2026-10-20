@@ -1,0 +1,9 @@
+actor,t_start,t_end,label,cycle_s
+shopper_normal,0.00,17.77,walk_to_item,89.13
+shopper_normal,17.77,23.77,pause_at_item,89.13
+shopper_normal,23.77,35.87,walk_to_item,89.13
+shopper_normal,35.87,40.87,pause_at_item,89.13
+shopper_normal,40.87,61.01,walk_to_item,89.13
+shopper_normal,61.01,65.57,exit,89.13
+shopper_normal,65.57,73.57,pause_checkout,89.13
+shopper_normal,73.57,89.13,exit,89.13

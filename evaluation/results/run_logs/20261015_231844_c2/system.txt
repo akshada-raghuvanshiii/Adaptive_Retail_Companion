@@ -1,0 +1,9 @@
+test: c2
+started: 2026-10-15 23:18:44 IST
+command: python3 arc_tests/mission_runner.py --out results --label teb_icp_c2 --sizes 5,8,12 --per-size 10 --strategies as_entered,nn_dijkstra,exact --seed 21 
+host: akshada-raghuvanshi-HP-Laptop-14s-dq2xxx  user: akshada-raghuvanshi
+cpu: 11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz  cores: 8
+ram: 7.4Gi
+os: Ubuntu 24.04.4 LTS
+ros: jazzy
+gazebo: Gazebo Sim, version 8.11.0

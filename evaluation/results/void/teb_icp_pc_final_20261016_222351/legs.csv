@@ -1,0 +1,3 @@
+label,mission,strategy,n_items,n_stops,leg,stop_id,goal_x,goal_y,planned_len,paths_received,driven_len_true,driven_len_map,time_s,success,reason,reached_msg,final_dist,ctrl_aborts,resends,stall_events,n_obstacles,min_obstacle_clearance,min_static_clearance,max_pos_err,w_sign_changes,mean_abs_wdot,reverse_s,idle_wait_s,cmd_msgs
+teb_icp_pc_final,teb_icp_pc_final_s7_000,exact,8,4,-1,home,0.0,0.0,3.1971,17,3.0854,3.3049,45.46,1,arrived,1,0.014,0,0,0,0,,0.108,0.0526,6,0.2296,0.0,0.0,417
+teb_icp_pc_final,teb_icp_pc_final_s7_000,exact,8,4,0,gondola_1_west_a,0.15,-0.4,0.4621,5,0.5372,0.6407,17.52,1,arrived,1,0.02,0,0,0,0,,0.435,0.0236,0,0.061,0.0,0.0,164
