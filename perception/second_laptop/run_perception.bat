@@ -8,4 +8,4 @@ set CAM=%~2
 if "%CAM%"=="" set CAM=0
 if "%IMGSZ%"=="" set IMGSZ=416
 cd /d "%~dp0arc-perception"
-..\.venv\Scripts\python ros\perception_bridge.py --headless --udp %1:5600 --camera %CAM% --width 640 --height 480 --imgsz %IMGSZ% --max-lost-s 4 --debug-image-hz 2 %3 %4 %5
+..\.venv\Scripts\python ros\perception_bridge.py --headless --udp %1:5600 --camera "%CAM%" --width 640 --height 480 --imgsz %IMGSZ% --max-lost-s 4 --debug-image-hz 2 %3 %4 %5
