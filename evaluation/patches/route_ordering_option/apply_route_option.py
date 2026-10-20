@@ -289,12 +289,85 @@ def option_patch(src):
     return out.replace(CHOOSE_ANCHOR, CHOOSE_ADD + CHOOSE_ANCHOR, 1)
 
 
+# ---------------------------------------------------------------- checkout as the final destination (v3)
+MARK_V3 = "ARC checkout as final destination"
+CO_PARAM_V2 = ("        self.route_end_at_checkout = bool(self.declare_parameter('route_end_at_checkout', "
+               "False).value)\n")
+CO_PARAM_V3 = ("        # --- ARC checkout as final destination: on by default, from the store's destinations file\n"
+               "        self.route_end_at_checkout = bool(self.declare_parameter('route_end_at_checkout', "
+               "True).value)\n"
+               "        self.checkout_destinations_file = os.path.expanduser(str(self.declare_parameter(\n"
+               "            'checkout_destinations_file',\n"
+               "            '~/slam_ws/src/arc_store_sim/config/destinations_map.yaml').value))\n")
+CO_LOOKUP_ANCHOR = ("            if 'x' in loc and 'y' in loc:\n"
+                    "                x, y, yaw = float(loc['x']), float(loc['y']), float(loc.get('yaw', yaw))\n")
+CO_LOOKUP_ADD = ("        if _ro_math.isnan(x) or _ro_math.isnan(y):\n"
+                 "            # --- ARC checkout as final destination: the store's checkout waiting point\n"
+                 "            loc = self._ro_checkout_from_destinations()\n"
+                 "            if loc:\n"
+                 "                x, y, yaw = loc\n")
+CO_METHOD_ANCHOR = "    def _ro_with_checkout(self, goals):\n"
+CO_METHOD_ADD = '''    def _ro_checkout_from_destinations(self):
+        """ARC checkout as final destination: (x, y, yaw) of the 'checkout' entry in the store's
+        destinations file, if it is in the same frame as the items; otherwise None."""
+        path = self.checkout_destinations_file
+        try:
+            with open(path) as f:
+                d = yaml.safe_load(f) or {}
+        except Exception as e:
+            self.get_logger().warn(f'Checkout: cannot read {path}: {e}')
+            return None
+        frame = d.get('frame_id', 'map')
+        if frame != self.item_frame:
+            self.get_logger().warn(
+                f'Checkout: {path} is in frame "{frame}" but the items are in "{self.item_frame}". Not used.')
+            return None
+        c = (d.get('destinations') or {}).get('checkout') or {}
+        if 'x' not in c or 'y' not in c:
+            self.get_logger().warn(f'Checkout: no "checkout" destination in {path}.')
+            return None
+        return float(c['x']), float(c['y']), float(c.get('yaw', 0.0))
+
+'''
+CO_FINAL_ANCHOR = """            print(
+                f'\\n\u2713 Reached final item: '
+                f'{current_goal["item"]}'
+            )
+"""
+CO_FINAL_NEW = """            # --- ARC checkout as final destination: say so when the last stop is the checkout
+            if current_goal.get('is_checkout'):
+                print('\\n\u2713 Reached the checkout counter')
+            else:
+                print(
+                    f'\\n\u2713 Reached final item: '
+                    f'{current_goal["item"]}'
+                )
+"""
+
+
+def checkout_patch(src):
+    """Make the checkout counter the final destination of every trip (needs the route ordering)."""
+    for name, anchor in (("route_end_at_checkout parameter", CO_PARAM_V2),
+                         ("checkout lookup", CO_LOOKUP_ANCHOR), ("_ro_with_checkout method", CO_METHOD_ANCHOR)):
+        _once(src, anchor, name)
+    out = src.replace(CO_PARAM_V2, CO_PARAM_V3, 1)
+    out = out.replace(CO_LOOKUP_ANCHOR, CO_LOOKUP_ANCHOR + CO_LOOKUP_ADD, 1)
+    out = out.replace(CO_METHOD_ANCHOR, CO_METHOD_ADD + CO_METHOD_ANCHOR, 1)
+    if out.count(CO_FINAL_ANCHOR) == 1:          # wording only; skipped if the file prints it differently
+        out = out.replace(CO_FINAL_ANCHOR, CO_FINAL_NEW, 1)
+    return out
+
+
 def patch(src):
+    if MARK_V3 in src:
+        raise SystemExit("shopping_manager.py already has the route option and the checkout - nothing to do.")
     if MARK_V2 in src:
-        raise SystemExit("shopping_manager.py already has the route option - nothing to do.")
+        return checkout_patch(src), "upgrade (route option present: adds the checkout as final destination)"
     if MARK_V1 in src:
-        return option_patch(src), "upgrade (route ordering already present: adds the choice)"
-    return option_patch(base_patch(src)), "fresh (adds route ordering and the choice)"
+        return (checkout_patch(option_patch(src)),
+                "upgrade (route ordering present: adds the choice and the checkout as final destination)")
+    return (checkout_patch(option_patch(base_patch(src))),
+            "fresh (adds route ordering, the choice and the checkout as final destination)")
 
 
 def main():

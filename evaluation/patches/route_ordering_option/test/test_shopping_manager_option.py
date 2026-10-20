@@ -10,6 +10,7 @@ route-order patch:
   - with no map, it says so and keeps the typed order.
 """
 import builtins
+from yaml import safe_load as yaml_load
 import importlib.util
 import io
 import math
@@ -36,6 +37,8 @@ SM_SRC = _pick(os.path.join(REPO, "ros2_ws", "src", "arc_planner", "arc_planner"
                os.path.join(DATA, "shopping_manager_12oct.py"))
 ITEMS = _pick(os.path.join(REPO, "ros2_ws", "src", "arc_store_sim", "config", "item_locations.yaml"),
               os.path.join(DATA, "item_locations.yaml"))
+DEST = _pick(os.path.join(REPO, "ros2_ws", "src", "arc_store_sim", "config", "destinations_map.yaml"),
+             os.path.join(DATA, "destinations_map.yaml"))
 V1_KIT = _pick(os.path.join(REPO, "evaluation", "patches", "phase2_fixes", "route_order"),
                os.path.join(DATA, "v1"))
 
@@ -222,6 +225,24 @@ def goal_items():
     return [m.data for t, m in FakeNode.PUBLISHED if t == "/shopping_item"]
 
 
+def shop(node):
+    """Item stops only (the checkout is checked separately)."""
+    return [g["item"] for g in node.navigation_goals if not g.get("is_checkout")]
+
+
+def complete_stop(node, pose):
+    FakeTF.POSE = pose
+    old = builtins.input
+    builtins.input = lambda p="": "y"
+    out = io.StringIO()
+    try:
+        with redirect_stdout(out):
+            node.navigation_complete_callback(types.SimpleNamespace(data=True))
+    finally:
+        builtins.input = old
+    return out.getvalue()
+
+
 TYPED = ["pasta", "tea_coffee", "milk", "fruits"]
 LIST_ANSWERS = [", ".join(TYPED), "n", "y"]          # add items, no more, confirm
 
@@ -234,6 +255,7 @@ class ShoppingManagerOptionTests(unittest.TestCase):
         cfg = os.path.join(cls.home, "slam_ws", "src", "arc_store_sim", "config")
         os.makedirs(cfg)
         shutil.copy(ITEMS, cfg)
+        shutil.copy(DEST, cfg)
         cls._old_home = os.environ.get("HOME")
         os.environ["HOME"] = cls.home
         with open(SM_SRC) as f:
@@ -243,6 +265,11 @@ class ShoppingManagerOptionTests(unittest.TestCase):
         import apply_route_order as apply_v1
         cls.v1_src = apply_v1.patch(src)
         cls.upgraded_src, cls.upgrade_kind = apply_v2.patch(cls.v1_src)
+        # the state on the laptop after the first route-option install (choice, no checkout default)
+        cls.v2_src = apply_v2.option_patch(apply_v2.base_patch(src))
+        cls.from_v2_src, cls.from_v2_kind = apply_v2.patch(cls.v2_src)
+        with open(DEST) as f:
+            cls.checkout = yaml_load(f)["destinations"]["checkout"]
         cls.mod = load_patched(cls.fresh_src)
         cls.mod_up = load_patched(cls.upgraded_src)
         import yaml
@@ -265,8 +292,10 @@ class ShoppingManagerOptionTests(unittest.TestCase):
         self.assertTrue(self.upgrade_kind.startswith("upgrade"))
         with self.assertRaises(SystemExit):
             apply_v2.patch(self.fresh_src)
-        # an upgraded v1 file and a fresh file end up identical
+        # an upgraded v1 file, an upgraded v2 file and a fresh file all end up identical
         self.assertEqual(self.fresh_src, self.upgraded_src)
+        self.assertTrue(self.from_v2_kind.startswith("upgrade"))
+        self.assertEqual(self.fresh_src, self.from_v2_src)
 
     def test_only_shopping_manager_logic_changes(self):
         with open(SM_SRC) as f:
@@ -283,7 +312,7 @@ class ShoppingManagerOptionTests(unittest.TestCase):
         self.assertIn("ROUTE OPTIONS", out)
         self.assertTrue(any(p.startswith("Choose route") for p in prompts))
         self.assertEqual(node.route_ordering, "exact")
-        order = [g["item"] for g in node.navigation_goals]
+        order = shop(node)
         self.assertEqual(sorted(order), sorted(TYPED))
         self.assertNotEqual(order, TYPED)                    # this list is not typed in the best order
         self.assertEqual(goal_items()[0], order[0])          # first published goal is the first optimised stop
@@ -294,7 +323,7 @@ class ShoppingManagerOptionTests(unittest.TestCase):
 
     def test_option_2_keeps_typed_order(self):
         node, _, out = run_manager(self.mod, LIST_ANSWERS + ["2"])
-        self.assertEqual([g["item"] for g in node.navigation_goals], TYPED)
+        self.assertEqual(shop(node), TYPED)
         self.assertEqual(goal_items()[0], TYPED[0])
         self.assertEqual(node.route_ordering, "as_entered")
 
@@ -321,7 +350,7 @@ class ShoppingManagerOptionTests(unittest.TestCase):
                 node.navigation_complete_callback(types.SimpleNamespace(data=True))
         finally:
             builtins.input = builtins_input
-        self.assertEqual([g["item"] for g in node.navigation_goals], TYPED)
+        self.assertEqual(shop(node), TYPED)
 
     def test_optimised_choice_reorders_from_new_pose(self):
         node, _, _ = run_manager(self.mod, LIST_ANSWERS + ["1"])
@@ -334,7 +363,7 @@ class ShoppingManagerOptionTests(unittest.TestCase):
                 node.navigation_complete_callback(types.SimpleNamespace(data=True))
         finally:
             builtins.input = builtins_input
-        rest = [g["item"] for g in node.navigation_goals]
+        rest = shop(node)
         self.assertEqual(rest[0], first["item"])
         self.assertEqual(sorted(rest), sorted(TYPED))
 
@@ -343,7 +372,7 @@ class ShoppingManagerOptionTests(unittest.TestCase):
         node, prompts, out = run_manager(self.mod, LIST_ANSWERS)
         self.assertNotIn("ROUTE OPTIONS", out)
         self.assertFalse(any(p.startswith("Choose route") for p in prompts))
-        self.assertEqual([g["item"] for g in node.navigation_goals], TYPED)
+        self.assertEqual(shop(node), TYPED)
 
     def test_exact_parameter_never_asks(self):
         FakeNode.PARAMS = {"route_ordering": "exact"}
@@ -355,8 +384,72 @@ class ShoppingManagerOptionTests(unittest.TestCase):
         MAP["msg"] = None
         node, prompts, out = run_manager(self.mod_up, LIST_ANSWERS)   # upgraded file behaves the same
         self.assertFalse(any(p.startswith("Choose route") for p in prompts))
-        self.assertEqual([g["item"] for g in node.navigation_goals], TYPED)
+        self.assertEqual(shop(node), TYPED)
         self.assertTrue(any("Route options unavailable" in m for k, m in FakeNode.LOG if k == "warn"))
+
+    # -------------------------------------------------------------- checkout as the final destination
+    def assert_checkout_last(self, node):
+        last = node.navigation_goals[-1]
+        self.assertTrue(last.get("is_checkout"))
+        self.assertAlmostEqual(last["x"], float(self.checkout["x"]))
+        self.assertAlmostEqual(last["y"], float(self.checkout["y"]))
+        self.assertAlmostEqual(last["yaw"], float(self.checkout.get("yaw", 0.0)))
+        self.assertEqual(sum(1 for g in node.navigation_goals if g.get("is_checkout")), 1)
+
+    def test_checkout_is_last_for_both_choices(self):
+        for ans in ("1", "2"):
+            node, _, out = run_manager(self.mod, LIST_ANSWERS + [ans])
+            self.assert_checkout_last(node)
+            line = [l for l in out.splitlines() if ("[1] Optimised" if ans == "1" else "[2] As typed") in l][0]
+            self.assertTrue(line.rstrip().endswith("-> Checkout"))
+
+    def test_checkout_for_a_single_item(self):
+        node, prompts, _ = run_manager(self.mod, ["milk", "n", "y"])
+        self.assertEqual([g["item"] for g in node.navigation_goals], ["milk", "Checkout"])
+        self.assertFalse(any(p.startswith("Choose route") for p in prompts))   # nothing to choose
+
+    def test_checkout_stays_last_after_reorder(self):
+        node, _, _ = run_manager(self.mod, LIST_ANSWERS + ["1"])
+        first = node.navigation_goals[0]
+        complete_stop(node, (first["x"], first["y"]))
+        self.assert_checkout_last(node)
+
+    def test_checkout_even_without_map_or_ordering(self):
+        MAP["msg"] = None
+        node, _, _ = run_manager(self.mod, LIST_ANSWERS)
+        self.assertEqual(shop(node), TYPED)
+        self.assert_checkout_last(node)
+        FakeNode.PARAMS = {"route_ordering": "as_entered"}
+        MAP["msg"] = map_msg()
+        node, _, _ = run_manager(self.mod, LIST_ANSWERS)
+        self.assert_checkout_last(node)
+
+    def test_route_end_at_checkout_false_is_old_behaviour(self):
+        FakeNode.PARAMS = {"route_end_at_checkout": False}
+        node, _, _ = run_manager(self.mod, LIST_ANSWERS + ["2"])
+        self.assertEqual([g["item"] for g in node.navigation_goals], TYPED)
+
+    def test_explicit_checkout_parameters_win(self):
+        FakeNode.PARAMS = {"checkout_x": 0.5, "checkout_y": -2.4, "checkout_yaw": 0.0}
+        node, _, _ = run_manager(self.mod, LIST_ANSWERS + ["2"])
+        last = node.navigation_goals[-1]
+        self.assertTrue(last.get("is_checkout"))
+        self.assertEqual((last["x"], last["y"]), (0.5, -2.4))
+
+    def test_missing_destinations_file_warns_and_skips(self):
+        FakeNode.PARAMS = {"checkout_destinations_file": "/nonexistent/destinations_map.yaml"}
+        node, _, _ = run_manager(self.mod, LIST_ANSWERS + ["2"])
+        self.assertEqual([g["item"] for g in node.navigation_goals], TYPED)
+        self.assertTrue(any("Checkout: cannot read" in m for k, m in FakeNode.LOG if k == "warn"))
+
+    def test_trip_ends_at_counter_with_message(self):
+        node, _, _ = run_manager(self.mod, LIST_ANSWERS + ["2"])
+        out = ""
+        for g in node.navigation_goals:
+            out = complete_stop(node, (g["x"], g["y"]))
+        self.assertIn("Reached the checkout counter", out)
+        self.assertIn("SHOPPING COMPLETE", out)
+        self.assertEqual(goal_items()[-1], "Checkout")
 
 
 if __name__ == "__main__":

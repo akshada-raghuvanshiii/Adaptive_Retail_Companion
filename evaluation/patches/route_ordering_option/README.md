@@ -1,4 +1,4 @@
-# ARC route option: Dijkstra-optimised order or typed order
+# ARC route option: Dijkstra-optimised order or typed order, ending at the checkout
 
 Once the shopping list is confirmed, the shopping manager works out two routes and lets you choose one:
 
@@ -9,16 +9,25 @@ Both routes are priced on the same costs the planner drives on, so the numbers c
 
 ```
 ========== ROUTE OPTIONS (Dijkstra path cost from the robot) ==========
-  [1] Optimised (exact):   14.20 m   pasta -> fruits -> tea_coffee -> milk
-  [2] As typed:            17.31 m   pasta -> tea_coffee -> milk -> fruits
-  The optimised route is 3.10 m (18%) shorter.
-  (computed in 535 ms)
+  [1] Optimised (exact):   17.98 m   pasta -> fruits -> milk -> tea_coffee -> Checkout
+  [2] As typed:            18.72 m   pasta -> tea_coffee -> milk -> fruits -> Checkout
+  The optimised route is 0.74 m (4%) shorter.
+  (computed in 799 ms)
 ========================================================================
 
 Choose route: 1 = optimised, 2 = as typed [1]:
 ```
 
+**Every trip ends at the checkout counter, whatever the list.** The checkout is added as the fixed last stop, and the optimised order is planned with that end in mind. So the order can differ from the best route that ignores the checkout: in the example above, milk and tea_coffee swap places. The checkout waiting point is read from the store's `destinations_map.yaml`: (−1.80, −1.25) in `map`, facing the counter. At the counter the manager prints "Reached the checkout counter" and then "SHOPPING COMPLETE".
+
 (Output above is from the offline test, using a model of the compact store with the robot at (−0.5, −2.0). Your numbers will depend on the live map and the robot's pose.)
+
+**Checkout position, in order of precedence:**
+1. the `checkout_x`, `checkout_y` and `checkout_yaw` parameters, if you set them;
+2. a `checkout` entry in `item_locations.yaml`;
+3. the `checkout` destination in `checkout_destinations_file`, which defaults to `~/slam_ws/src/arc_store_sim/config/destinations_map.yaml`. It must be in the same frame as the items.
+
+If none of these is found, the manager warns and the trip ends at the last item.
 
 ## How the optimised order is found
 1. **Item coordinates** come from `item_locations.yaml`, which must be in the `map` frame. Items on the same spot (within 0.10 m) become one stop.
@@ -49,9 +58,14 @@ ros2 run arc_planner shopping_manager --ros-args -p route_ordering:=exact
 ros2 run arc_planner shopping_manager --ros-args -p route_ordering:=as_entered
 ```
 
-The other parameters from the earlier patch still work:
-- `route_reorder_each_stop` (default `true`);
-- `route_end_at_checkout` (default `false`), together with `checkout_x`, `checkout_y` and `checkout_yaw`.
+Other parameters:
+
+| Parameter | Default | Meaning |
+|---|---|---|
+| `route_end_at_checkout` | `true` | End every trip at the checkout counter; `false` gives the old ending at the last item |
+| `checkout_destinations_file` | `~/slam_ws/src/arc_store_sim/config/destinations_map.yaml` | Where the checkout waiting point is read from |
+| `checkout_x`, `checkout_y`, `checkout_yaw` | not set | Override the checkout position |
+| `route_reorder_each_stop` | `true` | Re-order the stops still to come at each stop; the checkout always stays last |
 
 ## Install (laptop), one step at a time
 
@@ -67,7 +81,10 @@ The other parameters from the earlier patch still work:
    ```bash
    python3 apply_route_option.py
    ```
-   It reports either **fresh**, meaning your file has no route ordering yet so it adds both, or **upgrade**, meaning the earlier route-order patch is there and it only adds the choice.
+   It reports one of:
+   - **fresh:** your file has no route ordering yet, so it adds the ordering, the choice and the checkout;
+   - **upgrade (route ordering present…):** the earlier route-order patch is there, so it adds the choice and the checkout;
+   - **upgrade (route option present…):** you installed the first version of this kit, so it adds only the checkout (+34 lines).
 4. Apply. This backs up to `~/slam_ws/arc_backups/` and prints the undo command:
    ```bash
    python3 apply_route_option.py --write
@@ -79,11 +96,13 @@ The other parameters from the earlier patch still work:
 
 **Changed:** `shopping_manager.py`, plus `route_order.py` (new, or replaced with this version).
 
+**Read, not changed:** `destinations_map.yaml`.
+
 **Untouched:** the Dijkstra planner, the TEB-like controller, the BT, TF, RTAB-Map and `arc_person_follower`.
 
 ## Tested here (offline, no ROS)
 
-All 22 tests pass (`python3 -m unittest discover -s test`).
+All 30 tests pass (`python3 -m unittest discover -s test`).
 
 **`test_route_order.py`** checks the route maths:
 - the exact order equals the brute-force optimum, with and without a fixed checkout end;
@@ -98,6 +117,11 @@ All 22 tests pass (`python3 -m unittest discover -s test`).
 - the later stops are re-ordered only after option 1;
 - `exact` and `as_entered` never ask;
 - with no map it keeps the typed order and says so;
-- an upgraded file is identical to a fresh one.
+- an upgraded file is identical to a fresh one, whether it starts from the earlier route-order patch or from the first version of this kit;
+- the checkout is the last stop for both choices, for a single-item list, after re-ordering at a stop, and with no map;
+- `route_end_at_checkout:=false` gives the old ending;
+- explicit checkout parameters win over the file;
+- a missing destinations file warns and skips the checkout;
+- a full trip ends with "Reached the checkout counter" and "SHOPPING COMPLETE".
 
 **Not yet run inside ROS on the laptop.** The first real run will show the actual map costs.
