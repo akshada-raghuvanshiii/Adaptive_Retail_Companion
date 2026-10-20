@@ -15,6 +15,7 @@
 #   ARC_pi        ssh to the Pi running run_on_pi.sh (type the Pi's password there)
 #   ARC_shopping  Shopping Manager (enter the list here)
 # Settings (environment): PI=manav@172.20.10.2  CAM=0  IMGSZ=320
+#   NO_MOTORS=1  rehearsal without the Uno: no Uno check, no ARC_motors window (everything else as normal)
 #   PERC=<IP>  perception runs on ANOTHER COMPUTER at that address (not the Pi): no ARC_pi window,
 #              the relay accepts data only from PERC, and any shared network works (not only the
 #              iPhone hotspot). Start the bridge on that computer with run_perception.sh / .bat.
@@ -74,10 +75,14 @@ fi
 PI_HOST=${PI#*@}
 fi
 ping -c 1 -W 2 "$PI_HOST" >/dev/null 2>&1 && ok "perception computer answers at $PI_HOST" || warn "no ping reply from $PI_HOST (on? same network? Windows blocks ping by default, which is harmless)"
-PORT=$(awk '/port:/{print $2; exit}' "$YAML" 2>/dev/null)
-[ -n "$PORT" ] && [ -e "$PORT" ] && ok "Uno at $PORT" || { bad "Uno port '${PORT:-?}' from $YAML not found (ls /dev/ttyACM*; fix 'port:' in the YAML)"; exit 1; }
 source ~/arc_test_kit/env.sh 2>/dev/null
+if [ -n "${NO_MOTORS:-}" ]; then
+  warn "NO_MOTORS=1: rehearsal without the Uno; no ARC_motors window, the wheels column in ARC_chain stays empty"
+else
+PORT=$(awk '/port:/{print $2; exit}' "$YAML" 2>/dev/null)
+[ -n "$PORT" ] && [ -e "$PORT" ] && ok "Uno at $PORT" || { bad "Uno port '${PORT:-?}' from $YAML not found (ls /dev/ttyACM*; fix 'port:' in the YAML). No Uno tonight? Start with NO_MOTORS=1"; exit 1; }
 ros2 pkg prefix arc_hw_bridge >/dev/null 2>&1 && ok "arc_hw_bridge installed" || { bad "arc_hw_bridge not built (cd ~/slam_ws && colcon build --packages-select arc_hw_bridge)"; exit 1; }
+fi
 [ -x "$VENV_PY" ] || warn "no $VENV_PY: the camera view window will fail (the rest works)"
 if pgrep -f "$OURS" >/dev/null; then warn "demo windows from an earlier run are still open: run '$0 stop' first"; exit 1; fi
 
@@ -92,7 +97,7 @@ fi
 
 LOGDIR=$HOME/arc_logs/demo_$(date +%Y%m%d_%H%M%S); mkdir -p "$LOGDIR"
 win ARC_relay    "python3 $HERE/perception_relay.py --pi-ip $PI_HOST" 3     # first: holds WAIT from now on
-win ARC_motors   "ros2 launch arc_hw_bridge arc_hw.launch.py params_file:=$YAML" 4
+[ -z "${NO_MOTORS:-}" ] && win ARC_motors   "ros2 launch arc_hw_bridge arc_hw.launch.py params_file:=$YAML" 4
 win ARC_chain    "python3 $HERE/chain_monitor.py"
 win ARC_recorder "python3 $HERE/hil_logger.py"
 win ARC_view     "$VENV_PY $HERE/view_debug.py"

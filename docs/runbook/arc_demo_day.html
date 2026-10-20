@@ -121,7 +121,7 @@ ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
   <div class="step" data-id="t0"><input type="checkbox" aria-label="done"><div class="body">
     <span class="st">Set up the perception laptop (needs internet)</span>
     <div class="row"><span class="where pi">Perception laptop</span><span class="time">≈ 10 min</span></div>
-    <p class="see">Copy <code>arc_perception_laptop.zip</code> to it and unzip. Linux: run <code>./setup.sh</code>. Windows: install Python 3.12 from python.org (tick "Add to PATH"), then double-click <code>setup.bat</code>. It ends by listing cameras: note the index (built-in webcam is usually <b>0</b>, a USB one often <b>1</b>).</p>
+    <p class="see">Copy <code>arc_perception_laptop.zip</code> to it and unzip. Linux: run <code>./setup.sh</code>. Windows: install Python 3.12 from python.org (tick "Add to PATH"), then double-click <code>setup.bat</code>. It ends by listing cameras: note the index (built-in webcam is usually <b>0</b>, a USB one often <b>1</b>). With no webcam plugged in tonight it lists none, which is fine.</p>
   </div></div>
 
   <div class="step" data-id="t0b"><input type="checkbox" aria-label="done"><div class="body">
@@ -153,7 +153,7 @@ ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
   </div></div>
 
   <div class="step" data-id="t4"><input type="checkbox" aria-label="done"><div class="body">
-    <span class="st">Motors answer (wheels off the ground)</span>
+    <span class="st">Motors answer (tomorrow morning, once the rig is with you)</span>
     <div class="row"><span class="where">Terminal K</span></div>
     <div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run arc_hw_bridge motor_bench check</code><button>Copy</button></div>
     <p class="see">The sketch answers and the E-stop reads closed. <b>E-STOP OPEN</b> means D4 isn't reaching GND through the E-stop.</p>
@@ -180,6 +180,49 @@ ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
       <li>Uno USB cable, motor battery (charged), the stand that keeps the wheels off the ground, the E-stop.</li>
       <li>The webcam, if you use a USB one on the perception laptop.</li>
     </ul>
+  </div></div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>Rehearse tonight without the webcam or motors</h2><p>A recorded clip stands in for the webcam and the motors are left out. Everything else is the real demo: bring-up, relay, enrol and lead-me, BT modes, the shopping trip, the chain line and the safety stop. Tomorrow you only add the two pieces of hardware.</p></div>
+
+  <div class="step" data-id="r1"><input type="checkbox" aria-label="done"><div class="body">
+    <span class="st">A clip of one person walking</span>
+    <div class="row"><span class="where pi">Perception laptop</span></div>
+    <p class="see">Your stage-1 test clip, or a 20-second phone video of a friend walking towards the camera and then out of shot. Only one person in frame, or <b>e</b> won't lock. Copy it to the perception laptop, for example as <code>~/clip.mp4</code>.</p>
+    <p class="see">No second laptop tonight either? Unzip the kit and run <code>./setup.sh</code> on the ARC laptop itself, and use the ARC laptop's own address for both <code>PERC=</code> and <code>run_perception.sh</code>. Wi-Fi must be on and joined to any network.</p>
+  </div></div>
+
+  <div class="step" data-id="r2"><input type="checkbox" aria-label="done"><div class="body">
+    <span class="st">Bring-up without the motors</span>
+    <div class="row"><span class="where">Terminal K</span><span class="time">≈ 15 min</span></div>
+    <div class="cmd"><code>sudo ip link set lo multicast on &amp;&amp; ros2 daemon stop &amp;&amp; cd ~/arc_test_kit &amp;&amp; source env.sh &amp;&amp; NO_MOTORS=1 PERC=&lt;perception laptop IP&gt; TEB_YAML=$HOME/arc_test_kit/configs/teb_progress.yaml ~/arc_pi_udp/laptop/arc_demo.sh up</code><button>Copy</button></div>
+    <p class="see">Needs the new <code>arc_demo.sh</code> from tonight (step above). <b>NO_MOTORS=1</b> skips the Uno check and the ARC_motors window. It prints this laptop's IP at the end.</p>
+  </div></div>
+
+  <div class="step" data-id="r3"><input type="checkbox" aria-label="done"><div class="body">
+    <span class="st">Play the clip into the bridge</span>
+    <div class="row"><span class="where pi">Perception laptop</span></div>
+    <div class="cmd"><code>./run_perception.sh &lt;ARC laptop IP&gt; ~/clip.mp4 --loop</code><button>Copy</button></div>
+    <p class="see">Windows: <code>run_perception.bat &lt;ARC laptop IP&gt; C:\path\clip.mp4 --loop</code>. <code>--loop</code> restarts the clip at the end and resets the lock, so press <b>e</b> again each time round.</p>
+  </div></div>
+
+  <div class="step" data-id="r4"><input type="checkbox" aria-label="done"><div class="body">
+    <span class="st">Walk through the demo tab on the clip</span>
+    <div class="row"><span class="where">ARC laptop</span></div>
+    <ul class="see">
+      <li>ARC_relay says <b>receiving from the Pi at</b> the perception laptop; ARC_view shows the clip with boxes.</li>
+      <li>While the person is in frame: <b>e</b> gives LOCKED, <b>l</b> gives <b>-&gt; LEAD</b> in B5.</li>
+      <li>Shopping list in ARC_shopping (or the web UI): the Gazebo cart drives. ARC_chain fills every column except the wheels.</li>
+      <li>When the person walks out of the clip: WAIT, <code>cmd_vel</code> 0. Ctrl+C on the perception laptop: <b>holding the BT in WAIT</b>.</li>
+    </ul>
+  </div></div>
+
+  <div class="step" data-id="r5"><input type="checkbox" aria-label="done"><div class="body">
+    <span class="st">Stop, and note what's left for the morning</span>
+    <div class="row"><span class="where">Terminal K</span></div>
+    <div class="cmd"><code>~/arc_pi_udp/laptop/arc_demo.sh stop</code><button>Copy</button></div>
+    <p class="see">Tomorrow, before you present: plug in the rig and run the motor check (step above), then on the perception laptop swap the clip for the webcam: <code>./run_perception.sh &lt;ARC laptop IP&gt; 0</code>. Start the real run without <code>NO_MOTORS</code>.</p>
   </div></div>
 </section>
 </div>
