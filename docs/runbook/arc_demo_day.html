@@ -127,7 +127,7 @@ ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
   <div class="step" data-id="t0b"><input type="checkbox" aria-label="done"><div class="body">
     <span class="st">Put the new demo launcher on the ARC laptop</span>
     <div class="row"><span class="where">Terminal K</span></div>
-    <div class="cmd"><code>cp ~/arc_pi_udp/laptop/arc_demo.sh ~/arc_pi_udp/laptop/arc_demo.sh.bak_pi &amp;&amp; cp ~/Downloads/arc_demo.sh ~/arc_pi_udp/laptop/arc_demo.sh &amp;&amp; chmod +x ~/arc_pi_udp/laptop/arc_demo.sh &amp;&amp; grep -c PERC ~/arc_pi_udp/laptop/arc_demo.sh</code><button>Copy</button></div>
+    <div class="cmd"><code>cp ~/arc_pi_udp/laptop/arc_demo.sh ~/arc_pi_udp/laptop/arc_demo.sh.bak_pi &amp;&amp; cp ~/Downloads/ARC_demo_bundle/1_ARC_laptop/arc_demo.sh ~/arc_pi_udp/laptop/arc_demo.sh &amp;&amp; chmod +x ~/arc_pi_udp/laptop/arc_demo.sh &amp;&amp; grep -c PERC ~/arc_pi_udp/laptop/arc_demo.sh</code><button>Copy</button></div>
     <p class="see">Prints a number above 0. The old one is kept as <code>arc_demo.sh.bak_pi</code>. Without <code>PERC=</code> it behaves exactly as before.</p>
   </div></div>
 
@@ -189,7 +189,7 @@ ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
   <div class="step" data-id="r1"><input type="checkbox" aria-label="done"><div class="body">
     <span class="st">A clip of one person walking</span>
     <div class="row"><span class="where pi">Perception laptop</span></div>
-    <p class="see">Your stage-1 test clip, or a 20-second phone video of a friend walking towards the camera and then out of shot. Only one person in frame, or <b>e</b> won't lock. Copy it to the perception laptop, for example as <code>~/clip.mp4</code>.</p>
+    <p class="see">The perception kit includes one: <code>clips/store_aisle.mp4</code> (use it as <code>clips/store_aisle.mp4</code> in the next step). Or a 20-second phone video of a friend walking towards the camera and then out of shot. Only one person in frame, or <b>e</b> won't lock. Copy it to the perception laptop, for example as <code>~/clip.mp4</code>.</p>
     <p class="see">No second laptop tonight either? Unzip the kit and run <code>./setup.sh</code> on the ARC laptop itself, and use the ARC laptop's own address for both <code>PERC=</code> and <code>run_perception.sh</code>. Wi-Fi must be on and joined to any network.</p>
   </div></div>
 
