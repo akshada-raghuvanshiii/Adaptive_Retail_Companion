@@ -1,0 +1,192 @@
+<title>ARC HIL Run</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600;700&display=swap">
+<style>
+/* Layout: one narrow column, read top to bottom; numbered steps are the real run order. */
+:root{--bg:#f4f6f5;--panel:#fff;--ink:#17201e;--muted:#5b6965;--line:#d6dedb;--accent:#0f6b5c;--accent-soft:#e1f0ec;--code-bg:#14201d;--code-fg:#d8efe8;--code-line:#2c3b37;
+--sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0f1514;--panel:#172120;--ink:#e3ece9;--muted:#97a8a3;--line:#2a3836;--accent:#5cc7b2;--accent-soft:#1b302c;--code-bg:#0a100f;--code-fg:#cfe9e1;--code-line:#22312d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1514;--panel:#172120;--ink:#e3ece9;--muted:#97a8a3;--line:#2a3836;--accent:#5cc7b2;--accent-soft:#1b302c;--code-bg:#0a100f;--code-fg:#cfe9e1;--code-line:#22312d;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15.5px/1.6 var(--sans);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+main{max-width:760px;margin:0 auto}
+h1{font-size:30px;margin:0 0 10px;text-wrap:balance}
+h2{font-size:19px;margin:34px 0 10px;padding-top:12px;border-top:2px solid var(--ink);text-wrap:balance}
+p,li{max-width:68ch}
+ol,ul{padding-left:22px}
+ol>li{margin-bottom:16px}
+li::marker{font-weight:700;color:var(--accent)}
+strong{font-weight:600}
+code{font:13px var(--mono);background:var(--accent-soft);padding:1px 4px;border-radius:3px}
+.cmd{background:var(--code-bg);color:var(--code-fg);border-radius:5px;display:flex;margin:8px 0;min-width:0}
+.cmd code{flex:1;background:none;color:inherit;padding:10px 12px;overflow-x:auto;white-space:pre;min-width:0;border-radius:0}
+.cmd button{flex:none;border:0;border-left:1px solid var(--code-line);background:transparent;color:var(--code-fg);font:600 12px var(--mono);padding:0 12px;cursor:pointer;border-radius:0 5px 5px 0}
+.cmd button:hover{background:var(--code-line)}
+.cmd button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--panel);margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);font:600 13px var(--mono);padding:8px 14px;border-radius:5px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+<main>
+<h1>ARC HIL run</h1>
+<p>The HIL day setup (Pi kit over UDP, run by hand), with the <strong>Windows laptop instead of the Pi</strong>. Same chain:</p>
+<p>webcam → Windows laptop (YOLOv8n + ByteTrack) → UDP → relay → BT → motion gate → <code>/cmd_vel</code> → Gazebo cart + Uno → real wheels</p>
+<p>Two laptops:
+- <strong>ARC laptop</strong>: Ubuntu, ROS 2, Gazebo, your nav stack, the Uno on USB.
+- <strong>Camera laptop</strong>: Windows, VS Code, the webcam. No ROS.</p>
+<p>Tonight (no webcam, no motors): skip step 4 and use the test clip in step 9.</p>
+<h2>Before you start</h2>
+<ol>
+<li><strong>Both laptops on the same phone hotspot.</strong> Wi-Fi stays on the whole time today. Don't switch networks until you stop.</li>
+</ol>
+<h2>ARC laptop: one terminal per step, in this order</h2>
+<ol start="2">
+<li>
+<p><strong>Terminal 1, once per boot.</strong> Loopback multicast on, ROS daemon reset:</p>
+<div class="cmd"><code>sudo ip link set lo multicast on &amp;&amp; ros2 daemon stop</code><button type="button">Copy</button></div>
+</li>
+<li>
+<p><strong>Terminal 1: bring up the stack.</strong> About 15 min. auto_map drives the store first; don't touch the robot.</p>
+<div class="cmd"><code>cd ~/arc_test_kit &amp;&amp; source env.sh &amp;&amp; TEB_YAML=$HOME/arc_test_kit/configs/teb_progress.yaml ./bringup.sh all</code><button type="button">Copy</button></div>
+<p>Wait for <strong>navigation stack is up</strong>. Then <strong>close the B6 <code>person_state_input</code> window</strong> (Ctrl+C in it). The webcam replaces it, and the relay in step 5 refuses to start while B6 is open.</p>
+</li>
+<li>
+<p><strong>Terminal 2: motors.</strong> Wheels off the ground. Skip tonight.</p>
+<div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 launch arc_hw_bridge arc_hw.launch.py params_file:=$HOME/slam_ws/src/arc_hw_bridge/config/arc_hw.yaml</code><button type="button">Copy</button></div>
+<p>Wait for <strong>Uno OK</strong>.</p>
+</li>
+<li>
+<p><strong>Terminal 3: relay</strong> (webcam data → BT). It prints this laptop's addresses: <strong>note the hotspot one</strong> (it's the one sharing its first three numbers with the camera laptop). That's ARC_IP.</p>
+<div class="cmd"><code>~/arc_pi_udp/laptop/run_relay.sh</code><button type="button">Copy</button></div>
+</li>
+<li>
+<p><strong>Terminal 4: buttons.</strong> Click into this window before pressing <strong>e</strong> (enrol), <strong>l</strong> (lead me), <strong>r</strong> (reset).</p>
+<div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; python3 ~/arc_pi_udp/laptop/arc_ui.py</code><button type="button">Copy</button></div>
+</li>
+<li>
+<p><strong>Terminal 5: camera view</strong> (what the camera laptop sees, with boxes).</p>
+<div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ~/arc_perception/.venv/bin/python ~/arc_pi_udp/laptop/view_debug.py</code><button type="button">Copy</button></div>
+</li>
+<li>
+<p><strong>Terminal 6: RViz with the store labels.</strong></p>
+<div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; (python3 ~/arc_compact_store_kit/ros_tools/item_markers.py &amp;) &amp;&amp; rviz2 -d ~/arc_compact_store_kit/run/arc_nav.rviz --ros-args -p use_sim_time:=true</code><button type="button">Copy</button></div>
+</li>
+</ol>
+<h2>Camera laptop (Windows, VS Code)</h2>
+<ol start="9">
+<li>
+<p>In VS Code, with the <code>arc_perception_laptop</code> folder open: <strong>Terminal</strong> menu (top bar) → <strong>Run Task…</strong></p>
+<ul>
+<li>Tonight: <strong>ARC: 3 perception on the test clip</strong></li>
+<li>Tomorrow: <strong>ARC: 4 perception on the webcam</strong> (camera number usually 0)</li>
+</ul>
+<p>Type <strong>ARC_IP</strong> from step 5 when it asks. Back on the ARC laptop, Terminal 3 prints <strong>receiving from the Pi at …</strong> (it calls any sender "the Pi") and Terminal 5 shows the picture.</p>
+</li>
+</ol>
+<h2>ARC laptop: the shopping list, last</h2>
+<ol start="10">
+<li>
+<p><strong>Terminal 7: Shopping Manager.</strong></p>
+<div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run arc_planner shopping_manager</code><button type="button">Copy</button></div>
+<p>Type the list (e.g. <code>pasta, milk, tea_coffee, fruits</code>), answer <strong>n</strong> to "Add more items?", <strong>y</strong> to "Confirm shopping list?", pick route <strong>1</strong> (optimised), and <strong>y</strong> at "Continue to next item?" after each stop.</p>
+</li>
+</ol>
+<h2>The demo</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Do</th>
+<th>You should see</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Stand alone in front of the webcam, press <strong>e</strong> in Terminal 4</td>
+<td>Terminal 5 shows <strong>LOCKED</strong></td>
+</tr>
+<tr>
+<td>Press <strong>l</strong></td>
+<td>B5 window prints <strong>-&gt; LEAD</strong></td>
+</tr>
+<tr>
+<td>Enter the list in Terminal 7</td>
+<td>Gazebo cart drives, RViz shows the path, the real wheels turn</td>
+</tr>
+<tr>
+<td>Step out of view</td>
+<td>A few seconds later: BT <strong>WAIT</strong>, cart and wheels stop</td>
+</tr>
+<tr>
+<td>Come back, press <strong>e</strong> then <strong>l</strong></td>
+<td>It carries on</td>
+</tr>
+<tr>
+<td>Ctrl+C in the VS Code task on the camera laptop</td>
+<td>After 1.5 s Terminal 3 prints <strong>holding the BT in WAIT</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h2>Stop, motors first</h2>
+<ol start="11">
+<li>Ctrl+C in the camera laptop's task.</li>
+<li>Ctrl+C in Terminal 2 (motors: sends STOP to the Uno).</li>
+<li>
+<p>Ctrl+C in Terminal 3 (relay), then:</p>
+<div class="cmd"><code>~/arc_test_kit/bringup.sh stop</code><button type="button">Copy</button></div>
+</li>
+</ol>
+<h2>If something's off</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>What you see</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Relay: <code>person_state_input (B6) is running</code></td>
+<td>Close the B6 window, run step 5 again</td>
+</tr>
+<tr>
+<td>Relay keeps saying waiting for the Pi</td>
+<td>Task 3/4 not running, wrong ARC_IP typed, laptops on different networks, or firewall: <code>sudo ufw allow 5600/udp</code> on the ARC laptop. On Windows allow python.exe on Private <strong>and</strong> Public</td>
+</tr>
+<tr>
+<td><strong>e</strong> / <strong>l</strong> do nothing</td>
+<td>Windows firewall is blocking the replies: allow python.exe on Public too</td>
+</tr>
+<tr>
+<td><strong>e</strong> doesn't lock</td>
+<td>Only one person in view, press <strong>e</strong> again</td>
+</tr>
+<tr>
+<td>Cart never moves</td>
+<td>Press <strong>l</strong> (LEAD); B6 still open; Terminal 2 not running</td>
+</tr>
+<tr>
+<td>Robot stops mid-trip</td>
+<td>Terminal 1: <code>cd ~/arc_test_kit &amp;&amp; source env.sh &amp;&amp; TEB_YAML=$PWD/configs/teb_progress.yaml ./bringup.sh nav</code>, close the new B6 window, restart step 10</td>
+</tr>
+<tr>
+<td>Camera laptop dead</td>
+<td>Ctrl+C in Terminal 3, then <code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 run arc_behavior_tree person_state_input</code>, type <strong>3</strong> (LEAD); play <code>arch_w_perception_1.webm</code> for the perception part</td>
+</tr>
+<tr>
+<td>Gazebo or RTAB-Map died</td>
+<td>Play <code>final_1_1.webm</code></td>
+</tr>
+</tbody>
+</table></div>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){const t=document.getElementById("toast");let h;function show(m){t.textContent=m;t.classList.add("on");clearTimeout(h);h=setTimeout(()=>t.classList.remove("on"),1400)}
+document.querySelectorAll(".cmd button").forEach(b=>b.addEventListener("click",()=>{const c=b.parentElement.querySelector("code");const fb=()=>{const r=document.createRange();r.selectNodeContents(c);const s=getSelection();s.removeAllRanges();s.addRange(r);show("Selected. Press Ctrl+C")};
+try{navigator.clipboard.writeText(c.textContent).then(()=>{b.textContent="Copied";show("Copied");setTimeout(()=>b.textContent="Copy",1200)},fb)}catch(e){fb()}}))})();
+</script>
