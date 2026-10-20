@@ -9,14 +9,13 @@ perception laptop: no ROS, any OS
 webcam→perception laptop: YOLOv8n + ByteTrack→ UDP →relay→BT→motion gate→ /cmd_vel →Gazebo cart+Uno → real wheels
 
 Purple is real hardware, green is the ARC laptop. The store, lidar and robot body are simulated; the webcam, Uno and motors are real, with the wheels off the ground.
-0 / 0
 
 ## Check the pieces tonight
 
 All read-only except the UI install. Do the full rehearsal on the next tab once tonight, so tomorrow is a repeat, not a first try.
 
 - [ ] **Set up the perception laptop (needs internet)**
-_(Perception laptop)_≈ 10 min
+_(Perception laptop)_ · ≈ 10 min
 
 Copy `arc_perception_laptop.zip` to it and unzip. Linux: run `./setup.sh`. Windows: install Python 3.12 from python.org (tick "Add to PATH"), then double-click `setup.bat`. It ends by listing cameras: note the index (built-in webcam is usually **0**, a USB one often **1**).
 
@@ -111,11 +110,10 @@ One address is on the same network as the perception laptop (same first three nu
 This runs your normal bring-up (Gazebo, ICP odometry, RTAB-Map, auto_map, Dijkstra, your TEB-like controller, BT and motion gate) on the progress-check file, then opens the HIL windows.
 
 - [ ] **Bring-up plus HIL windows**
-_(Terminal K)_≈ 15 min · don't touch the robot while auto_map drives
+_(Terminal K)_ · ≈ 15 min · don't touch the robot while auto_map drives
 
 ```bash
-cd ~/arc_test_kit && source env.sh && PERC=
-TEB_YAML=$HOME/arc_test_kit/configs/teb_progress.yaml ~/arc_pi_udp/laptop/arc_demo.sh up
+cd ~/arc_test_kit && source env.sh && PERC=<perception laptop IP> TEB_YAML=$HOME/arc_test_kit/configs/teb_progress.yaml ~/arc_pi_udp/laptop/arc_demo.sh up
 ```
 
 Replace `<perception laptop IP>` first, for example `PERC=172.20.10.4`. It checks the network, the Uno port and `arc_hw_bridge` first, and prints this laptop's IP at the end. Look for **progress_checker.required_movement_radius = 0.25** in the printed limits, then **all windows started**. B6 is not used: the webcam drives the BT.
@@ -124,7 +122,7 @@ Replace `<perception laptop IP>` first, for example `PERC=172.20.10.4`. It check
 _(Perception laptop)_
 
 ```bash
-./run_perception.sh  
+./run_perception.sh <ARC laptop IP> <camera>
 ```
 
 Windows: `run_perception.bat <ARC laptop IP> <camera>` in the kit folder; allow python.exe through the firewall on Private **and** Public networks when asked. Then **ARC_relay** prints **receiving from the Pi at <perception laptop>** (it calls any sender "the Pi") and **ARC_view** shows the camera.
@@ -168,21 +166,21 @@ Left half: RViz (Gazebo minimised to save CPU, bring it up when you show the sto
 One sentence to open: the store, lidar and robot body are simulated; the webcam, Uno and motors are real and in the loop.
 
 - [ ] **1. The store and the map**
-_(Gazebo, RViz)_1 min
+_(Gazebo, RViz)_ · 1 min
 
 Show the Gazebo store, then RViz: the RTAB-Map map (built by auto_map, now locked), the lidar scan, the aisle labels. Run the pose check (step on the previous tab) and show **PASS**.
 
 ICP lidar odometry plus RTAB-Map, then localisation-only mode, so the map can't drift during a trip.
 
 - [ ] **2. Perception: lock onto the shopper**
-_(ARC_view, ARC_buttons)_2 min
+_(ARC_view, ARC_buttons)_ · 2 min
 
 Stand alone in front of the webcam. Click into **ARC_buttons** and press **e**: ARC_view shows **LOCKED**. Press **l** (lead me): the B5 window shows **-> LEAD**.
 
 YOLOv8n and ByteTrack run on a separate computer, standing in for the cart's onboard computer; only two flags and a small preview reach the ARC laptop.
 
 - [ ] **3. The shopping list and the route**
-_(ARC_shopping (or the web UI))_2 min
+_(ARC_shopping (or the web UI))_ · 2 min
 
 ```bash
 pasta, milk, tea_coffee, fruits
@@ -193,14 +191,14 @@ At **Add items (comma separated):** paste the list, then answer **n** to "Add mo
 Held–Karp picks the visiting order from Dijkstra path lengths through the aisles, not straight-line distance.
 
 - [ ] **4. Hardware in the loop**
-_(The rig, ARC_chain)_2 min
+_(The rig, ARC_chain)_ · 2 min
 
 Point at the real wheels turning with the Gazebo cart. **ARC_chain** shows one live line: webcam, flags, BT, `cmd_vel`, PWM and measured wheel speed.
 
 The same /cmd_vel drives both. The sketch caps PWM at 60, so the real wheels turn slower than the simulated cart.
 
 - [ ] **5. Safety: walk away, then stop the perception laptop**
-_(Webcam, ARC_relay)_2 min
+_(Webcam, ARC_relay)_ · 2 min
 
 - Step out of view. Within a few seconds: lock lost, BT **WAIT**, `cmd_vel` 0, wheels stop, cart stops in Gazebo.
 
@@ -213,7 +211,7 @@ _(Webcam, ARC_relay)_2 min
 Every layer fails safe: lost person, silent perception computer, lost /cmd_vel at the Uno (watchdog), and the hardware E-stop.
 
 - [ ] **6. The numbers from this run**
-_(Terminal K)_1 min, after Shut down
+_(Terminal K)_ · 1 min, after Shut down
 
 Shut down (last tab) prints the chain log path. The plot shows webcam flags, BT mode, `cmd_vel` and commanded vs measured wheel speed, with the reaction time of each stage.
 
