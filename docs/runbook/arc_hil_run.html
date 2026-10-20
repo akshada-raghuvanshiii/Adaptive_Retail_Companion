@@ -96,6 +96,31 @@ tr:last-child td{border-bottom:0}
 <p>Type the list (e.g. <code>pasta, milk, tea_coffee, fruits</code>), answer <strong>n</strong> to "Add more items?", <strong>y</strong> to "Confirm shopping list?", pick route <strong>1</strong> (optimised), and <strong>y</strong> at "Continue to next item?" after each stop.</p>
 </li>
 </ol>
+<h2>Option B: the web UI instead of the Shopping Manager</h2>
+<p>Same run, but the list comes from the shopping app in a browser instead of Terminal 7. Use <strong>one or the other, never both</strong>: if the Shopping Manager is running, press Ctrl+C in it first.</p>
+<ol>
+<li>
+<p><strong>Once only: install the UI</strong> (builds just <code>arc_ui_bridge</code>, nothing else in <code>slam_ws</code> changes):</p>
+<div class="cmd"><code>cd ~ &amp;&amp; unzip -o ~/Downloads/ARC_demo_bundle/1_ARC_laptop/arc_ui_bridge.zip -d ~/arc_ui_bridge_pkg &amp;&amp; ~/arc_ui_bridge_pkg/arc_ui_bridge/install_into_slam_ws.sh</code><button type="button">Copy</button></div>
+<p>It ends with the tests passing.</p>
+</li>
+<li>
+<p><strong>Terminal 7: the UI bridge</strong> (instead of the Shopping Manager). <code>host:=0.0.0.0</code> lets the Windows laptop or a phone on the hotspot open it too.</p>
+<div class="cmd"><code>source ~/arc_test_kit/env.sh &amp;&amp; ros2 launch arc_ui_bridge arc_ui.launch.py host:=0.0.0.0</code><button type="button">Copy</button></div>
+</li>
+<li>
+<p><strong>Open the app</strong> in a browser: <code>http://localhost:8080</code> on the ARC laptop, or <code>http://ARC_IP:8080</code> on the Windows laptop or a phone. The toast <strong>Connected to ARC</strong> means it's live.</p>
+</li>
+<li>
+<p><strong>Shop:</strong></p>
+<ul>
+<li>Type the list in <strong>Tell me your list</strong> (e.g. <code>pasta, milk, tea_coffee, fruits</code>) and press <strong>Add</strong>, or tap items.</li>
+<li>Press <strong>Start shopping</strong>, then pick <strong>Use the shortest route</strong> or <strong>Keep my order</strong>. Both lengths are shown.</li>
+<li>The Navigation screen shows <strong>Follow me to …</strong> and the route. At each shelf press <strong>Item picked, next stop</strong>; after the last item ARC goes to the checkout.</li>
+<li>The webcam still decides whether ARC moves: <strong>e</strong> and <strong>l</strong> in Terminal 4 as before, and walking out of view still stops it.</li>
+</ul>
+</li>
+</ol>
 <h2>The demo</h2>
 <div class="tablewrap"><table>
 <thead>
@@ -136,7 +161,7 @@ tr:last-child td{border-bottom:0}
 <li>Ctrl+C in the camera laptop's task.</li>
 <li>Ctrl+C in Terminal 2 (motors: sends STOP to the Uno).</li>
 <li>
-<p>Ctrl+C in Terminal 3 (relay), then:</p>
+<p>Ctrl+C in Terminal 3 (relay) and Terminal 7 (Shopping Manager or UI bridge), then:</p>
 <div class="cmd"><code>~/arc_test_kit/bringup.sh stop</code><button type="button">Copy</button></div>
 </li>
 </ol>
@@ -180,6 +205,22 @@ tr:last-child td{border-bottom:0}
 <tr>
 <td>Gazebo or RTAB-Map died</td>
 <td>Play <code>final_1_1.webm</code></td>
+</tr>
+<tr>
+<td>UI: trip refused, another goal source</td>
+<td>The Shopping Manager is still running: Ctrl+C in it, then Start shopping again</td>
+</tr>
+<tr>
+<td>UI: "bridge not answering"</td>
+<td>Terminal 7 (UI bridge) stopped: run Option B step 2 again and reload the page</td>
+</tr>
+<tr>
+<td>UI: ARC stopped mid-trip</td>
+<td>Press <strong>Pause</strong>, then <strong>Resume</strong> in the app. If it still won't move, restart nav as above, then Option B step 2</td>
+</tr>
+<tr>
+<td>Page won't open on the Windows laptop</td>
+<td>Use <code>host:=0.0.0.0</code> in Option B step 2 and the hotspot ARC_IP; if the ARC laptop's firewall is on: <code>sudo ufw allow 8080/tcp</code></td>
 </tr>
 </tbody>
 </table></div>

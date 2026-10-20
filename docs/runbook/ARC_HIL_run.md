@@ -69,6 +69,29 @@ Tonight (no webcam, no motors): skip step 4 and use the test clip in step 9.
     ```
     Type the list (e.g. `pasta, milk, tea_coffee, fruits`), answer **n** to "Add more items?", **y** to "Confirm shopping list?", pick route **1** (optimised), and **y** at "Continue to next item?" after each stop.
 
+## Option B: the web UI instead of the Shopping Manager
+
+Same run, but the list comes from the shopping app in a browser instead of Terminal 7. Use **one or the other, never both**: if the Shopping Manager is running, press Ctrl+C in it first.
+
+1. **Once only: install the UI** (builds just `arc_ui_bridge`, nothing else in `slam_ws` changes):
+   ```bash
+   cd ~ && unzip -o ~/Downloads/ARC_demo_bundle/1_ARC_laptop/arc_ui_bridge.zip -d ~/arc_ui_bridge_pkg && ~/arc_ui_bridge_pkg/arc_ui_bridge/install_into_slam_ws.sh
+   ```
+   It ends with the tests passing.
+
+2. **Terminal 7: the UI bridge** (instead of the Shopping Manager). `host:=0.0.0.0` lets the Windows laptop or a phone on the hotspot open it too.
+   ```bash
+   source ~/arc_test_kit/env.sh && ros2 launch arc_ui_bridge arc_ui.launch.py host:=0.0.0.0
+   ```
+
+3. **Open the app** in a browser: `http://localhost:8080` on the ARC laptop, or `http://ARC_IP:8080` on the Windows laptop or a phone. The toast **Connected to ARC** means it's live.
+
+4. **Shop:**
+   - Type the list in **Tell me your list** (e.g. `pasta, milk, tea_coffee, fruits`) and press **Add**, or tap items.
+   - Press **Start shopping**, then pick **Use the shortest route** or **Keep my order**. Both lengths are shown.
+   - The Navigation screen shows **Follow me to …** and the route. At each shelf press **Item picked, next stop**; after the last item ARC goes to the checkout.
+   - The webcam still decides whether ARC moves: **e** and **l** in Terminal 4 as before, and walking out of view still stops it.
+
 ## The demo
 
 | Do | You should see |
@@ -84,7 +107,7 @@ Tonight (no webcam, no motors): skip step 4 and use the test clip in step 9.
 
 11. Ctrl+C in the camera laptop's task.
 12. Ctrl+C in Terminal 2 (motors: sends STOP to the Uno).
-13. Ctrl+C in Terminal 3 (relay), then:
+13. Ctrl+C in Terminal 3 (relay) and Terminal 7 (Shopping Manager or UI bridge), then:
     ```bash
     ~/arc_test_kit/bringup.sh stop
     ```
@@ -101,3 +124,7 @@ Tonight (no webcam, no motors): skip step 4 and use the test clip in step 9.
 | Robot stops mid-trip | Terminal 1: `cd ~/arc_test_kit && source env.sh && TEB_YAML=$PWD/configs/teb_progress.yaml ./bringup.sh nav`, close the new B6 window, restart step 10 |
 | Camera laptop dead | Ctrl+C in Terminal 3, then `source ~/arc_test_kit/env.sh && ros2 run arc_behavior_tree person_state_input`, type **3** (LEAD); play `arch_w_perception_1.webm` for the perception part |
 | Gazebo or RTAB-Map died | Play `final_1_1.webm` |
+| UI: trip refused, another goal source | The Shopping Manager is still running: Ctrl+C in it, then Start shopping again |
+| UI: "bridge not answering" | Terminal 7 (UI bridge) stopped: run Option B step 2 again and reload the page |
+| UI: ARC stopped mid-trip | Press **Pause**, then **Resume** in the app. If it still won't move, restart nav as above, then Option B step 2 |
+| Page won't open on the Windows laptop | Use `host:=0.0.0.0` in Option B step 2 and the hotspot ARC_IP; if the ARC laptop's firewall is on: `sudo ufw allow 8080/tcp` |
