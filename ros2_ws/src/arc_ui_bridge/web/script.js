@@ -34,6 +34,18 @@ const AISLE_SIGNS = {
   "Fresh produce": ["var(--produce)", "P"], "Dairy fridge": ["var(--dairy)", "D"],
   "Tea & beverages shelf": ["var(--tea)", "T"]
 };
+const MASCOT_SVG = `<svg class="brand-mascot" viewBox="0 0 64 64" aria-hidden="true"><path d="M3 11h8l5 10" fill="none" stroke="#1d2b36" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 46l-2 5M46 46l2 5" stroke="#1d2b36" stroke-width="4" stroke-linecap="round"/><rect x="13" y="17" width="44" height="31" rx="12" fill="#12895a"/><rect x="13" y="17" width="44" height="9" rx="4.5" fill="#1aa56e"/><circle cx="28" cy="32" r="5.2" fill="#fff"/><circle cx="43" cy="32" r="5.2" fill="#fff"/><circle cx="29" cy="33" r="2.6" fill="#1d2b36"/><circle cx="44" cy="33" r="2.6" fill="#1d2b36"/><circle cx="21" cy="40" r="3" fill="#ff9fae" opacity=".85"/><circle cx="50" cy="40" r="3" fill="#ff9fae" opacity=".85"/><path d="M31 40q4.5 4 9 0" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="22" cy="55" r="5.5" fill="#1d2b36"/><circle cx="49" cy="55" r="5.5" fill="#1d2b36"/><circle cx="22" cy="55" r="2" fill="#fff"/><circle cx="49" cy="55" r="2" fill="#fff"/></svg>`;
+
+/* the three steps at the top of each screen: 1 add items, 2 choose a route, 3 follow ARC */
+function setStep(n) {
+  document.querySelectorAll(".arc-steps").forEach((ol) => {
+    ol.querySelectorAll("li").forEach((li, i) => {
+      li.classList.toggle("done", i + 1 < n);
+      li.classList.toggle("current", i + 1 === n);
+    });
+  });
+}
+
 const AISLE_CYCLE = ["var(--a1)", "var(--a2)", "var(--a3)", "var(--produce)", "var(--dairy)", "var(--tea)"];
 
 function aisleSign(aisle) {
@@ -406,7 +418,7 @@ function renderShoppingList() {
   if (!selected.length) {
     dom.shoppingList.innerHTML = `
       <div class="empty-shopping">
-        Your shopping list is empty.
+        ${MASCOT_SVG}<strong>Your list is empty</strong>Tap an item, or type a few names above.
       </div>
     `;
     dom.shoppingListMeta.textContent = "0 items";
@@ -486,6 +498,12 @@ function updateSummary() {
   dom.uniqueProducts.textContent = selected.length;
   dom.selectedMini.textContent = `${selected.length} selected`;
   dom.navItemCount.textContent = selected.length;
+  const bar = document.getElementById("startBar");
+  if (bar) {
+    bar.classList.toggle("show", total > 0 && dom.shopScreen.classList.contains("active-screen"));
+    document.getElementById("startBarText").textContent =
+      `${total} item${total === 1 ? "" : "s"} in your list`;
+  }
 }
 
 function clearList() {
@@ -1130,6 +1148,8 @@ function switchScreen(screenName) {
   dom.navigationScreen.classList.toggle("active-screen", !showShop);
   dom.shopTabBtn.classList.toggle("active", showShop);
   dom.navTabBtn.classList.toggle("active", !showShop);
+  setStep(showShop ? 1 : 3);
+  updateSummary();
 
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -1153,6 +1173,7 @@ dom.generateRouteBtn.addEventListener("click", () => {
 dom.startShoppingBtn.addEventListener("click", () => (window.arcLink && arcLink.live ? arcLink.start() : startShopping()));
 
 dom.shopTabBtn.addEventListener("click", () => switchScreen("shop"));
+document.getElementById("startBarBtn").addEventListener("click", () => dom.startShoppingBtn.click());
 dom.navTabBtn.addEventListener("click", () => switchScreen("navigation"));
 
 const arcStop = () => (window.arcLink && arcLink.live ? arcLink.control("stop") : emergencyStop());

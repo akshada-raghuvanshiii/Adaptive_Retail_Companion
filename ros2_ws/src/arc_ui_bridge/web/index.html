@@ -9,8 +9,11 @@
 <body>
   <header class="topbar">
     <div class="brand-block">
-      <div class="brand">ARC</div>
-      <div class="brand-subtitle">Adaptive Retail Companion</div>
+      <svg class="brand-mascot" viewBox="0 0 64 64" aria-hidden="true"><path d="M3 11h8l5 10" fill="none" stroke="#1d2b36" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 46l-2 5M46 46l2 5" stroke="#1d2b36" stroke-width="4" stroke-linecap="round"/><rect x="13" y="17" width="44" height="31" rx="12" fill="#12895a"/><rect x="13" y="17" width="44" height="9" rx="4.5" fill="#1aa56e"/><circle cx="28" cy="32" r="5.2" fill="#fff"/><circle cx="43" cy="32" r="5.2" fill="#fff"/><circle cx="29" cy="33" r="2.6" fill="#1d2b36"/><circle cx="44" cy="33" r="2.6" fill="#1d2b36"/><circle cx="21" cy="40" r="3" fill="#ff9fae" opacity=".85"/><circle cx="50" cy="40" r="3" fill="#ff9fae" opacity=".85"/><path d="M31 40q4.5 4 9 0" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="22" cy="55" r="5.5" fill="#1d2b36"/><circle cx="49" cy="55" r="5.5" fill="#1d2b36"/><circle cx="22" cy="55" r="2" fill="#fff"/><circle cx="49" cy="55" r="2" fill="#fff"/></svg>
+      <div>
+        <div class="brand">ARC</div>
+        <div class="brand-subtitle">Your shopping buddy</div>
+      </div>
     </div>
 
     <div class="top-status">
@@ -30,11 +33,17 @@
     <section id="shopScreen" class="screen active-screen">
       <div class="page-title-row">
         <div>
-          <h1>Shop</h1>
-          <p>Pick what you need and ARC will lead the way</p>
+          <h1>What do you need today?</h1>
+          <p>Pick your items and ARC will lead the way, then finish at the checkout.</p>
         </div>
         <div class="product-count" id="productCount">0 products</div>
       </div>
+
+      <ol class="arc-steps" aria-label="How it works">
+        <li class="current">Add items</li>
+        <li>Choose a route</li>
+        <li>Follow ARC</li>
+      </ol>
 
       <div class="search-wrap">
         <input id="searchInput" type="text" placeholder="Search the store" autocomplete="off" />
@@ -66,7 +75,7 @@
           </div>
 
           <div class="shopping-list" id="shoppingList">
-            <div class="empty-shopping">Your shopping list is empty.</div>
+            <div class="empty-shopping"><svg class="brand-mascot" viewBox="0 0 64 64" aria-hidden="true"><path d="M3 11h8l5 10" fill="none" stroke="#1d2b36" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 46l-2 5M46 46l2 5" stroke="#1d2b36" stroke-width="4" stroke-linecap="round"/><rect x="13" y="17" width="44" height="31" rx="12" fill="#12895a"/><rect x="13" y="17" width="44" height="9" rx="4.5" fill="#1aa56e"/><circle cx="28" cy="32" r="5.2" fill="#fff"/><circle cx="43" cy="32" r="5.2" fill="#fff"/><circle cx="29" cy="33" r="2.6" fill="#1d2b36"/><circle cx="44" cy="33" r="2.6" fill="#1d2b36"/><circle cx="21" cy="40" r="3" fill="#ff9fae" opacity=".85"/><circle cx="50" cy="40" r="3" fill="#ff9fae" opacity=".85"/><path d="M31 40q4.5 4 9 0" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="22" cy="55" r="5.5" fill="#1d2b36"/><circle cx="49" cy="55" r="5.5" fill="#1d2b36"/><circle cx="22" cy="55" r="2" fill="#fff"/><circle cx="49" cy="55" r="2" fill="#fff"/></svg><strong>Your list is empty</strong>Tap an item, or type a few names above.</div>
           </div>
 
           <div class="cart-summary">
@@ -109,10 +118,16 @@
       <div class="page-title-row">
         <div>
           <h1>Navigation</h1>
-          <p>The route ARC will follow, and where it is now</p>
+          <p>Follow ARC. It stops at each item and tells you when to pick it up.</p>
         </div>
         <div class="nav-status-badge" id="navStatusBadge">No route yet</div>
       </div>
+
+      <ol class="arc-steps" aria-label="How it works">
+        <li class="done">Add items</li>
+        <li class="done">Choose a route</li>
+        <li class="current">Follow ARC</li>
+      </ol>
 
       <div class="navigation-layout">
         <section class="map-panel">
@@ -177,6 +192,11 @@
       </div>
     </section>
   </main>
+
+  <div class="start-bar" id="startBar">
+    <span id="startBarText">0 items</span>
+    <button class="primary-button" id="startBarBtn" type="button">Start shopping</button>
+  </div>
 
   <div class="toast hidden" id="toast"></div>
 

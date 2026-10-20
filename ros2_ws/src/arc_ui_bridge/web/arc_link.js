@@ -43,18 +43,29 @@
 
   function buildPanel() {
     const aside = document.querySelector(".route-panel");
-    const card = el("div", { class: "nav-info-card", id: "liveCard" });
-    card.innerHTML = `
+    // the one card a shopper needs: what ARC is doing and the button to press
+    const now = el("div", { class: "arc-now", id: "arcNow" });
+    now.innerHTML = `
+      <div class="arc-now-head">${MASCOT_SVG}
+        <div><p class="arc-now-say" id="nowSay">Ready when you are</p>
+          <p class="arc-now-what" id="nowWhat">Add items, then start shopping</p>
+          <p class="arc-now-where" id="nowWhere"></p></div></div>
+      <div class="arc-live-actions">
+        <button class="primary-button" id="liveNextBtn" type="button">Item picked, next stop</button>
+        <button class="secondary-button" id="liveSkipBtn" type="button">Skip this stop</button>
+      </div>`;
+    const routeOrder = document.getElementById("routeOrder");
+    aside.insertBefore(now, routeOrder);
+    // the robot's own numbers, for the team: folded away so shoppers are not distracted
+    const card = el("details", { class: "nav-info-card", id: "liveCard" });
+    card.innerHTML = `<summary>Robot details</summary>
+      <div class="live-body">
       <div class="nav-info-row"><span>Connection</span><strong id="liveLink">Live, ROS 2</strong></div>
       <div class="nav-info-row"><span>Behaviour tree</span><strong id="liveBt">—</strong></div>
       <div class="nav-info-row"><span>Route</span><strong id="liveOrder">—</strong></div>
       <div class="nav-info-row"><span>Robot position</span><strong id="livePose">—</strong></div>
-      <div class="arc-live-actions">
-        <button class="primary-button" id="liveNextBtn" type="button">Item picked, next stop</button>
-        <button class="secondary-button" id="liveSkipBtn" type="button">Skip this stop</button>
-      </div>
-      <div class="arc-live-events" id="liveEvents"></div>`;
-    aside.insertBefore(card, document.getElementById("routeOrder").nextSibling);
+      <div class="arc-live-events" id="liveEvents"></div></div>`;
+    aside.insertBefore(card, routeOrder.nextSibling);
     // robot view under the concept map: the real store the robot drives in
     const mp = document.querySelector(".map-panel");
     const box = el("div", { id: "liveMapBox", style: "margin-top:18px" });
@@ -152,6 +163,8 @@
     const upcoming = (t.stops || [])[(t.index || 0) + 1];
     nextBtn.textContent = upcoming && upcoming.is_checkout ? "Item picked, go to checkout" : "Item picked, next stop";
 
+    renderNow(t, atCheckout, upcoming);
+
     const rm = document.getElementById("routeMethod");
     if (rm && t.stops && t.stops.length) rm.textContent = "ARC's order drawn on the concept layout (illustrative). Live stops are on the right.";
     const stops = t.stops || [];
@@ -184,6 +197,42 @@
     drawMap(s);
   }
 
+  /* "What to do now", in plain words. */
+  function renderNow(t, atCheckout, upcoming) {
+    const box = document.getElementById("arcNow");
+    if (!box) return;
+    const stops = t.stops || [];
+    const cur = stops[t.index || 0];
+    const names = (st) => (st.products || []).map((p) => `${p.name}${p.qty > 1 ? ` ×${p.qty}` : ""}`).join(", ");
+    const where = (st) => {
+      if (!st || st.is_checkout) return "";
+      const p = (st.products || [])[0] && byIdMap().get(st.products[0].id);
+      return p ? p.aisle + (p.unit && p.unit !== p.aisle ? `, ${p.unit}` : "") : "";
+    };
+    let say = "Ready when you are", what = "Add items, then start shopping", whereText = "", state = "", colour = "var(--go)";
+    if (atCheckout) { say = "All done!"; what = "You're at the checkout"; whereText = "Thanks for shopping with ARC"; state = "done"; }
+    else if (t.state === "DONE") { say = "Trip finished"; what = "Thanks for shopping with ARC"; state = "done"; }
+    else if (t.state === "STOPPED") { say = "Stopped"; what = "Press Resume when it's safe"; state = "stopped"; }
+    else if (t.state === "RETURNING") { say = "Heading back"; what = "Returning to the start"; }
+    else if (cur && cur.is_checkout) { say = t.state === "PAUSED" ? "Paused" : "Last stop, follow me to"; what = "The checkout counter"; colour = "var(--checkout)"; }
+    else if (cur && t.state === "AT_STOP") { say = "We're here! Please pick up"; what = names(cur); whereText = where(cur); colour = stopAisle(cur).colour; }
+    else if (cur && (t.state === "NAVIGATING" || t.state === "PAUSED")) {
+      say = t.state === "PAUSED" ? "Paused. Next up" : "Follow me to"; what = names(cur); whereText = where(cur); colour = stopAisle(cur).colour;
+    }
+    if (state === "done") colour = "var(--checkout)";
+    if (state === "stopped") colour = "var(--stop)";
+    box.dataset.state = state;
+    box.style.setProperty("--aisle", colour);
+    document.getElementById("nowSay").textContent = say;
+    document.getElementById("nowWhat").textContent = what;
+    document.getElementById("nowWhere").textContent = whereText;
+    const active = ["NAVIGATING", "AT_STOP", "PAUSED"].includes(t.state);
+    document.querySelector("#arcNow .arc-live-actions").classList.toggle("hidden", !active);
+    // only show the button that makes sense right now: "picked" at the shelf, "skip" on the way
+    document.getElementById("liveNextBtn").classList.toggle("hidden", t.state !== "AT_STOP");
+    document.getElementById("liveSkipBtn").classList.toggle("hidden", !!(cur && cur.is_checkout) || t.state === "AT_STOP");
+  }
+
   /* The concept layout on the navigation screen shows the robot's order (not its own optimisation).
      Its distances are those of the concept layout, so the header shows the robot's path length. */
   function showConcept(s) {
@@ -208,6 +257,7 @@
       const sign = (st) => { const p = byIdMap().get(st); return aisleSign(p ? p.aisle : ""); };
       const card = (key, title, opt, tag, cta) => `
         <button type="button" data-route="${key}" class="arc-route-card${key === "optimised" ? " recommended" : ""}">
+          ${key === "optimised" ? `<span class="card-pick">ARC's pick</span>` : ""}
           <span class="card-head"><span class="card-title">${title}</span>
             <span class="card-metres">${opt.cost.toFixed(1)} m</span></span>
           <span class="card-note">${tag}</span>
@@ -217,9 +267,10 @@
       const ov = el("div", { id: "arcRouteChooser", class: "arc-chooser-backdrop", role: "dialog", "aria-modal": "true", "aria-label": "Choose a route" });
       ov.innerHTML = `
         <div class="arc-chooser">
-          <h2>Choose your route</h2>
-          <p class="lede">Both routes are measured through the aisles from where ARC is now${plan.checkout ? " and end at the checkout counter" : ""}.
-            ${saved > 0.005 ? `The shortest route saves <strong>${saved.toFixed(1)} m (${Math.round(plan.saved_pct)}%)</strong>.` : "Your order is already the shortest."}</p>
+          <div class="arc-chooser-head">${MASCOT_SVG}<div>
+          <h2>Which way shall we go?</h2>
+          <p class="lede">Both routes go through the aisles from where ARC is now${plan.checkout ? " and end at the checkout counter" : ""}.
+            ${saved > 0.005 ? `The shortest route saves <strong>${saved.toFixed(1)} m (${Math.round(plan.saved_pct)}%)</strong>.` : "Your order is already the shortest."}</p></div></div>
           <div class="arc-route-grid">
             ${card("optimised", "Shortest route", o.optimised, `ARC reorders your list (${o.optimised.strategy === "exact" ? "Held–Karp, exact" : o.optimised.strategy})`, "Use the shortest route")}
             ${card("typed", "My order", o.typed, "Items in the order you added them", "Keep my order")}
@@ -228,7 +279,8 @@
           <div class="chooser-foot">
             <button type="button" class="secondary-button" data-route="">Cancel</button></div>
         </div>`;
-      const done = (v) => { document.removeEventListener("keydown", onKey); ov.remove(); resolve(v); };
+      setStep(2);
+      const done = (v) => { document.removeEventListener("keydown", onKey); ov.remove(); if (!v) setStep(1); resolve(v); };
       const onKey = (e) => { if (e.key === "Escape") done(null); };
       ov.addEventListener("click", (e) => {
         const b = e.target.closest("[data-route]");
@@ -322,7 +374,7 @@
   function setupStoreMode() {
     const title = document.querySelector("#shopScreen .page-title-row h1");
     const sub = document.querySelector("#shopScreen .page-title-row p");
-    if (title) title.textContent = "Shop";
+    if (title) title.textContent = "What do you need today?";
     if (sub) sub.textContent = "Type your list or tap items below. These are the items in the ARC store, the same ones the shopping manager knows.";
     const cat = document.querySelector(".catalog-panel .panel-heading h2");
     if (cat) cat.textContent = "Store items";
@@ -334,16 +386,17 @@
     dom.startShoppingBtn.classList.replace("secondary-button", "primary-button");
 
     const bar = el("form", { id: "arcAddForm", class: "search-wrap", autocomplete: "off" });
-    bar.innerHTML = `
+    bar.innerHTML = `${MASCOT_SVG}<div class="arc-add-body">
+      <p class="arc-add-ask">Tell me your list</p>
       <div class="arc-add-row">
         <input id="arcAddInput" type="text" list="arcItemNames" aria-label="Type items, separated by commas"
-          placeholder="Type items, separated by commas: pasta, tea_coffee, milk" style="flex:1" />
+          placeholder="milk, pasta, tea_coffee" />
         <button class="primary-button" type="submit">Add</button>
       </div>
-      <p class="arc-add-hint">Works like the shopping manager prompt. You choose the route when you start.</p>
+      <p class="arc-add-hint">Separate items with commas. You choose the route when you start.</p></div>
       <datalist id="arcItemNames">${products.map((p) => `<option value="${escapeHTML(p.id)}">${escapeHTML(p.name)}</option>`).join("")}</datalist>`;
-    const row = document.querySelector("#shopScreen .page-title-row");
-    row.parentNode.insertBefore(bar, row.nextSibling);
+    const steps = document.querySelector("#shopScreen .arc-steps");
+    steps.parentNode.insertBefore(bar, steps.nextSibling);
     bar.addEventListener("submit", (e) => {
       e.preventDefault();
       const inp = document.getElementById("arcAddInput");
