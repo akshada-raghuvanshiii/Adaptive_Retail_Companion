@@ -8,6 +8,7 @@ import types
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 LOG = []
+OVERRIDES = {}
 
 
 def install_stubs():
@@ -59,6 +60,9 @@ def install_stubs():
             if n == "item_locations":
                 v = os.environ.get("ARC_ITEM_LOCATIONS",
                                    os.path.expanduser("~/slam_ws/src/arc_store_sim/config/item_locations.yaml"))
+            if n == "destinations_file":
+                v = os.environ.get("ARC_DESTINATIONS", v)
+            v = OVERRIDES.get(n, v)
             self._p[n] = Param(v)
 
         def get_parameter(self, n):
@@ -127,7 +131,8 @@ def test_api_flow():
     s = node.api_trip({"items": [{"item_id": "FP001", "quantity": 1, "name": "Apple"},
                                  {"item_id": "BV001", "quantity": 2, "name": "Tea"}]})
     trip = s["trip"]
-    assert trip["state"] == "NAVIGATING" and len(trip["stops"]) == 2
+    assert trip["state"] == "NAVIGATING" and len([x for x in trip["stops"] if not x["is_checkout"]]) == 2
+    assert trip["stops"][-1]["is_checkout"] and s["checkout"] == [-1.8, -1.25]
     goals = [m for t, m in LOG if t == "/shopping_goal"]
     first = trip["stops"][0]
     assert abs(goals[-1].pose.position.x - first["x"]) < 1e-9
@@ -166,6 +171,73 @@ def test_api_flow():
         raise AssertionError("conflict not detected")
 
 
+def test_plan_and_route_choice():
+    from arc_ui_bridge import route_order as ro
+    from arc_ui_bridge import server
+    Buffer = sys.modules["tf2_ros"].Buffer
+    node = server.UiBridge()
+    node.grid = ro.CostGrid([0] * (160 * 140), 160, 140, 0.05, -4.0, -3.0)
+    clock = [100.0]
+    node.now = lambda: clock[0]
+    Buffer.pose = (3.0, 1.4, 0.0)
+    items = [{"item_id": "FP001", "name": "Apple"}, {"item_id": "PC002", "name": "Soap"},
+             {"item_id": "BV001", "name": "Tea"}, {"item_id": "DY001", "name": "Milk"}]
+    plan = node.api_plan({"items": items})
+    assert plan["ask"] is True and plan["checkout"] == [-1.8, -1.25]
+    o, t = plan["options"]["optimised"], plan["options"]["typed"]
+    assert o["stops"][-1] == t["stops"][-1] == "CHECKOUT"
+    typed_items = [node.product_map[i["item_id"]] for i in items]
+    assert t["stops"][:-1] == typed_items                       # typed keeps the list order
+    assert sorted(o["stops"][:-1]) == sorted(typed_items)
+    assert o["cost"] <= t["cost"] + 1e-6 and abs(plan["saved_m"] - (t["cost"] - o["cost"])) < 0.02
+
+    for route, expect in (("typed", t["stops"]), ("optimised", o["stops"])):
+        node.trip.state = "IDLE"
+        s = node.api_trip({"items": items, "route": route})
+        got = [x["label"] for x in s["trip"]["stops"]]
+        assert got == expect, (route, got, expect)
+        assert s["trip"]["info"]["route"] == route and s["trip"]["info"]["ends_at"] == "checkout"
+        node.api_control({"action": "stop"})
+
+    # without a map: no options, the typed order, still ends at the checkout
+    node.trip.state = "IDLE"
+    node.grid = None
+    plan = node.api_plan({"items": items})
+    assert plan["options"] is None and "no map" in plan["reason"]
+    s = node.api_trip({"items": items})
+    assert [x["label"] for x in s["trip"]["stops"]] == typed_items + ["CHECKOUT"]
+    node.api_control({"action": "stop"})
+
+    try:
+        node.trip.state = "IDLE"
+        node.api_trip({"items": items, "route": "shortest"})
+    except ValueError as e:
+        assert "unknown route" in str(e)
+    else:
+        raise AssertionError("bad route accepted")
+
+
+def test_checkout_off_and_overrides():
+    from arc_ui_bridge import server
+    OVERRIDES.clear()
+    OVERRIDES["end_at_checkout"] = False
+    node = server.UiBridge()
+    assert node.checkout is None
+    s = node.api_trip({"items": [{"item_id": "FP001"}]})
+    assert not any(x["is_checkout"] for x in s["trip"]["stops"])
+    OVERRIDES.clear()
+    OVERRIDES.update(checkout_x=0.5, checkout_y=-2.4)
+    node = server.UiBridge()
+    assert (node.checkout["x"], node.checkout["y"]) == (0.5, -2.4)
+    OVERRIDES.clear()
+    OVERRIDES["destinations_file"] = "/nonexistent.yaml"
+    node = server.UiBridge()
+    assert node.checkout is None                                   # warns and falls back to returning home
+    OVERRIDES.clear()
+
+
 if __name__ == "__main__":
     test_api_flow()
+    test_plan_and_route_choice()
+    test_checkout_off_and_overrides()
     print("server API flow OK")

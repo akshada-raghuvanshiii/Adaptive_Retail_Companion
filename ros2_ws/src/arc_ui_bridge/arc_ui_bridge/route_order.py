@@ -16,7 +16,8 @@ into one stop, so the robot never gets a goal at the place it already is.
 
 Strategies: 'exact' (Held-Karp optimum from the robot; used up to 12 stops, the
 compact store has 9 spots), 'nearest' (greedy nearest by path cost) and
-'as_entered' (the old behaviour).
+'as_entered' (the old behaviour). compare_routes() prices the optimised and the
+typed order on the same costs, so the shopper can choose between them.
 
 Optional fixed end (end_xy, e.g. the checkout counter): the route is then
 start -> all stops -> end, and 'exact' optimises it with the end in mind, which
@@ -195,6 +196,18 @@ def order_exact(D, n, end=None):
         mask &= ~(1 << last)
         last = prev
     return order[::-1]
+
+
+def compare_routes(grid, start_xy, goals, strategy="exact", end_xy=None):
+    """Both options the shopper can choose between, priced on the same Dijkstra costs.
+
+    Returns {"optimised": (stops, info), "typed": (stops, info), "saved_m": float, "saved_pct": float}.
+    'typed' keeps the order the items were entered (same-spot items still merge into one stop)."""
+    opt = plan_route(grid, start_xy, goals, strategy, end_xy=end_xy)
+    typ = plan_route(grid, start_xy, goals, "as_entered", end_xy=end_xy)
+    saved = typ[1]["cost"] - opt[1]["cost"]
+    pct = 100.0 * saved / typ[1]["cost"] if typ[1]["cost"] > 0 else 0.0
+    return {"optimised": opt, "typed": typ, "saved_m": saved, "saved_pct": pct}
 
 
 def plan_route(grid, start_xy, goals, strategy="exact", end_xy=None):

@@ -18,7 +18,8 @@ for name in sorted(n for n in dir(test_trip) if n.startswith("test_")):
         print(f"  FAIL  {name}: {e!r}")
 # the server test replaces rclpy with stand-ins, so it runs in its own process
 r = subprocess.run([sys.executable, os.path.join(HERE, "test_server_stubbed.py")], capture_output=True, text=True)
-print(f"  {'ok  ' if r.returncode == 0 else 'FAIL'}  test_server_api_flow" + ("" if r.returncode == 0 else "\n" + r.stderr[-800:]))
+print(f"  {'ok  ' if r.returncode == 0 else 'FAIL'}  test_server_api (flow, route choice, checkout)" + ("" if r.returncode == 0 else "\n" + r.stderr[-1500:]))
 fails += r.returncode != 0
-print(f"{9 - fails}/9 passed" if fails else "9/9 passed")
+total = len([n for n in dir(test_trip) if n.startswith("test_")]) + 1
+print(f"{total - fails}/{total} passed")
 sys.exit(1 if fails else 0)

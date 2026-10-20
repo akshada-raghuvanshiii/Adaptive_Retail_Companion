@@ -24,6 +24,11 @@ ITEMS = yaml.safe_load(open(os.environ.get(
     "ARC_ITEM_LOCATIONS", os.path.expanduser("~/slam_ws/src/arc_store_sim/config/item_locations.yaml"))))["items"]
 PMAP = yaml.safe_load(open(os.path.join(ROOT, "config", "product_map.yaml")))
 GRID = ro.CostGrid([0] * (160 * 140), 160, 140, 0.05, -4.0, -3.0)
+_DEST = yaml.safe_load(open(os.environ.get(
+    "ARC_DESTINATIONS", os.path.expanduser("~/slam_ws/src/arc_store_sim/config/destinations_map.yaml"))))
+_C = _DEST["destinations"]["checkout"]
+CHECKOUT = {"item": "checkout", "items": ["checkout"], "x": float(_C["x"]), "y": float(_C["y"]),
+            "yaw": float(_C.get("yaw", 0.0)), "is_checkout": True}
 
 
 class Mock:
@@ -66,14 +71,28 @@ class Mock:
     def status(self):
         with self.lock:
             snap = self.trip.snapshot()
-        return {"ros": True, "bt_mode": "LEAD", "bt_age_s": 0.2, "pose": [round(v, 3) for v in self.pose],
+        return {"ros": True, "bt_mode": "LEAD", "route_choice": "ask", "checkout": [CHECKOUT["x"], CHECKOUT["y"]], "bt_age_s": 0.2, "pose": [round(v, 3) for v in self.pose],
                 "localised": True, "map": True, "other_goal_publishers": 0, "trip": snap,
                 "store_items": {k: [v["x"], v["y"]] for k, v in ITEMS.items()}}
 
+    def api_plan(self, body):
+        goals, problems = resolve(body.get("items", []), PMAP, ITEMS)
+        c = ro.compare_routes(GRID, tuple(self.pose[:2]), goals, "exact", end_xy=(CHECKOUT["x"], CHECKOUT["y"]))
+
+        def opt(stops, info):
+            return {"strategy": info["strategy"], "cost": round(info["cost"], 2), "unreachable": info["unreachable"],
+                    "stops": [" + ".join(dict.fromkeys(s.get("items", [s["item"]]))) for s in stops] + ["CHECKOUT"]}
+        return {"ask": True, "problems": problems, "checkout": [CHECKOUT["x"], CHECKOUT["y"]],
+                "options": {"optimised": opt(*c["optimised"]), "typed": opt(*c["typed"])},
+                "saved_m": round(c["saved_m"], 2), "saved_pct": round(c["saved_pct"], 1)}
+
     def api_trip(self, body):
         goals, problems = resolve(body.get("items", []), PMAP, ITEMS)
-        ordered, info = ro.plan_route(GRID, tuple(self.pose[:2]), goals, "exact")
+        strat = {"optimised": "exact", "typed": "as_entered"}.get(body.get("route"), "exact")
+        ordered, info = ro.plan_route(GRID, tuple(self.pose[:2]), goals, strat, end_xy=(CHECKOUT["x"], CHECKOUT["y"]))
+        ordered = list(ordered) + [dict(CHECKOUT)]
         info = {k: (round(v, 2) if k.startswith("cost") else v) for k, v in info.items() if k != "start_cell"}
+        info["route"], info["ends_at"] = body.get("route") or "default", "checkout"
         info["problems"] = problems
         with self.lock:
             g = self.trip.start(ordered, goals, tuple(self.pose), info, self.now())
@@ -125,6 +144,8 @@ class H(SimpleHTTPRequestHandler):
     def do_POST(self):
         body = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))) or b"{}")
         try:
+            if self.path.startswith("/api/plan"):
+                return self.reply(200, M.api_plan(body))
             if self.path.startswith("/api/trip"):
                 return self.reply(200, M.api_trip(body))
             return self.reply(200, M.api_control(body))

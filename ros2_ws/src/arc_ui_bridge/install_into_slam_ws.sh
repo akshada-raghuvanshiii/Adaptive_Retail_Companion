@@ -50,6 +50,9 @@ python3 -c "import action_msgs.srv, tf2_ros" 2>/dev/null && echo "[ OK ] action_
   || echo "[TODO] action_msgs / tf2_ros not importable (they come with ROS 2 Jazzy desktop)"
 [ -f "$WS/src/arc_store_sim/config/item_locations.yaml" ] && echo "[ OK ] store item_locations.yaml found" \
   || echo "[TODO] $WS/src/arc_store_sim/config/item_locations.yaml not found: pass item_locations:=<path>"
+grep -q "^  checkout:" "$WS/src/arc_store_sim/config/destinations_map.yaml" 2>/dev/null \
+  && echo "[ OK ] checkout found in destinations_map.yaml (every trip ends there)" \
+  || echo "[TODO] no checkout in $WS/src/arc_store_sim/config/destinations_map.yaml: trips will return home"
 echo
 echo "Next: bring up the stack (cd ~/arc_test_kit && ./bringup.sh all), then in a new terminal:"
 echo "  source $WS/install/setup.bash && ros2 launch arc_ui_bridge arc_ui.launch.py"

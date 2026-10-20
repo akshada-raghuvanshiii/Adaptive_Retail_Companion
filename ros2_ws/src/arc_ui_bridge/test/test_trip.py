@@ -107,3 +107,64 @@ def test_cannot_start_twice():
     except ValueError:
         return
     raise AssertionError("second start should be refused")
+
+
+# ---------------------------------------------------------------- checkout as the final stop
+CHECKOUT = {"item": "checkout", "items": ["checkout"], "x": -1.8, "y": -1.25, "yaw": -1.5708, "is_checkout": True}
+
+
+def run_checkout_trip():
+    req = [{"item_id": "FP001", "quantity": 1, "name": "Apple"}, {"item_id": "BV001", "quantity": 1, "name": "Tea"}]
+    goals, _ = resolve(req, PMAP, ITEMS)
+    ordered, info = ro.plan_route(open_grid(), (0.0, 0.0), goals, "exact", end_xy=(CHECKOUT["x"], CHECKOUT["y"]))
+    tr = Trip(arrive_m=1.0, min_leg_s=0.5)
+    first = tr.start(list(ordered) + [dict(CHECKOUT)], goals, (0.0, 0.0, 0.0), info, t=0.0)
+    return tr, first
+
+
+def test_trip_ends_at_checkout():
+    tr, first = run_checkout_trip()
+    assert tr.stops[-1]["is_checkout"] and tr.stops[-1]["label"] == "CHECKOUT" and tr.stops[-1]["products"] == []
+    tr.arrival((first["x"], first["y"]), 2.0)
+    second = tr.next(3.0)
+    tr.arrival((second["x"], second["y"]), 6.0)
+    co = tr.next(7.0)
+    assert co["is_checkout"] and tr.state == "NAVIGATING" and tr.snapshot()["to_checkout"]
+    assert tr.arrival((CHECKOUT["x"] + 0.2, CHECKOUT["y"]), 12.0)
+    assert tr.state == "DONE" and tr.stops[-1]["status"] == "reached"
+    assert any("checkout counter" in e["text"] for e in tr.events)
+
+
+def test_skipping_the_checkout_finishes():
+    tr, first = run_checkout_trip()
+    tr.skip(1.0)
+    tr.skip(2.0)                     # second item skipped -> now heading to the checkout
+    assert tr.current()["is_checkout"]
+    assert tr.skip(3.0) is None and tr.state == "DONE"
+
+
+def test_home_still_works_with_a_checkout():
+    tr, first = run_checkout_trip()
+    home = tr.go_home(1.0)
+    assert home["label"] == "HOME" and tr.state == "RETURNING"
+    assert tr.stops[-1]["status"] == "skipped"
+
+
+def test_checkout_must_be_last():
+    req = [{"item_id": "FP001", "quantity": 1}]
+    goals, _ = resolve(req, PMAP, ITEMS)
+    stops = [dict(CHECKOUT)] + list(ro.group_same_spot(goals))
+    try:
+        Trip().start(stops, goals, (0, 0, 0), {}, 0.0)
+    except ValueError as e:
+        assert "last" in str(e)
+        return
+    raise AssertionError("checkout in the middle should be refused")
+
+
+def test_checkout_only_is_refused():
+    try:
+        Trip().start([dict(CHECKOUT)], [], (0, 0, 0), {}, 0.0)
+    except ValueError:
+        return
+    raise AssertionError("a trip with no items should be refused")

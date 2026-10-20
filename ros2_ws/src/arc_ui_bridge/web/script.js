@@ -427,9 +427,12 @@ function renderShoppingList() {
 }
 
 function getSelectedProducts() {
-  return products.filter(
-    (product) => Number(selectedQuantities[product.id] || 0) > 0
-  );
+  // In the order the shopper added them (object keys keep insertion order for ids like "FP001"),
+  // so "My order" on the route choice is the shopper's own list order.
+  const byId = new Map(products.map((product) => [product.id, product]));
+  return Object.keys(selectedQuantities)
+    .filter((id) => Number(selectedQuantities[id] || 0) > 0 && byId.has(id))
+    .map((id) => byId.get(id));
 }
 
 function updateSummary() {
@@ -631,6 +634,24 @@ function optimizeRoute() {
   showToast(
     `Shortest route generated: ${routeTotalDistance.toFixed(2)} m.`
   );
+}
+
+/* Draw a route in a given order on the concept layout (used by the ARC live link, so the
+   preview shows the order the robot actually drives instead of the page's own optimisation). */
+function renderGivenRoute(orderedProducts, method) {
+  if (!orderedProducts.length) {
+    renderEmptyRoute();
+    return;
+  }
+  const sequence = [HOME, ...orderedProducts];
+  const walkPoints = [];
+  for (let i = 1; i < sequence.length; i++) {
+    const leg = shortestWalkPath(sequence[i - 1], sequence[i]);
+    walkPoints.push(...(i === 1 ? leg : leg.slice(1)));
+  }
+  optimizedRoute = walkPoints;
+  routeTotalDistance = calculatePolylineDistance(walkPoints);
+  renderRoute(method, orderedProducts);
 }
 
 function bruteForceBestRoute(items) {

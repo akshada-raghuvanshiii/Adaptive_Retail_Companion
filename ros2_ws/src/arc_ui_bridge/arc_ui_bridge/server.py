@@ -9,6 +9,14 @@ item_locations.yaml), ordered by Dijkstra path cost on the live map (exact Held-
 /shopping_goal + /shopping_item - the topics ARC's shopping_manager uses, so the Dijkstra
 planner, hand-over, controller, behaviour tree and motion gate are unchanged.
 
+Route choice: POST /api/plan prices the optimised (Dijkstra path cost, Held-Karp) and the typed
+order on the live map from the robot's pose; the UI shows both and the shopper picks one, which
+POST /api/trip then drives ("route": "optimised" | "typed").
+
+Checkout: every trip ends at the checkout counter (end_at_checkout, default true), read from the
+store's destinations_map.yaml unless checkout_x/checkout_y are set. The optimised order is planned
+with the checkout as the fixed end. Arriving at the checkout finishes the trip.
+
 Robot -> UI: behaviour-tree mode, robot pose, trip progress, arrivals and ignored stale
 arrivals, once per poll.
 
@@ -59,7 +67,13 @@ class UiBridge(Node):
         self.declare_parameter("map_topic", "/rtabmap/map")
         self.declare_parameter("map_frame", "map")
         self.declare_parameter("base_frame", "base_footprint")
-        self.declare_parameter("strategy", "exact")          # exact | nearest | as_entered
+        self.declare_parameter("strategy", "exact")          # exact | nearest | as_entered (when no choice is sent)
+        self.declare_parameter("route_choice", "ask")         # ask: the UI shows both routes | fixed: use strategy
+        self.declare_parameter("end_at_checkout", True)
+        self.declare_parameter("destinations_file", "~/slam_ws/src/arc_store_sim/config/destinations_map.yaml")
+        self.declare_parameter("checkout_x", float("nan"))
+        self.declare_parameter("checkout_y", float("nan"))
+        self.declare_parameter("checkout_yaw", 0.0)
         self.declare_parameter("arrive_m", 1.0)
         self.declare_parameter("min_leg_s", 3.0)   # > the planner's 2 s replan, so a stale latched arrival is never taken
         self.declare_parameter("follow_path_action", "/follow_path")
@@ -71,6 +85,9 @@ class UiBridge(Node):
         self.item_frame = il.get("frame_id", "map")
         self.map_frame, self.base_frame = g("map_frame"), g("base_frame")
         self.strategy = g("strategy")
+        self.route_choice = str(g("route_choice"))
+        self.checkout = self.find_checkout(bool(g("end_at_checkout")), float(g("checkout_x")), float(g("checkout_y")),
+                                           float(g("checkout_yaw")), os.path.expanduser(str(g("destinations_file"))))
         self.trip = Trip(float(g("arrive_m")), float(g("min_leg_s")))
         self.lock = threading.Lock()
         self.grid, self.grid_stamp = None, None
@@ -90,6 +107,45 @@ class UiBridge(Node):
             self.get_logger().warn(f"product_map names store items missing from item_locations.yaml: {missing}")
         self.get_logger().info(f"{len(self.product_map)} UI products -> {len(set(self.product_map.values()))} store items; "
                                f"open http://{g('host')}:{g('port')}")
+
+    # ------------------------------------------------------------------ checkout
+    def find_checkout(self, enabled, x, y, yaw, dest_file):
+        """Checkout waiting point: parameters, else a 'checkout' item, else the destinations file."""
+        if not enabled:
+            self.get_logger().info("end_at_checkout is false: trips end at the last item and return home")
+            return None
+        src = "parameters"
+        if math.isnan(x) or math.isnan(y):
+            loc, src = self.items.get("checkout") or {}, "item_locations.yaml"
+            if "x" in loc and "y" in loc:
+                x, y, yaw = float(loc["x"]), float(loc["y"]), float(loc.get("yaw", yaw))
+        if math.isnan(x) or math.isnan(y):
+            src = dest_file
+            try:
+                with open(dest_file) as f:
+                    d = yaml.safe_load(f) or {}
+                if d.get("frame_id", "map") != self.item_frame:
+                    raise ValueError(f"frame {d.get('frame_id')} != items' frame {self.item_frame}")
+                c = (d.get("destinations") or {}).get("checkout") or {}
+                x, y, yaw = float(c["x"]), float(c["y"]), float(c.get("yaw", 0.0))
+            except Exception as e:
+                self.get_logger().warn(f"no checkout position ({src}: {e!r}); trips will return home instead")
+                return None
+        self.get_logger().info(f"checkout counter ({x:.2f}, {y:.2f}) from {src}: every trip ends there")
+        return {"item": "checkout", "items": ["checkout"], "x": x, "y": y, "yaw": yaw, "is_checkout": True}
+
+    def plan(self, goals, start_xy, strategy):
+        """Ordered stops (+ the checkout last) and the info dict, on the live map when there is one."""
+        end_xy = (self.checkout["x"], self.checkout["y"]) if self.checkout else None
+        if self.grid is not None:
+            ordered, info = ro.plan_route(self.grid, start_xy, goals, strategy, end_xy=end_xy)
+        else:
+            ordered, info = ro.group_same_spot(goals), {"strategy": "as_entered (no map yet)"}
+        if self.checkout:
+            ordered = list(ordered) + [dict(self.checkout)]
+        info = {k: (round(v, 2) if isinstance(v, float) else v) for k, v in info.items() if k != "start_cell"}
+        info["ends_at"] = "checkout" if self.checkout else "last stop, then home"
+        return ordered, info
 
     # ------------------------------------------------------------------ ROS side
     def now(self):
@@ -161,7 +217,8 @@ class UiBridge(Node):
         with self.lock:
             snap = self.trip.snapshot()
         others = max(0, self.count_publishers("/shopping_goal") - 1)
-        return {"ros": True, "bt_mode": self.bt_mode,
+        return {"ros": True, "bt_mode": self.bt_mode, "route_choice": self.route_choice,
+                "checkout": None if not self.checkout else [self.checkout["x"], self.checkout["y"]],
                 "bt_age_s": None if self.bt_t is None else round(self.now() - self.bt_t, 1),
                 "pose": None if p is None else [round(p[0], 3), round(p[1], 3), round(p[2], 3)],
                 "localised": p is not None, "map": self.grid is not None,
@@ -178,27 +235,50 @@ class UiBridge(Node):
                 p["sim_x"], p["sim_y"] = self.items[it]["x"], self.items[it]["y"]
         return prods
 
-    def api_trip(self, body):
+    def _goals(self, body):
         products = body.get("items", [])
         if not products:
             raise ValueError("the shopping list is empty")
-        if self.count_publishers("/shopping_goal") > 1:
-            raise ValueError("another node publishes /shopping_goal (is shopping_manager running?); close it first")
         goals, problems = resolve(products, self.product_map, self.items)
         if not goals:
             raise ValueError("none of the products map to a store item: " + "; ".join(problems))
         p = self.robot_pose()
         if p is None:
             raise ValueError("no robot pose (map -> base_footprint); is the stack localised?")
-        strategy = body.get("strategy", self.strategy)
-        if self.grid is not None:
-            ordered, info = ro.plan_route(self.grid, p[:2], goals, strategy)
-        else:
-            ordered, info = ro.group_same_spot(goals), {"strategy": "as_entered (no map yet)"}
-        info = {k: v for k, v in info.items() if k != "start_cell"}
-        for k in ("cost", "cost_as_entered"):          # planner path cost, metres
-            if k in info and isinstance(info[k], float):
-                info[k] = round(info[k], 2)
+        return goals, problems, p
+
+    def api_plan(self, body):
+        """Both routes the shopper can choose between, priced on the live map from the robot."""
+        goals, problems, p = self._goals(body)
+        out = {"ask": self.route_choice == "ask", "problems": problems,
+               "checkout": None if not self.checkout else [self.checkout["x"], self.checkout["y"]]}
+        if self.grid is None:
+            out.update(options=None, reason="no map yet: the typed order will be used")
+            return out
+        strat = self.strategy if self.strategy in ("exact", "nearest") else "exact"
+        end_xy = (self.checkout["x"], self.checkout["y"]) if self.checkout else None
+        c = ro.compare_routes(self.grid, p[:2], goals, strat, end_xy=end_xy)
+        tail = ["CHECKOUT"] if self.checkout else []
+
+        def opt(stops, info):
+            return {"strategy": info["strategy"], "cost": round(info["cost"], 2),
+                    "stops": [" + ".join(dict.fromkeys(s.get("items", [s["item"]]))) for s in stops] + tail,
+                    "unreachable": info["unreachable"]}
+        out["options"] = {"optimised": opt(*c["optimised"]), "typed": opt(*c["typed"])}
+        out["saved_m"], out["saved_pct"] = round(c["saved_m"], 2), round(c["saved_pct"], 1)
+        return out
+
+    def api_trip(self, body):
+        if self.count_publishers("/shopping_goal") > 1:
+            raise ValueError("another node publishes /shopping_goal (is shopping_manager running?); close it first")
+        goals, problems, p = self._goals(body)
+        route = body.get("route")
+        if route not in (None, "optimised", "typed"):
+            raise ValueError(f"unknown route '{route}' (use optimised or typed)")
+        strategy = {"optimised": self.strategy if self.strategy in ("exact", "nearest") else "exact",
+                    "typed": "as_entered"}.get(route, body.get("strategy", self.strategy))
+        ordered, info = self.plan(goals, p[:2], strategy)
+        info["route"] = route or "default"
         info["problems"] = problems
         with self.lock:
             goal = self.trip.start(ordered, goals, p, info, self.now())
@@ -265,6 +345,8 @@ def make_handler(node):
             try:
                 n = int(self.headers.get("Content-Length", 0) or 0)
                 body = json.loads(self.rfile.read(n) or b"{}")
+                if self.path.startswith("/api/plan"):
+                    return self.reply(200, node.api_plan(body))
                 if self.path.startswith("/api/trip"):
                     return self.reply(200, node.api_trip(body))
                 if self.path.startswith("/api/control"):

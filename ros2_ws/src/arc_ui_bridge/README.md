@@ -38,13 +38,32 @@ It installs no apt or pip packages. It prints any that are missing.
    - To use a phone or tablet on the same hotspot, launch with `host:=0.0.0.0`, then open
      `http://<laptop IP>:8080`.
 4. Add products and press **START SHOPPING**. Then:
-   - The bridge maps each UI product to its store spot (`config/product_map.yaml`). Products in
-     the same spot are merged into one stop.
-   - It orders the stops by Dijkstra path cost on the live map. Up to 12 stops it uses the exact
-     (Held–Karp) order, the same `route_order.py` as the phase-3 patch.
+   - **Mapping:** the bridge maps each UI product to its store spot (`config/product_map.yaml`).
+     Products in the same spot are merged into one stop.
+   - **Choose the route:** a dialog shows two routes, each with its Dijkstra path length through the
+     aisles from where the robot is now, and how much shorter the optimised one is:
+     - **Optimised route:** the shortest order, exact (Held–Karp) up to 12 stops. It uses the same
+       `route_order.py` as the shopping manager.
+     - **My order:** the order in which you added the products.
+
+     Click one, or press **Cancel** or Esc to go back without starting.
+   - **Ending:** both routes end at the **checkout counter**.
    - It sends the first stop.
-5. At each stop, press **ITEM PICKED · NEXT**. **SKIP STOP**, **PAUSE**, **RESUME**, **RETURN HOME**
-   and **STOP (SOFTWARE)** also work. "Home" means the pose where the trip started.
+5. At each stop, press **ITEM PICKED · NEXT**. After the last item the button reads **ITEM PICKED ·
+   TO CHECKOUT**, and reaching the counter finishes the trip: the status shows "AT CHECKOUT · DONE".
+   **SKIP STOP**, **PAUSE**, **RESUME**, **RETURN HOME** and **STOP (SOFTWARE)** also work.
+   - "Home" means the pose where the trip started. RETURN HOME is still available to abandon a trip.
+   - Skipping the checkout ends the trip where the robot is.
+
+**Checkout counter.** Every trip ends at the store's checkout waiting point, so the optimised
+route is planned with the checkout as its fixed end.
+- **Where it comes from:** the `checkout` entry in `~/slam_ws/src/arc_store_sim/config/destinations_map.yaml`,
+  at (−1.80, −1.25) in `map`, facing the counter. That is the same point the shopping manager uses.
+- **Overrides:** `checkout_x`, `checkout_y` and `checkout_yaw`.
+- **To switch it off:** `end_at_checkout:=false` gives the old behaviour, where the trip returns home after the last item.
+
+The concept layout on the navigation screen shows the robot's chosen order. Its distances are
+those of the concept drawing, so the header shows the robot's real path length on the store map.
 
 **The robot only moves while the BT is in LEAD or FOLLOW.** The UI shows the BT mode. If it
 is WAIT, the trip is still sent, but the motion gate holds the robot.
@@ -67,7 +86,11 @@ Ignored arrivals are counted and appear in the UI event log.
 | name | default | meaning |
 |---|---|---|
 | host / port | 127.0.0.1 / 8080 | web server address |
-| strategy | exact | `exact`, `nearest` or `as_entered` stop order |
+| route_choice | ask | `ask`: the UI shows both routes and the shopper picks. `fixed`: no dialog, use `strategy` |
+| strategy | exact | `exact` or `nearest` for the optimised route, or `as_entered`. Used when no choice is sent |
+| end_at_checkout | true | end every trip at the checkout counter |
+| destinations_file | ~/slam_ws/src/arc_store_sim/config/destinations_map.yaml | where the checkout is read from |
+| checkout_x / checkout_y / checkout_yaw | not set | override the checkout position |
 | item_locations | ~/slam_ws/src/arc_store_sim/config/item_locations.yaml | store spots |
 | product_map | (package) config/product_map.yaml | UI product id → store item |
 | arrive_m / min_leg_s | 1.0 / 3.0 | arrival guard |
@@ -77,10 +100,20 @@ Ignored arrivals are counted and appear in the UI event log.
 ## What has and has not been tested
 
 - **Run here, without ROS:**
-  - `python3 test/run_tests.py`. This covers product mapping, merging, ordering, the arrival
-    guard, a full trip, pause, stop, resume, home, skip, and the server API against stand-in ROS
-    objects.
-  - A browser end-to-end test of the UI against `test/mock_bridge.py`.
+  - `python3 test/run_tests.py` (14/14). It covers:
+    - product mapping, merging and ordering;
+    - the arrival guard;
+    - a full trip, and pause, stop, resume, home and skip;
+    - the checkout: last stop, finishes the trip, skipping it, home still works, refused anywhere
+      but last;
+    - the server API against stand-in ROS objects: plan, both route choices, no map, checkout
+      off, overrides, missing file.
+  - A browser end-to-end test of the UI against `test/mock_bridge.py`:
+    - the route dialog;
+    - an optimised trip run to "AT CHECKOUT · DONE";
+    - a typed-order trip in the order the products were added;
+    - Cancel/Esc;
+    - no page errors.
 - **Not yet run on your laptop with the real stack:**
   - QoS matching;
   - the TF lookup;
@@ -93,5 +126,6 @@ Ignored arrivals are counted and appear in the UI event log.
 
 - `GET /api/status`
 - `GET /api/products`
-- `POST /api/trip {"items":[{"item_id":"FP001","quantity":1,"name":"Apple"}]}`
+- `POST /api/plan {"items":[...]}`: both routes with path lengths and stops (ending `CHECKOUT`), or `options: null` with a reason
+- `POST /api/trip {"items":[{"item_id":"FP001","quantity":1,"name":"Apple"}], "route":"optimised|typed"}`
 - `POST /api/control {"action":"next|skip|pause|stop|resume|home|reset"}`

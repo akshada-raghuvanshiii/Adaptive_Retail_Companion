@@ -4,10 +4,13 @@ The UI sends product ids and quantities. Each product maps to an item spot of th
 store (config/product_map.yaml -> arc_store_sim item_locations.yaml); products on the same
 spot become one stop. The trip then walks through the stops one at a time:
 
-    IDLE -> NAVIGATING -> AT_STOP --(next)--> NAVIGATING ... -> DONE
+    IDLE -> NAVIGATING -> AT_STOP --(next)--> NAVIGATING ... -> CHECKOUT reached -> DONE
                  |  ^                                         \\-> RETURNING -> DONE
-          pause  v  | resume
+          pause  v  | resume                                 (RETURN HOME, or no checkout set)
                 PAUSED          stop -> STOPPED (resume continues the same stop)
+
+Checkout: when the trip has a checkout stop (is_checkout, always the last stop), arriving there
+finishes the trip. Without one, the trip returns to where it started, as before.
 
 Arrival guard (the goal-reached race found in the bench HIL test): ARC's hand-over
 publishes /navigation_goal_reached = True for the previous goal as well, and the topic is
@@ -83,7 +86,9 @@ class Trip:
         cur = self.current()
         return {"state": self.state, "index": self.index, "info": self.info,
                 "current": cur["label"] if cur else None,
-                "stops": [{k: s[k] for k in ("label", "item", "x", "y", "status", "products")} for s in self.stops],
+                "stops": [dict({k: s[k] for k in ("label", "item", "x", "y", "status", "products")},
+                               is_checkout=bool(s.get("is_checkout"))) for s in self.stops],
+                "to_checkout": bool(cur and cur.get("is_checkout")),
                 "home": self.home, "ignored_arrivals": self.ignored_arrivals, "events": self.events[-12:]}
 
     # ------------------------------------------------------------------ commands (return the goal to send, or None)
@@ -92,19 +97,24 @@ class Trip:
             raise ValueError("a trip is already running; finish or stop it first")
         self.stops = []
         for s in ordered_stops:
-            prods = collect_products(s, goals)
-            self.stops.append({"label": " + ".join(dict.fromkeys(s.get("items", [s["item"]]))),
+            co = bool(s.get("is_checkout"))
+            prods = [] if co else collect_products(s, goals)
+            self.stops.append({"label": "CHECKOUT" if co else " + ".join(dict.fromkeys(s.get("items", [s["item"]]))),
                                "item": s["item"], "x": s["x"], "y": s["y"], "yaw": s.get("yaw", 0.0),
-                               "status": "pending", "products": prods})
-        if not self.stops:
+                               "status": "pending", "products": prods, "is_checkout": co})
+        if not any(not s["is_checkout"] for s in self.stops):
             raise ValueError("no reachable stops")
+        if any(s["is_checkout"] for s in self.stops[:-1]):
+            raise ValueError("the checkout must be the last stop")
         self.home = {"label": "HOME", "item": "home", "x": home_xy[0], "y": home_xy[1],
                      "yaw": home_xy[2] if len(home_xy) > 2 else 0.0, "status": "pending", "products": []}
         self.info = info
         self.index = 0
         self.ignored_arrivals = 0
         self.events = []
-        self.log(t, f"trip started: {len(self.stops)} stops ({info.get('strategy', '?')} order)")
+        n = sum(1 for s in self.stops if not s["is_checkout"])
+        co = " + checkout" if self.stops[-1]["is_checkout"] else ""
+        self.log(t, f"trip started: {n} stop{'s' if n != 1 else ''}{co} ({info.get('strategy', '?')} order)")
         return self._go(t)
 
     def _go(self, t):
@@ -134,6 +144,9 @@ class Trip:
         if self.state == "RETURNING":
             self.state = "DONE"
             self.log(t, "back home: trip finished")
+        elif cur.get("is_checkout"):
+            self.state = "DONE"
+            self.log(t, "at the checkout counter: trip finished")
         else:
             self.state = "AT_STOP"
             self.log(t, f"arrived at {cur['label']}")
@@ -146,13 +159,20 @@ class Trip:
         if self.index >= len(self.stops):
             self.state = "RETURNING"
             self.log(t, "all items collected: returning home")
+        elif self.stops[self.index].get("is_checkout"):
+            self.log(t, "all items collected: going to the checkout")
         return self._go(t)
 
     def skip(self, t):
         if self.state not in ("NAVIGATING", "PAUSED", "STOPPED") or self.current() is None or self.state == "RETURNING":
             raise ValueError("nothing to skip")
-        self.current()["status"] = "skipped"
-        self.log(t, f"skipped {self.current()['label']}")
+        cur = self.current()
+        cur["status"] = "skipped"
+        self.log(t, f"skipped {cur['label']}")
+        if cur.get("is_checkout"):                 # skipping the checkout ends the trip where it is
+            self.state = "DONE"
+            self.log(t, "checkout skipped: trip finished")
+            return None
         self.state = "AT_STOP"
         return self.next(t)
 
