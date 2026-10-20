@@ -5,6 +5,10 @@ let searchTerm = "";
 let optimizedRoute = [];
 let routeTotalDistance = 0;
 let systemState = "READY";
+const STATE_TEXT = {
+  READY: "Ready", NAVIGATING: "On the way", PAUSED: "Paused",
+  "E-STOP": "Emergency stop", "RETURNING HOME": "Returning to start", IDLE: "Idle"
+};
 
 /*
 =========================================================
@@ -23,9 +27,25 @@ walkable aisle network, then solves the shopping-stop order.
 =========================================================
 */
 
+/* Aisle colours, shared with the RViz store markers. Every item, list entry and stop wears the
+   colour of the aisle it is in; the badge is the aisle number (or P / D / T for the fixtures). */
+const AISLE_SIGNS = {
+  "Aisle 1": ["var(--a1)", "1"], "Aisle 2": ["var(--a2)", "2"], "Aisle 3": ["var(--a3)", "3"],
+  "Fresh produce": ["var(--produce)", "P"], "Dairy fridge": ["var(--dairy)", "D"],
+  "Tea & beverages shelf": ["var(--tea)", "T"]
+};
+const AISLE_CYCLE = ["var(--a1)", "var(--a2)", "var(--a3)", "var(--produce)", "var(--dairy)", "var(--tea)"];
+
+function aisleSign(aisle) {
+  if (AISLE_SIGNS[aisle]) return { colour: AISLE_SIGNS[aisle][0], badge: AISLE_SIGNS[aisle][1] };
+  const m = /^A(\d+)$/.exec(String(aisle || ""));          // offline demo catalogue: A1 ... A10
+  if (m) return { colour: AISLE_CYCLE[(Number(m[1]) - 1) % AISLE_CYCLE.length], badge: m[1] };
+  return { colour: "var(--faint)", badge: "" };
+}
+
 const HOME = {
   id: "HOME",
-  name: "HOME",
+  name: "Start",
   x: 0,
   y: 0,
   aisle: "Entry"
@@ -90,7 +110,7 @@ function normalizeProduct(product) {
     x: Number(product.x) || 0,
     y: Number(product.y) || 0,
     yaw: Number(product.yaw) || 0,
-    unit: product.unit || "Standard pack",
+    unit: product.unit ?? "Standard pack",
     icon: product.icon || "🛒",
     source_url: product.source_url || ""
   };
@@ -128,6 +148,20 @@ async function loadProducts() {
 /* =========================================================
    AISLE MODEL
 ========================================================= */
+
+function aisleSignSVG(aisle, top) {
+  const sign = aisleSign(aisle.name);
+  const label = sign.badge || aisle.name.slice(0, 2);
+  if (top.x - aisleSignSVG.lastX < 32) aisleSignSVG.lift = aisleSignSVG.lift ? 0 : 30;
+  else aisleSignSVG.lift = 0;
+  aisleSignSVG.lastX = top.x;
+  const y = top.y - 34 - aisleSignSVG.lift;
+  return `<g><title>${escapeHTML(aisle.name)}</title>
+    <rect x="${top.x - 13}" y="${y}" width="26" height="26" rx="4" style="fill:${sign.colour}"></rect>
+    <text class="aisle-label" x="${top.x}" y="${y + 19}" text-anchor="middle" style="fill:#fff">${escapeHTML(label)}</text></g>`;
+}
+aisleSignSVG.lastX = -1e9;
+aisleSignSVG.lift = 0;
 
 function buildAisleModel() {
   const map = new Map();
@@ -171,6 +205,7 @@ function createCategories() {
           type="button"
           class="category-chip ${category === activeCategory ? "active" : ""}"
           data-category="${escapeHTML(category)}"
+          ${AISLE_SIGNS[category] ? `style="--aisle:${AISLE_SIGNS[category][0]}"` : ""}
         >
           ${escapeHTML(category)}
         </button>
@@ -219,7 +254,7 @@ function renderProducts() {
   dom.catalogSubtext.textContent =
     activeCategory === "All"
       ? `Showing ${list.length} products`
-      : `${activeCategory} • ${list.length} products`;
+      : `${activeCategory}, ${list.length} products`;
   dom.selectedMini.textContent = `${selectedCount} selected`;
 
   if (!list.length) {
@@ -263,11 +298,14 @@ function productCardHTML(product) {
   const quantity = Number(selectedQuantities[product.id] || 0);
   const selected = quantity > 0;
   const unit = product.unit || "Standard pack";
+  const sign = aisleSign(product.aisle);
 
   return `
     <article
       class="product-card ${selected ? "selected" : ""}"
       data-id="${escapeHTML(product.id)}"
+      style="--aisle:${sign.colour}"
+      ${sign.badge ? `data-badge="${escapeHTML(sign.badge)}"` : ""}
       tabindex="0"
     >
       <div class="product-icon" aria-hidden="true">
@@ -295,7 +333,7 @@ function productCardHTML(product) {
                   data-action="dec"
                   data-id="${escapeHTML(product.id)}"
                 >−</button>
-                <div class="qty-value">QTY ${quantity}</div>
+                <div class="qty-value">${quantity} in list</div>
                 <button
                   class="qty-button"
                   type="button"
@@ -310,7 +348,7 @@ function productCardHTML(product) {
                 type="button"
                 data-action="toggle"
                 data-id="${escapeHTML(product.id)}"
-              >ADD</button>
+              >Add to list</button>
             `
         }
       </div>
@@ -380,14 +418,14 @@ function renderShoppingList() {
       const qty = Number(selectedQuantities[product.id]);
 
       return `
-        <div class="shopping-item">
+        <div class="shopping-item" style="--aisle:${aisleSign(product.aisle).colour}">
           <div class="shopping-item-top">
             <div>
               <div class="shopping-item-name">
                 ${escapeHTML(product.name)}
               </div>
               <div class="shopping-item-meta">
-                ${escapeHTML(product.aisle)} · ${escapeHTML(product.unit)}
+                ${escapeHTML(product.aisle)}${product.unit ? `, ${escapeHTML(product.unit)}` : ""}
               </div>
             </div>
           </div>
@@ -594,7 +632,7 @@ function optimizeRoute() {
 
   if (!selected.length) {
     renderEmptyRoute();
-    showToast("Add at least one product before optimizing the path.");
+    showToast("Add at least one item to plan the route.");
     return;
   }
 
@@ -737,6 +775,7 @@ function drawAisleBackground() {
   centre corridor. The blue route runs down that corridor.
   */
 
+  aisleSignSVG.lastX = -1e9;
   dom.aisleLines.innerHTML = AISLES
     .map((aisle) => {
       const top = mapPoint(aisle.x, TOP_Y - 0.2);
@@ -761,14 +800,7 @@ function drawAisleBackground() {
           y2="${bottom.y}"
         ></line>
 
-        <text
-          class="aisle-label"
-          x="${top.x}"
-          y="${(top.y + bottom.y) / 2}"
-          text-anchor="middle"
-        >
-          ${escapeHTML(aisle.name)}
-        </text>
+        ${aisleSignSVG(aisle, top)}
       `;
     })
     .join("");
@@ -800,7 +832,7 @@ function renderRoute(method, orderedProducts) {
             cx="${p.x}"
             cy="${p.y}"
             r="15"
-            fill="#2563eb"
+            fill="${aisleSign(product.aisle).colour}"
             stroke="#ffffff"
             stroke-width="3"
           ></circle>
@@ -821,14 +853,6 @@ function renderRoute(method, orderedProducts) {
             ${escapeHTML(product.name)}
           </text>
 
-          <text
-            x="${p.x + 22}"
-            y="${p.y + 10}"
-            fill="#64748b"
-            font-size="11"
-          >
-            ${escapeHTML(product.aisle)}
-          </text>
         </g>
       `;
     })
@@ -842,7 +866,7 @@ function renderRoute(method, orderedProducts) {
         cx="${home.x}"
         cy="${home.y}"
         r="17"
-        fill="#111827"
+        fill="#17212b"
         stroke="#ffffff"
         stroke-width="4"
       ></circle>
@@ -851,7 +875,7 @@ function renderRoute(method, orderedProducts) {
         class="home-label"
         x="${home.x + 24}"
         y="${home.y + 5}"
-      >HOME</text>
+      >Start</text>
     </g>
   `;
 
@@ -862,8 +886,8 @@ function renderRoute(method, orderedProducts) {
   dom.routeStops.textContent =
     `${orderedProducts.length} stop${orderedProducts.length === 1 ? "" : "s"}`;
 
-  dom.navStatusBadge.textContent = "ROUTE READY";
-  dom.navMode.textContent = systemState === "E-STOP" ? "E-STOP" : "READY";
+  dom.navStatusBadge.textContent = "Route ready";
+  dom.navMode.textContent = systemState === "E-STOP" ? "Emergency stop" : "Ready";
   dom.nextStop.textContent = orderedProducts[0]?.name || "—";
 }
 
@@ -875,15 +899,15 @@ function renderRouteOrder(orderedProducts) {
       if (stop.id === "HOME") {
         return `
           <div class="route-stop">
-            <div class="route-index">${index === 0 ? "H" : "↩"}</div>
+            <div class="route-index">${index === 0 ? "S" : "↩"}</div>
             <div>
-              <div class="route-stop-name">HOME</div>
+              <div class="route-stop-name">${index === 0 ? "Start" : "Back to start"}</div>
               <div class="route-stop-aisle">
                 ${index === 0 ? "Starting point" : "Return point"}
               </div>
             </div>
             <div class="route-stop-dist">
-              ${index === 0 ? "START" : "END"}
+              ${index === 0 ? "" : "End"}
             </div>
           </div>
         `;
@@ -895,13 +919,13 @@ function renderRouteOrder(orderedProducts) {
 
       return `
         <div class="route-stop">
-          <div class="route-index">${index}</div>
+          <div class="route-index" style="background:${aisleSign(stop.aisle).colour}">${index}</div>
           <div>
             <div class="route-stop-name">
               ${escapeHTML(stop.name)}
             </div>
             <div class="route-stop-aisle">
-              ${escapeHTML(stop.aisle)} · Qty ${qty}
+              ${escapeHTML(stop.aisle)}, ${qty} in list
             </div>
           </div>
           <div class="route-stop-dist">
@@ -921,17 +945,17 @@ function renderEmptyRoute() {
 
   dom.routeOrder.innerHTML = `
     <div class="empty-route">
-      No route available.<br />
-      Add products and press “OPTIMIZE PATH”.
+      No route yet.<br />
+      Add items, then press Plan the route.
     </div>
   `;
 
   dom.mapEmptyText.classList.remove("hidden");
-  dom.routeMethod.textContent = "Waiting for shopping list";
+  dom.routeMethod.textContent = "Waiting for your list";
   dom.routeDistance.textContent = "0.00 m";
   dom.routeStops.textContent = "0 stops";
-  dom.navStatusBadge.textContent = "ROUTE NOT GENERATED";
-  dom.navMode.textContent = systemState === "E-STOP" ? "E-STOP" : "IDLE";
+  dom.navStatusBadge.textContent = "No route yet";
+  dom.navMode.textContent = systemState === "E-STOP" ? "Emergency stop" : "Idle";
   dom.nextStop.textContent = "—";
 }
 
@@ -991,7 +1015,7 @@ function createShoppingRequest() {
   const selected = getSelectedProducts();
 
   if (!selected.length) {
-    showToast("Shopping list is empty.");
+    showToast("Your list is empty.");
     return null;
   }
 
@@ -1020,29 +1044,22 @@ function createShoppingRequest() {
 function setSystemState(state) {
   systemState = state;
 
-  const labels = {
-    READY: "SYSTEM READY",
-    NAVIGATING: "ROUTE ACTIVE",
-    PAUSED: "PAUSED",
-    "E-STOP": "EMERGENCY STOP",
-    "RETURNING HOME": "RETURNING HOME"
-  };
-
-  dom.systemStatusText.textContent = labels[state] || state;
-  dom.cartMode.textContent = state;
-  dom.navMode.textContent = state;
+  const label = STATE_TEXT[state] || state;
+  dom.systemStatusText.textContent = label;
+  dom.cartMode.textContent = label;
+  dom.navMode.textContent = label;
 
   if (state === "E-STOP") {
-    dom.navStatusBadge.textContent = "STOPPED";
+    dom.navStatusBadge.textContent = "Stopped";
   } else if (optimizedRoute.length) {
     dom.navStatusBadge.textContent =
-      state === "NAVIGATING" ? "ROUTE ACTIVE" : "ROUTE READY";
+      state === "NAVIGATING" ? "On the way" : "Route ready";
   }
 }
 
 function startShopping() {
   if (!getSelectedProducts().length) {
-    showToast("Add products before starting shopping.");
+    showToast("Add at least one item to start shopping.");
     return;
   }
 
@@ -1050,22 +1067,22 @@ function startShopping() {
   optimizeRoute();
   switchScreen("navigation");
   setSystemState("NAVIGATING");
-  showToast("ARC navigation started.");
+  showToast("Shopping started. Follow ARC.");
 }
 
 function pauseCart() {
   if (systemState === "E-STOP") {
-    showToast("E-STOP is active. Press RESUME to reset the cart state.");
+    showToast("Emergency stop is on. Press Resume to clear it.");
     return;
   }
 
   setSystemState("PAUSED");
-  showToast("Cart paused.");
+  showToast("Paused.");
 }
 
 function resumeCart() {
   if (!optimizedRoute.length) {
-    showToast("Generate a route first.");
+    showToast("Plan the route first.");
     return;
   }
 
@@ -1074,32 +1091,32 @@ function resumeCart() {
   changed the mode, leaving the STOPPED badge untouched.
   */
   setSystemState("NAVIGATING");
-  dom.navStatusBadge.textContent = "ROUTE ACTIVE";
-  dom.navMode.textContent = "NAVIGATING";
+  dom.navStatusBadge.textContent = "On the way";
+  dom.navMode.textContent = "On the way";
   dom.nextStop.textContent = getSelectedProducts()[0]?.name || "—";
 
-  showToast("E-STOP reset. Cart resumed.");
+  showToast("Resumed.");
 }
 
 function returnHome() {
   if (systemState === "E-STOP") {
-    showToast("Reset E-STOP before returning home.");
+    showToast("Clear the emergency stop before returning to start.");
     return;
   }
 
   setSystemState("RETURNING HOME");
-  dom.nextStop.textContent = "HOME";
-  showToast("Return-home command issued.");
+  dom.nextStop.textContent = "Start";
+  showToast("Returning to start.");
 }
 
 function emergencyStop() {
   systemState = "E-STOP";
-  dom.cartMode.textContent = "EMERGENCY STOP";
-  dom.navMode.textContent = "E-STOP";
-  dom.systemStatusText.textContent = "EMERGENCY STOP";
-  dom.navStatusBadge.textContent = "STOPPED";
+  dom.cartMode.textContent = "Emergency stop";
+  dom.navMode.textContent = "Emergency stop";
+  dom.systemStatusText.textContent = "Emergency stop";
+  dom.navStatusBadge.textContent = "Stopped";
 
-  showToast("EMERGENCY STOP ACTIVE.");
+  showToast("Emergency stop on.");
 }
 
 /* =========================================================

@@ -1,3 +1,4 @@
+import os
 from glob import glob
 
 from setuptools import find_packages, setup
@@ -13,7 +14,8 @@ setup(
         ('share/' + package_name, ['package.xml', 'README.md']),
         ('share/' + package_name + '/config', glob('config/*.yaml')),
         ('share/' + package_name + '/launch', glob('launch/*.launch.py')),
-        ('share/' + package_name + '/web', glob('web/*')),
+        ('share/' + package_name + '/web', [f for f in glob('web/*') if os.path.isfile(f)]),
+        ('share/' + package_name + '/web/fonts', glob('web/fonts/*')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ARC — Adaptive Retail Companion</title>
+  <title>ARC Shopping</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -15,13 +15,13 @@
 
     <div class="top-status">
       <span class="status-dot"></span>
-      <span id="systemStatusText">SYSTEM READY</span>
+      <span id="systemStatusText">Ready</span>
     </div>
 
     <div class="top-actions">
-      <button class="top-action active" id="shopTabBtn" type="button">SHOP</button>
-      <button class="top-action" id="navTabBtn" type="button">NAVIGATION</button>
-      <button class="top-action danger" id="estopTopBtn" type="button">E-STOP</button>
+      <button class="top-action active" id="shopTabBtn" type="button">Shop</button>
+      <button class="top-action" id="navTabBtn" type="button">Navigation</button>
+      <button class="top-action danger" id="estopTopBtn" type="button">Emergency stop</button>
     </div>
   </header>
 
@@ -30,14 +30,14 @@
     <section id="shopScreen" class="screen active-screen">
       <div class="page-title-row">
         <div>
-          <h1>Shop Products</h1>
-          <p>Select products for your shopping trip</p>
+          <h1>Shop</h1>
+          <p>Pick what you need and ARC will lead the way</p>
         </div>
         <div class="product-count" id="productCount">0 products</div>
       </div>
 
       <div class="search-wrap">
-        <input id="searchInput" type="text" placeholder="Search products..." autocomplete="off" />
+        <input id="searchInput" type="text" placeholder="Search the store" autocomplete="off" />
       </div>
 
       <div class="category-scroll" id="categoryBar" aria-label="Product categories"></div>
@@ -46,7 +46,7 @@
         <section class="catalog-panel">
           <div class="panel-heading">
             <div>
-              <h2>Product Catalog</h2>
+              <h2>Products</h2>
               <span id="catalogSubtext">All products</span>
             </div>
             <div class="selected-mini" id="selectedMini">0 selected</div>
@@ -59,10 +59,10 @@
         <aside class="shopping-panel">
           <div class="panel-heading">
             <div>
-              <h2>Shopping List</h2>
+              <h2>Your list</h2>
               <span id="shoppingListMeta">0 items</span>
             </div>
-            <button class="text-button" id="clearListBtn" type="button">CLEAR</button>
+            <button class="text-button" id="clearListBtn" type="button">Clear list</button>
           </div>
 
           <div class="shopping-list" id="shoppingList">
@@ -80,26 +80,26 @@
             </div>
           </div>
 
-          <button class="primary-button full" id="generateRouteBtn" type="button">OPTIMIZE PATH</button>
-          <button class="secondary-button full" id="startShoppingBtn" type="button">START SHOPPING</button>
+          <button class="primary-button full" id="generateRouteBtn" type="button">Plan the route</button>
+          <button class="secondary-button full" id="startShoppingBtn" type="button">Start shopping</button>
         </aside>
       </div>
 
       <section class="control-strip">
         <div class="control-card">
-          <div class="control-label">CART MODE</div>
-          <div class="control-value" id="cartMode">IDLE</div>
+          <div class="control-label">Cart</div>
+          <div class="control-value" id="cartMode">Idle</div>
         </div>
         <div class="control-card">
-          <div class="control-label">BATTERY</div>
+          <div class="control-label">Battery</div>
           <div class="control-value" id="batteryValue">—</div>
         </div>
         <div class="control-card">
-          <div class="control-label">LOCALIZATION</div>
+          <div class="control-label">Position</div>
           <div class="control-value" id="locValue">—</div>
         </div>
         <div class="control-card emergency-card">
-          <button id="estopBtn" type="button">EMERGENCY STOP</button>
+          <button id="estopBtn" type="button">Emergency stop</button>
         </div>
       </section>
     </section>
@@ -109,16 +109,16 @@
       <div class="page-title-row">
         <div>
           <h1>Navigation</h1>
-          <p>Optimized shopping route and cart status</p>
+          <p>The route ARC will follow, and where it is now</p>
         </div>
-        <div class="nav-status-badge" id="navStatusBadge">ROUTE NOT GENERATED</div>
+        <div class="nav-status-badge" id="navStatusBadge">No route yet</div>
       </div>
 
       <div class="navigation-layout">
         <section class="map-panel">
           <div class="panel-heading">
             <div>
-              <h2>Optimized Path</h2>
+              <h2>Route map</h2>
               <span id="routeMethod">Waiting for shopping list</span>
             </div>
             <div class="route-metrics">
@@ -131,19 +131,19 @@
             <svg id="routeSvg" viewBox="0 0 900 520" role="img" aria-label="Optimized shopping route map">
               <defs>
                 <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e4e8ee" stroke-width="1" />
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e2e7e4" stroke-width="1" />
                 </pattern>
                 <marker id="arrowMarker" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
-                  <path d="M0,0 L0,6 L8,3 z" fill="#2563eb"></path>
+                  <path d="M0,0 L0,6 L8,3 z" fill="#17212b"></path>
                 </marker>
               </defs>
-              <rect x="0" y="0" width="900" height="520" fill="#fbfcfe"></rect>
+              <rect x="0" y="0" width="900" height="520" fill="#f4f6f5"></rect>
               <rect x="0" y="0" width="900" height="520" fill="url(#gridPattern)"></rect>
               <g id="aisleLines"></g>
-              <polyline id="routeLine" points="" fill="none" stroke="#2563eb" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowMarker)" opacity="0"></polyline>
+              <polyline id="routeLine" points="" fill="none" stroke="#17212b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowMarker)" opacity="0"></polyline>
               <g id="routePoints"></g>
               <g id="homePoint"></g>
-              <text id="mapEmptyText" x="450" y="260" text-anchor="middle" class="map-empty-text">Add products and press “OPTIMIZE PATH”</text>
+              <text id="mapEmptyText" x="450" y="260" text-anchor="middle" class="map-empty-text">Add items, then press Plan the route</text>
             </svg>
           </div>
         </section>
@@ -151,7 +151,7 @@
         <aside class="route-panel">
           <div class="panel-heading">
             <div>
-              <h2>Route Order</h2>
+              <h2>Stops</h2>
               <span>Home → products → Home</span>
             </div>
           </div>
@@ -161,18 +161,18 @@
           </div>
 
           <div class="nav-controls">
-            <button class="primary-button full" id="resumeBtn" type="button">RESUME</button>
-            <button class="secondary-button full" id="pauseBtn" type="button">PAUSE</button>
-            <button class="secondary-button full" id="returnHomeBtn" type="button">RETURN HOME</button>
+            <button class="primary-button full" id="resumeBtn" type="button">Resume</button>
+            <button class="secondary-button full" id="pauseBtn" type="button">Pause</button>
+            <button class="secondary-button full" id="returnHomeBtn" type="button">Return to start</button>
           </div>
 
           <div class="nav-info-card">
-            <div class="nav-info-row"><span>Mode</span><strong id="navMode">IDLE</strong></div>
+            <div class="nav-info-row"><span>Mode</span><strong id="navMode">Idle</strong></div>
             <div class="nav-info-row"><span>Next stop</span><strong id="nextStop">—</strong></div>
             <div class="nav-info-row"><span>Selected items</span><strong id="navItemCount">0</strong></div>
           </div>
 
-          <button class="danger full" id="navEStopBtn" type="button">EMERGENCY STOP</button>
+          <button class="danger full" id="navEStopBtn" type="button">Emergency stop</button>
         </aside>
       </div>
     </section>

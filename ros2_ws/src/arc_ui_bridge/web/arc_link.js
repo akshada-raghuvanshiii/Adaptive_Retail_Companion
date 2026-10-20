@@ -7,11 +7,20 @@
 ========================================================= */
 (function () {
   const STATE_LABEL = {
-    IDLE: "IDLE", NAVIGATING: "ROUTE ACTIVE", AT_STOP: "AT STOP", PAUSED: "PAUSED",
-    STOPPED: "SOFTWARE STOP", RETURNING: "RETURNING HOME", DONE: "TRIP DONE"
+    IDLE: "Idle", NAVIGATING: "On the way", AT_STOP: "At the shelf", PAUSED: "Paused",
+    STOPPED: "Stopped", RETURNING: "Returning to start", DONE: "Trip finished"
   };
-  const STATUS_COLOUR = { pending: "#94a3b8", active: "#2563eb", reached: "#16a34a", skipped: "#d97706" };
-  const CHECKOUT_COLOUR = "#7c3aed";
+  const STOP_STATE = { pending: "Up next", active: "Heading here", reached: "Picked", skipped: "Skipped" };
+  // map colours (SVG needs real values): aisle colours come from the page's CSS tokens
+  const css = (name, fallback) => (getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback);
+  const colourOf = (v) => (v && v.startsWith("var(") ? css(v.slice(4, -1), "#8a949d") : v);
+  const CHECKOUT_COLOUR = "#2c2f7a";
+  const byIdMap = () => new Map(products.map((p) => [p.id, p]));
+  function stopAisle(st) {
+    const first = (st.products || [])[0];
+    const p = first && byIdMap().get(first.id);
+    return aisleSign(p ? p.aisle : "");
+  }
 
   const link = { live: false, last: null };
   window.arcLink = link;
@@ -36,22 +45,22 @@
     const aside = document.querySelector(".route-panel");
     const card = el("div", { class: "nav-info-card", id: "liveCard" });
     card.innerHTML = `
-      <div class="nav-info-row"><span>Link</span><strong id="liveLink">ROS 2 · live</strong></div>
+      <div class="nav-info-row"><span>Connection</span><strong id="liveLink">Live, ROS 2</strong></div>
       <div class="nav-info-row"><span>Behaviour tree</span><strong id="liveBt">—</strong></div>
-      <div class="nav-info-row"><span>Order</span><strong id="liveOrder">—</strong></div>
-      <div class="nav-info-row"><span>Robot (map)</span><strong id="livePose">—</strong></div>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="primary-button" id="liveNextBtn" type="button" style="flex:1">ITEM PICKED · NEXT</button>
-        <button class="secondary-button" id="liveSkipBtn" type="button" style="flex:1">SKIP STOP</button>
+      <div class="nav-info-row"><span>Route</span><strong id="liveOrder">—</strong></div>
+      <div class="nav-info-row"><span>Robot position</span><strong id="livePose">—</strong></div>
+      <div class="arc-live-actions">
+        <button class="primary-button" id="liveNextBtn" type="button">Item picked, next stop</button>
+        <button class="secondary-button" id="liveSkipBtn" type="button">Skip this stop</button>
       </div>
-      <div id="liveEvents" style="font-size:12px;color:#64748b;margin-top:8px;max-height:120px;overflow:auto"></div>`;
+      <div class="arc-live-events" id="liveEvents"></div>`;
     aside.insertBefore(card, document.getElementById("routeOrder").nextSibling);
     // robot view under the concept map: the real store the robot drives in
     const mp = document.querySelector(".map-panel");
-    const box = el("div", { id: "liveMapBox", style: "margin-top:14px" });
-    box.innerHTML = `<div class="panel-heading"><div><h2>Robot in the store (live)</h2>
-        <span>Simulated store map · numbers = robot visiting order · C = checkout (final stop) · red = robot · square = home</span></div></div>
-      <svg id="liveMap" viewBox="0 0 300 220" style="width:100%;max-height:360px;background:#fbfcfe;border:1px solid #e4e8ee;border-radius:8px" aria-label="Robot in the simulated store"></svg>`;
+    const box = el("div", { id: "liveMapBox", style: "margin-top:18px" });
+    box.innerHTML = `<div class="panel-heading"><div><h2>Robot in the store</h2>
+        <span>Live view of the simulated store. Numbers are the visiting order in aisle colours, C is the checkout, the red arrow is ARC and the square is the start.</span></div></div>
+      <svg id="liveMap" class="arc-live-map" viewBox="0 0 300 220" aria-label="Robot in the simulated store"></svg>`;
     mp.appendChild(box);
     const sub = document.getElementById("routeMethod");
     if (sub) sub.dataset.live = "1";
@@ -65,7 +74,7 @@
       if (b) b.title = "Software stop: holds the robot at its current pose. The hardware E-stop is the safety device.";
     });
     const nb = document.getElementById("navEStopBtn");
-    if (nb) nb.textContent = "STOP (SOFTWARE)";
+    if (nb) nb.textContent = "Stop (software)";
   }
 
   function drawMap(s) {
@@ -82,33 +91,35 @@
     const sc = Math.min(280 / (maxx - minx), 200 / (maxy - miny));
     const X = (x) => 10 + (x - minx) * sc, Y = (y) => 210 - (y - miny) * sc;   // map y up
     let h = "";
-    pts.forEach((p) => { h += `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="3" fill="#cbd5e1"/>`; });
+    pts.forEach((p) => { h += `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="2.5" fill="#c3cbc7"/>`; });
     if (stops.length) {
       const seq = stops.map((t) => `${X(t.x)},${Y(t.y)}`).join(" ");
-      h += `<polyline points="${seq}" fill="none" stroke="#93c5fd" stroke-width="2" stroke-dasharray="4 3"/>`;
+      h += `<polyline points="${seq}" fill="none" stroke="#17212b" stroke-opacity="0.45" stroke-width="2" stroke-dasharray="4 3"/>`;
     }
     stops.forEach((t, i) => {
+      const done = t.status === "reached" || t.status === "skipped";
+      const ring = t.status === "active" ? ` stroke="#17212b" stroke-width="2.5"` : ` stroke="#ffffff" stroke-width="2"`;
+      const op = done ? ` opacity="0.45"` : "";
       if (t.is_checkout) {
-        const c = t.status === "pending" ? CHECKOUT_COLOUR : (STATUS_COLOUR[t.status] || CHECKOUT_COLOUR);
         const cx = X(t.x), cy = Y(t.y);
-        h += `<polygon points="${cx},${cy - 11} ${cx + 11},${cy} ${cx},${cy + 11} ${cx - 11},${cy}" fill="${c}"/>` +
-             `<text x="${cx}" y="${cy + 4}" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">C</text>`;
+        h += `<g${op}><polygon points="${cx},${cy - 12} ${cx + 12},${cy} ${cx},${cy + 12} ${cx - 12},${cy}" fill="${CHECKOUT_COLOUR}"${ring}/>` +
+             `<text x="${cx}" y="${cy + 4}" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">C</text></g>`;
         return;
       }
-      const c = STATUS_COLOUR[t.status] || "#94a3b8";
-      h += `<circle cx="${X(t.x)}" cy="${Y(t.y)}" r="9" fill="${c}"/>` +
-           `<text x="${X(t.x)}" y="${Y(t.y) + 4}" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">${i + 1}</text>`;
+      const c = colourOf(stopAisle(t).colour);
+      h += `<g${op}><circle cx="${X(t.x)}" cy="${Y(t.y)}" r="9.5" fill="${c}"${ring}/>` +
+           `<text x="${X(t.x)}" y="${Y(t.y) + 4}" text-anchor="middle" font-size="10.5" fill="#fff" font-weight="700">${i + 1}</text></g>`;
     });
     if (s.trip && s.trip.home) {
       const hm = s.trip.home;
-      h += `<rect x="${X(hm.x) - 6}" y="${Y(hm.y) - 6}" width="12" height="12" fill="none" stroke="#0f172a" stroke-width="2"/>`;
+      h += `<rect x="${X(hm.x) - 6}" y="${Y(hm.y) - 6}" width="12" height="12" fill="#ffffff" stroke="#17212b" stroke-width="2"/>`;
     }
     if (s.pose) {
-      const [x, y, th] = s.pose, cx = X(x), cy = Y(y), r = 9;
+      const [x, y, th] = s.pose, cx = X(x), cy = Y(y), r = 13;
       const p1 = [cx + r * Math.cos(-th), cy + r * Math.sin(-th)];
       const p2 = [cx + 0.6 * r * Math.cos(-th + 2.5), cy + 0.6 * r * Math.sin(-th + 2.5)];
       const p3 = [cx + 0.6 * r * Math.cos(-th - 2.5), cy + 0.6 * r * Math.sin(-th - 2.5)];
-      h += `<polygon points="${p1} ${p2} ${p3}" fill="#dc2626"/>`;
+      h += `<polygon points="${p1} ${p2} ${p3}" fill="#c4291c" stroke="#ffffff" stroke-width="1.5"/>`;
     }
     svg.innerHTML = h;
   }
@@ -117,58 +128,59 @@
     link.last = s;
     const t = s.trip || {};
     const atCheckout = t.state === "DONE" && (t.stops || []).some((x) => x.is_checkout && x.status === "reached");
-    const label = atCheckout ? "AT CHECKOUT · DONE"
-      : (t.to_checkout && t.state === "NAVIGATING") ? "TO CHECKOUT" : (STATE_LABEL[t.state] || t.state || "IDLE");
+    const label = atCheckout ? "Finished at checkout"
+      : (t.to_checkout && t.state === "NAVIGATING") ? "Heading to checkout" : (STATE_LABEL[t.state] || t.state || "Idle");
     dom.systemStatusText.textContent = label;
-    dom.cartMode.textContent = s.bt_mode ? `${label} · BT ${s.bt_mode}` : label;
+    dom.cartMode.textContent = label;
     dom.navMode.textContent = label;
-    dom.nextStop.textContent = t.current || "—";
+    dom.nextStop.textContent = t.current ? (t.current === "CHECKOUT" ? "Checkout counter" : ((byIdMap().get(t.current) || {}).name || t.current.replaceAll("_", " "))) : "—";
     dom.navStatusBadge.textContent = label;
     const loc = document.getElementById("locValue");
-    if (loc) loc.textContent = s.localised ? "LOCALISED" : "NO POSE";
+    if (loc) loc.textContent = s.localised ? "Located" : "Not located";
     const bat = document.getElementById("batteryValue");
-    if (bat) bat.textContent = "n/a (sim)";
+    if (bat) bat.textContent = "Not in sim";
     document.getElementById("liveBt").textContent =
       s.bt_mode ? `${s.bt_mode}${s.bt_age_s > 3 ? ` (${s.bt_age_s}s old)` : ""}` : "no /arc/behavior_mode";
     const info = t.info || {};
     const routeName = info.route === "typed" ? "as typed" : info.route === "optimised" ? "optimised" : info.strategy;
     document.getElementById("liveOrder").textContent = info.strategy
-      ? `${routeName}${info.cost !== undefined ? ` · ${info.cost} m` : ""}${info.route !== "typed" && info.cost_as_entered ? ` (typed ${info.cost_as_entered} m)` : ""}${info.ends_at === "checkout" ? " · ends at checkout" : ""}`
+      ? `${routeName[0].toUpperCase()}${routeName.slice(1)}${info.cost !== undefined ? `, ${info.cost} m` : ""}${info.route !== "typed" && info.cost_as_entered ? ` (typed ${info.cost_as_entered} m)` : ""}${info.ends_at === "checkout" ? ", ends at checkout" : ""}`
       : "—";
     document.getElementById("livePose").textContent = s.pose ? `${s.pose[0].toFixed(2)}, ${s.pose[1].toFixed(2)}` : "—";
     const nextBtn = document.getElementById("liveNextBtn");
     nextBtn.disabled = t.state !== "AT_STOP";
-    nextBtn.style.opacity = nextBtn.disabled ? 0.5 : 1;
     const upcoming = (t.stops || [])[(t.index || 0) + 1];
-    nextBtn.textContent = upcoming && upcoming.is_checkout ? "ITEM PICKED · TO CHECKOUT" : "ITEM PICKED · NEXT";
+    nextBtn.textContent = upcoming && upcoming.is_checkout ? "Item picked, go to checkout" : "Item picked, next stop";
 
     const rm = document.getElementById("routeMethod");
-    if (rm && t.stops && t.stops.length) rm.textContent = "Robot's order on the concept layout (illustrative) · live stops on the right";
+    if (rm && t.stops && t.stops.length) rm.textContent = "ARC's order drawn on the concept layout (illustrative). Live stops are on the right.";
     const stops = t.stops || [];
     if (stops.length) {
       dom.routeOrder.innerHTML = stops.map((st, i) => {
+        const state = st.is_checkout ? ({ pending: "Last stop", active: "Heading here", reached: "Arrived", skipped: "Skipped" }[st.status] || st.status)
+          : (STOP_STATE[st.status] || st.status);
         if (st.is_checkout) {
-          return `<div class="arc-live-stop" style="display:block;border:1px solid #e4e8ee;border-left:4px solid ${CHECKOUT_COLOUR};border-radius:8px;padding:8px 10px;margin-bottom:8px;background:#faf5ff">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-            <strong>${i + 1}. Checkout counter</strong>
-            <span style="font-size:11px;font-weight:700;color:${st.status === "pending" ? CHECKOUT_COLOUR : STATUS_COLOUR[st.status]}">${st.status === "pending" ? "FINAL STOP" : st.status.toUpperCase()}</span></div>
-          <div style="font-size:12px;color:#64748b;margin-top:2px">Every trip ends here</div></div>`;
+          return `<div class="arc-live-stop is-checkout" data-status="${st.status}">
+          <div class="stop-top"><span class="stop-name">${i + 1}. Checkout counter</span>
+            <span class="stop-state">${state}</span></div>
+          <div class="stop-items">Every trip ends here</div></div>`;
         }
+        const sign = stopAisle(st);
         const prods = (st.products || []).map((p) => `${escapeHTML(p.name)}${p.qty > 1 ? ` ×${p.qty}` : ""}`).join(", ");
-        return `<div class="arc-live-stop" style="display:block;border:1px solid #e4e8ee;border-left:4px solid ${STATUS_COLOUR[st.status]};border-radius:8px;padding:8px 10px;margin-bottom:8px">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-            <strong>${i + 1}. ${escapeHTML(st.label.replaceAll("_", " "))}</strong>
-            <span style="font-size:11px;font-weight:700;color:${STATUS_COLOUR[st.status]}">${st.status.toUpperCase()}</span></div>
-          <div style="font-size:12px;color:#64748b;margin-top:2px">${prods}</div></div>`;
+        const where = (st.products || [])[0] && byIdMap().get(st.products[0].id);
+        return `<div class="arc-live-stop" data-status="${st.status}" style="--aisle:${sign.colour}">
+          <div class="stop-top"><span class="stop-name">${i + 1}. ${prods || escapeHTML(st.label.replaceAll("_", " "))}</span>
+            <span class="stop-state">${state}</span></div>
+          <div class="stop-items">${where ? escapeHTML(where.aisle + (where.unit && where.unit !== where.aisle ? `, ${where.unit}` : "")) : escapeHTML(st.label)}</div></div>`;
       }).join("");
     }
     const ev = (t.events || []).slice().reverse();
-    document.getElementById("liveEvents").innerHTML = ev.map((e) => `${e.t}s · ${escapeHTML(e.text)}`).join("<br>");
+    document.getElementById("liveEvents").innerHTML = ev.map((e) => `${e.t} s: ${escapeHTML(e.text)}`).join("<br>");
     if (s.other_goal_publishers > 0 && !["NAVIGATING", "RETURNING"].includes(t.state)) {
-      document.getElementById("liveLink").textContent = "ROS 2 · close shopping_manager!";
+      document.getElementById("liveLink").textContent = "Close shopping_manager first";
     }
     const ends = document.getElementById("routeEnds");
-    if (ends) ends.textContent = s.checkout ? "Start → products → checkout counter" : "Home → products → Home";
+    if (ends) ends.textContent = s.checkout ? "From the start, through your items, to the checkout" : "From the start, through your items, and back";
     drawMap(s);
   }
 
@@ -181,7 +193,7 @@
       if (st.is_checkout) return;
       (st.products || []).forEach((p) => { const pr = byId.get(p.id); if (pr && !ordered.includes(pr)) ordered.push(pr); });
     });
-    renderGivenRoute(ordered, "Robot's order on the concept layout (illustrative)");
+    renderGivenRoute(ordered, "ARC's order drawn on the concept layout (illustrative)");
     const info = s.trip.info || {};
     const nItems = s.trip.stops.filter((x) => !x.is_checkout).length;
     if (info.cost !== undefined) dom.routeDistance.textContent = `${info.cost} m (store map)`;
@@ -192,29 +204,28 @@
   function chooseRoute(plan) {
     return new Promise((resolve) => {
       const o = plan.options, saved = plan.saved_m || 0;
-      const card = (key, title, opt, tag) => `
-        <button type="button" data-route="${key}" class="arc-route-card" style="text-align:left;border:2px solid ${key === "optimised" ? "var(--blue)" : "var(--border)"};
-          background:var(--panel);border-radius:10px;padding:14px;cursor:pointer;display:flex;flex-direction:column;gap:6px;font:inherit;color:inherit">
-          <span style="display:flex;justify-content:space-between;gap:8px;align-items:baseline">
-            <strong style="font-size:15px">${title}</strong>
-            <span style="font-size:20px;font-weight:700">${opt.cost.toFixed(2)} m</span></span>
-          <span style="font-size:12px;color:var(--muted)">${tag}</span>
-          <ol style="margin:4px 0 0;padding-left:20px;font-size:13px;line-height:1.5">
-            ${opt.stops.map((s) => `<li${s === "CHECKOUT" ? ` style="color:${CHECKOUT_COLOUR};font-weight:700"` : ""}>${escapeHTML(s === "CHECKOUT" ? "Checkout counter" : s.replaceAll("_", " "))}</li>`).join("")}
-          </ol></button>`;
-      const ov = el("div", { id: "arcRouteChooser", role: "dialog", "aria-modal": "true", "aria-label": "Choose a route",
-        style: "position:fixed;inset:0;background:rgba(15,23,42,.45);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px" });
+      const fmt = (st) => (st === "CHECKOUT" ? "Checkout counter" : ((byIdMap().get(st) || {}).name || st.replaceAll("_", " ")));
+      const sign = (st) => { const p = byIdMap().get(st); return aisleSign(p ? p.aisle : ""); };
+      const card = (key, title, opt, tag, cta) => `
+        <button type="button" data-route="${key}" class="arc-route-card${key === "optimised" ? " recommended" : ""}">
+          <span class="card-head"><span class="card-title">${title}</span>
+            <span class="card-metres">${opt.cost.toFixed(1)} m</span></span>
+          <span class="card-note">${tag}</span>
+          <ol>${opt.stops.map((st) => st === "CHECKOUT" ? `<li class="is-checkout">Checkout counter</li>`
+              : `<li style="--aisle:${sign(st).colour}">${escapeHTML(fmt(st))}</li>`).join("")}</ol>
+          <span class="card-cta">${cta}</span></button>`;
+      const ov = el("div", { id: "arcRouteChooser", class: "arc-chooser-backdrop", role: "dialog", "aria-modal": "true", "aria-label": "Choose a route" });
       ov.innerHTML = `
-        <div style="background:var(--bg);border-radius:14px;max-width:720px;width:100%;max-height:90vh;overflow:auto;padding:18px;box-shadow:0 20px 50px rgba(0,0,0,.25)">
-          <h2 style="margin:0 0 4px;font-size:18px">Choose the route</h2>
-          <p style="margin:0 0 12px;color:var(--muted);font-size:13px">Both are Dijkstra path lengths through the aisles, from where the robot is now${plan.checkout ? ", ending at the checkout counter" : ""}.
-            ${saved > 0.005 ? `The optimised route is <strong>${saved.toFixed(2)} m (${Math.round(plan.saved_pct)}%) shorter</strong>.` : "Your order is already the shortest."}</p>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px">
-            ${card("optimised", "Optimised route", o.optimised, `Shortest order (${o.optimised.strategy === "exact" ? "Held–Karp, exact" : o.optimised.strategy})`)}
-            ${card("typed", "My order", o.typed, "The order of your list")}
+        <div class="arc-chooser">
+          <h2>Choose your route</h2>
+          <p class="lede">Both routes are measured through the aisles from where ARC is now${plan.checkout ? " and end at the checkout counter" : ""}.
+            ${saved > 0.005 ? `The shortest route saves <strong>${saved.toFixed(1)} m (${Math.round(plan.saved_pct)}%)</strong>.` : "Your order is already the shortest."}</p>
+          <div class="arc-route-grid">
+            ${card("optimised", "Shortest route", o.optimised, `ARC reorders your list (${o.optimised.strategy === "exact" ? "Held–Karp, exact" : o.optimised.strategy})`, "Use the shortest route")}
+            ${card("typed", "My order", o.typed, "Items in the order you added them", "Keep my order")}
           </div>
-          ${(o.optimised.unreachable || []).length ? `<p style="color:var(--red);font-size:12px;margin:10px 0 0">Not reachable on the map (visited last): ${escapeHTML(o.optimised.unreachable.join(", "))}</p>` : ""}
-          <div style="display:flex;justify-content:flex-end;margin-top:12px">
+          ${(o.optimised.unreachable || []).length ? `<p class="warn">Not reachable on the map, so visited last: ${escapeHTML(o.optimised.unreachable.join(", "))}</p>` : ""}
+          <div class="chooser-foot">
             <button type="button" class="secondary-button" data-route="">Cancel</button></div>
         </div>`;
       const done = (v) => { document.removeEventListener("keydown", onKey); ov.remove(); resolve(v); };
@@ -238,7 +249,7 @@
       const plan = await api("/api/plan", req);
       if (plan.ask && plan.options) {
         route = await chooseRoute(plan);
-        if (!route) { showToast("Trip not started."); return; }
+        if (!route) { showToast("Trip not started. Your list is unchanged."); return; }
       } else if (!plan.options) {
         showToast(`ARC: ${plan.reason || "route options unavailable"}`);
       }
@@ -247,7 +258,7 @@
       showConcept(s);
       render(s);
       const nItems = s.trip.stops.filter((x) => !x.is_checkout).length;
-      showToast(`Trip sent to ARC: ${nItems} stops${s.trip.stops.some((x) => x.is_checkout) ? " + checkout" : ""} (${route === "typed" ? "your order" : route === "optimised" ? "optimised" : s.trip.info.strategy}).`);
+      showToast(`Shopping started: ${nItems} stop${nItems === 1 ? "" : "s"}${s.trip.stops.some((x) => x.is_checkout) ? ", then the checkout" : ""}, ${route === "typed" ? "in your order" : route === "optimised" ? "on the shortest route" : s.trip.info.strategy}.`);
       const pr = (s.trip.info.problems || []);
       if (pr.length) showToast(`Not mapped: ${pr.join("; ")}`);
     } catch (e) {
@@ -259,7 +270,8 @@
     try {
       const s = await api("/api/control", { action });
       render(s);
-      showToast(s.warning ? `ARC: ${s.warning}` : `ARC: ${action.toUpperCase()} sent.`);
+      const said = { next: "Next stop", skip: "Stop skipped", pause: "Paused", resume: "Resumed", stop: "Stopped", home: "Returning to start" };
+      showToast(s.warning ? `ARC: ${s.warning}` : `${said[action] || action}.`);
     } catch (e) {
       showToast(`ARC: ${e.message}`);
     }
@@ -281,7 +293,9 @@
       if (!p || spans.length < 2) return;
       spans[0].remove();
       const isAisle = /^Aisle \d/.test(p.aisle);
-      spans[1].innerHTML = `<strong>${isAisle ? "Aisle" : "Area"}:</strong> ${escapeHTML(isAisle ? p.aisle.slice(6) : p.aisle)}`;
+      spans[1].innerHTML = `<strong>${escapeHTML(p.aisle)}</strong>`;
+      spans[2].textContent = isAisle ? p.unit : "Stand-alone fixture";
+      if (p.spot) card.title = `Stop at ${p.spot} in the store map`;
     });
   }
 
@@ -299,7 +313,7 @@
     renderShoppingList();
     updateSummary();
     clearRouteBecauseListChanged();
-    if (added.length) showToast(`Added: ${added.join(", ")}`);
+    if (added.length) showToast(`Added ${added.map((id) => (byKey.get(id.toLowerCase()) || {}).name || id).join(", ")}`);
     unknown.forEach((u) => showToast(`"${u}" is not in the store database and will not be added.`));
     return { added, unknown };
   }
@@ -308,30 +322,32 @@
   function setupStoreMode() {
     const title = document.querySelector("#shopScreen .page-title-row h1");
     const sub = document.querySelector("#shopScreen .page-title-row p");
-    if (title) title.textContent = "Shopping List";
-    if (sub) sub.textContent = "Items in the ARC store: the same list the shopping manager uses";
+    if (title) title.textContent = "Shop";
+    if (sub) sub.textContent = "Type your list or tap items below. These are the items in the ARC store, the same ones the shopping manager knows.";
     const cat = document.querySelector(".catalog-panel .panel-heading h2");
     if (cat) cat.textContent = "Store items";
-    dom.searchInput.placeholder = "Search store items...";
+    dom.searchInput.placeholder = "Search the store";
     const up = dom.uniqueProducts && dom.uniqueProducts.previousElementSibling;
     if (up) up.textContent = "Different items";
     dom.generateRouteBtn.style.display = "none";          // START SHOPPING shows both routes instead
-    dom.startShoppingBtn.textContent = "START SHOPPING · CHOOSE ROUTE";
+    dom.startShoppingBtn.textContent = "Start shopping";
     dom.startShoppingBtn.classList.replace("secondary-button", "primary-button");
 
-    const bar = el("form", { id: "arcAddForm", class: "search-wrap", autocomplete: "off",
-      style: "display:flex;gap:8px;align-items:stretch" });
+    const bar = el("form", { id: "arcAddForm", class: "search-wrap", autocomplete: "off" });
     bar.innerHTML = `
-      <input id="arcAddInput" type="text" list="arcItemNames" aria-label="Add items, comma separated"
-        placeholder="Add items (comma separated), e.g. pasta, tea_coffee, milk" style="flex:1" />
-      <button class="primary-button" type="submit" style="width:auto;padding:0 22px">ADD</button>
+      <div class="arc-add-row">
+        <input id="arcAddInput" type="text" list="arcItemNames" aria-label="Type items, separated by commas"
+          placeholder="Type items, separated by commas: pasta, tea_coffee, milk" style="flex:1" />
+        <button class="primary-button" type="submit">Add</button>
+      </div>
+      <p class="arc-add-hint">Works like the shopping manager prompt. You choose the route when you start.</p>
       <datalist id="arcItemNames">${products.map((p) => `<option value="${escapeHTML(p.id)}">${escapeHTML(p.name)}</option>`).join("")}</datalist>`;
     const row = document.querySelector("#shopScreen .page-title-row");
     row.parentNode.insertBefore(bar, row.nextSibling);
     bar.addEventListener("submit", (e) => {
       e.preventDefault();
       const inp = document.getElementById("arcAddInput");
-      if (!inp.value.trim()) { showToast("No items entered. Please try again."); return; }
+      if (!inp.value.trim()) { showToast("Type at least one item, for example: milk, pasta"); return; }
       const r = addTyped(inp.value);
       inp.value = r.unknown.join(", ");
     });
@@ -345,7 +361,7 @@
     try {
       render(await api("/api/status"));
     } catch (e) {
-      document.getElementById("liveLink").textContent = "bridge not answering";
+      document.getElementById("liveLink").textContent = "Bridge not answering";
     }
   }
 
@@ -362,7 +378,7 @@
       buildPanel();
       render(s);
       setInterval(poll, 1000);
-      showToast("Connected to ARC (ROS 2). Shopping trips now drive the robot.");
+      showToast("Connected to ARC. Your list now drives the robot.");
     } catch (e) {
       /* no bridge: keep the offline demo */
     }

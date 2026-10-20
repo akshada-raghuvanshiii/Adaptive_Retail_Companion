@@ -60,7 +60,8 @@ def store_catalog(items):
         out.append({"id": item, "name": pretty(item), "category": area, "aisle": area,
                     "zone": section or area, "x": float(loc["x"]), "y": float(loc["y"]),
                     "yaw": float(loc.get("yaw", 0.0)), "icon": ICONS.get(item, "🛒"),
-                    "unit": f"{section + ' · ' if section else ''}stop ({float(loc['x']):.2f}, {float(loc['y']):.2f})",
+                    "unit": section,
+                    "spot": f"({float(loc['x']):.2f}, {float(loc['y']):.2f})",
                     "sim_item": item, "sim_x": float(loc["x"]), "sim_y": float(loc["y"]), "source_url": ""})
     out.sort(key=lambda p: (order.index(p["category"]) if p["category"] in order else len(order), p["name"]))
     return out
